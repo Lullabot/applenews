@@ -1,0 +1,42 @@
+applenews.applenews_template.*:
+  type: config_entity
+  label: 'Apple News Template'
+  mapping:
+    id:
+      type: string
+      label: 'ID'
+    label:
+      type: label
+      label: 'Label'
+    columns:
+      type: integer
+      label: 'Columns'
+    width:
+      type: integer
+      label: 'Width'
+    margin:
+      type: integer
+      label: 'Margin'
+    gutter:
+      type: integer
+      label: 'Gutter'
+    components:
+      type: sequence
+      sequence:
+        type: applenews.applenew_component_type.[%key]
+
+applenews.applenew_component_type.*:
+  type: config_object
+  mapping:
+    id:
+      type: string
+      label: 'Component Type ID'
+    weight:
+      type: integer
+    layout:
+      type: mapping
+      mapping:
+        column_start:
+          type: integer
+        column_span:
+          type: integer
