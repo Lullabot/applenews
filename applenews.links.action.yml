@@ -1,0 +1,5 @@
+entity.applenews_template_add_form:
+  title: 'Add Apple News Template'
+  route_name: entity.applenews_template.add_form
+  appears_on:
+    - entity.applenews_template.collection

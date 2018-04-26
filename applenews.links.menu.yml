@@ -1,0 +1,4 @@
+entity.applenews_template_collection:
+  title: 'Apple News'
+  parent: system.admin_config_services
+  route_name: entity.applenews_template.collection
