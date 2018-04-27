@@ -23,9 +23,9 @@ applenews.applenews_template.*:
     components:
       type: sequence
       sequence:
-        type: applenews.applenew_component_type.[%key]
+        type: applenews.applenews_component_type.[%key]
 
-applenews.applenew_component_type.*:
+applenews.applenews_component_type.*:
   type: config_object
   mapping:
     id:
