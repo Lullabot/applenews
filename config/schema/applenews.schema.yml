@@ -8,6 +8,12 @@ applenews.applenews_template.*:
     label:
       type: label
       label: 'Label'
+    node_type:
+      type: string
+      label: 'Node type'
+    view_mode:
+      type: string
+      label: 'View mode'
     columns:
       type: integer
       label: 'Columns'
@@ -33,10 +39,18 @@ applenews.applenews_component_type.*:
       label: 'Component Type ID'
     weight:
       type: integer
-    layout:
+      label: 'Weight'
+    field_name:
+      type: string
+      label: 'Field'
+    component_layout:
       type: mapping
       mapping:
         column_start:
           type: integer
         column_span:
           type: integer
+    components:
+      type: sequence
+      sequence:
+        type: applenews.applenews_component_type.[%key]

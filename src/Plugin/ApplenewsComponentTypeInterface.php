@@ -7,7 +7,7 @@ use Drupal\Component\Plugin\PluginInspectionInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 
-interface ApplenewsComponentTypeInterface extends PluginInspectionInterface, DerivativeInspectionInterface {
+interface ApplenewsComponentTypeInterface extends PluginInspectionInterface, DerivativeInspectionInterface, ContainerFactoryPluginInterface {
   /**
    * Returns the label for use on the administration pages.
    *

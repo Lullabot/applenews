@@ -9,7 +9,7 @@ use Drupal\applenews\Plugin\ApplenewsComponentTypeBase;
  *
  * @ApplenewsComponentType(
  *  id = "default",
- *  label = @Translation("Default Component Type),
+ *  label = @Translation("Default Component Type"),
  *  description = @Translation("Default component types based on AppleNewsAPI library."),
  *  deriver = "Drupal\applenews\Derivative\ApplenewsDefaultComponentTypeDeriver"
  * )

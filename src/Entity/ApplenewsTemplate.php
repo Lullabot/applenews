@@ -12,7 +12,7 @@ use Drupal\Core\Config\Entity\ConfigEntityBase;
  *  id = "applenews_template",
  *  label = @Translation("Applenews Template"),
  *  handlers = {
- *    "list_builder = "Drupal\applenews\Controller\ApplenewsTemplateListBuilder",
+ *    "list_builder" = "Drupal\applenews\Controller\ApplenewsTemplateListBuilder",
  *    "form" = {
  *      "add" = "Drupal\applenews\Form\ApplenewsTemplateForm",
  *      "edit" = "Drupal\applenews\Form\ApplenewsTemplateForm",
@@ -46,10 +46,21 @@ class ApplenewsTemplate extends ConfigEntityBase implements ApplenewsTemplateInt
    */
   public $label;
 
+  /**
+   * {@inheritdoc}
+   */
   public function getLayout() {
-    return [];
+    return [
+      'columns' => $this->get('columns'),
+      'width' => $this->get('width'),
+      'gutter' => $this->get('gutter'),
+      'margin' => $this->get('margin'),
+    ];
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function getComponents() {
     return [];
   }
