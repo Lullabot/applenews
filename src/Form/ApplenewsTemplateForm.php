@@ -2,9 +2,12 @@
 
 namespace Drupal\applenews\Form;
 
+use Drupal\applenews\ApplenewsTemplateInterface;
+use Drupal\applenews\Plugin\ApplenewsComponentTypeInterface;
 use Drupal\applenews\Plugin\ApplenewsComponentTypeManager;
 use Drupal\Core\Entity\Entity\EntityViewMode;
 use Drupal\Core\Entity\EntityForm;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Core\Form\FormStateInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -50,6 +53,9 @@ class ApplenewsTemplateForm extends EntityForm {
 
     $template = $this->entity;
     $node_types = $this->entityTypeManager->getStorage('node_type')->loadMultiple();
+
+    $form['#prefix'] = '<div id="applenews-template-form-wrapper">';
+    $form['#suffix'] = '<div>';
 
     $form['label'] = [
       '#type' => 'textfield',
@@ -159,6 +165,8 @@ class ApplenewsTemplateForm extends EntityForm {
     $form['add_components']['add_component_form'] = [
       '#type' => 'submit',
       '#value' => $this->t('Add new component'),
+      '#submit' => ['::setComponentFormStep'],
+      '#name' => 'add_component_form',
       '#ajax' => [
         'callback' => '::addComponentForm',
         'wrapper' => 'add-components-fieldset-wrapper',
@@ -166,12 +174,18 @@ class ApplenewsTemplateForm extends EntityForm {
     ];
 
     $input = $form_state->getUserInput();
-    if (isset($input['component_type'])) {
+    $form_step = $form_state->get('form_step');
+    if ($form_step == 'component_form') {
       $component_type = $input['component_type'];
       $component_plugin = $this->applenewsComponentTypeManager->createInstance($component_type);
       $form['add_components'] += $component_plugin->settingsForm($form, $form_state);
-      $form['add_components']['component_type']['#attributes'] = ['disabled' => TRUE];
-      $form['add_components']['add_component_form']['#attributes'] = ['disabled' => TRUE];
+      unset($form['add_components']['add_component_form']);
+      unset($form['add_components']['component_type']);
+//      $form['add_components']['component_type']['#attributes'] = ['disabled' => TRUE];
+//      $form['add_components']['add_component_form']['#attributes'] = ['disabled' => TRUE];
+    }
+
+    if ($form_step == 'component_form' || isset($input['save_component'])) {
 
       $form['add_components']['component_actions'] = [
         '#type' => 'actions',
@@ -180,10 +194,11 @@ class ApplenewsTemplateForm extends EntityForm {
       $form['add_components']['component_actions']['save_component'] = [
         '#type' => 'submit',
         '#value' => $this->t('Save Component'),
+        '#name' => 'save_component',
         '#submit' => ['::addComponent'],
         '#ajax' => [
           'callback' => '::saveComponent',
-          'wrapper' => 'add-components-fieldset-wrapper',
+          'wrapper' => 'applenews-template-form-wrapper',
         ],
       ];
 
@@ -191,11 +206,13 @@ class ApplenewsTemplateForm extends EntityForm {
         '#type' => 'submit',
         '#value' => $this->t('Cancel'),
         '#button_type' => 'danger',
+        '#submit' => ['::resetFormStep'],
         '#ajax' => [
           'callback' => '::cancelComponentForm',
           'wrapper' => 'add-components-fieldset-wrapper',
         ],
       ];
+
     }
 
     return $form;
@@ -258,8 +275,28 @@ class ApplenewsTemplateForm extends EntityForm {
     $form_state->setRebuild();
   }
 
+  public function setComponentFormStep(array &$form, FormStateInterface $form_state) {
+    $form_state->set('form_step', 'component_form');
+    $form_state->setRebuild();
+  }
+
+  public function resetFormStep(array &$form, FormStateInterface $form_state) {
+    $form_state->set('form_step', NULL);
+    $form_state->setRebuild();
+  }
+
   public function addComponentForm(array &$form, FormStateInterface $form_state) {
     return $form['add_components'];
+  }
+
+  public function addComponent(array &$form, FormStateInterface $form_state) {
+    $form_state->set('form_step', NULL);
+    if ($component = $this->getNewComponentValues($form_state)) {
+      $this->entity->addComponent($component);
+    }
+
+    $this->entity->save();
+    $form_state->setRebuild();
   }
 
   public function saveComponent(array &$form, FormStateInterface $form_state) {
@@ -268,5 +305,23 @@ class ApplenewsTemplateForm extends EntityForm {
 
   public function cancelComponentForm(array &$form, FormStateInterface $form_state) {
     return $form['add_components'];
+  }
+
+  protected function getNewComponentValues(FormStateInterface $form_state) {
+    $values = $form_state->getValues();
+    if (isset($values['new_component_type'])) {
+      return [
+        'id' => $values['new_component_type'],
+        'weight' => 0,
+        'field_name' => $values['component_field'],
+        'component_layout' => [
+          'column_start' => $values['column_start'],
+          'column_span' => $values['column_span'],
+        ],
+      ];
+    }
+
+
+    return [];
   }
 }

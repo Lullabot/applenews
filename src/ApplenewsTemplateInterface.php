@@ -23,4 +23,10 @@ interface ApplenewsTemplateInterface extends ConfigEntityInterface {
    *  An array of Component
    */
   public function getComponents();
+
+  /**
+   * @param array $component
+   *  An array representing a component config object. @see applenews.schema.yml
+   */
+  public function addComponent(array $component);
 }

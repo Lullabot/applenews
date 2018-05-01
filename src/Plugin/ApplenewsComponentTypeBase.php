@@ -23,22 +23,24 @@ abstract class ApplenewsComponentTypeBase extends PluginBase implements Applenew
 
     $element = [];
 
-    $element['component_form_title'] = [
-      '#markup' => '<h3>' . $this->t('Adding @component_name component', ['@component_name' => $this->label()]) . '</h3>',
-    ];
-
-    $element['component_layout'] = [
+    $element['component_settings'] = [
       '#type' => 'fieldset',
-      '#title' => $this->t('Component Layout'),
+      '#title' => $this->t('Adding @component_name component', ['@component_name' => $this->label()]),
     ];
 
-    $element['component_layout']['column_start'] = [
+    $element['component_settings']['component_layout'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Component Layout'),
+      '#open' => TRUE,
+    ];
+
+    $element['component_settings']['component_layout']['column_start'] = [
       '#type' => 'number',
       '#title' => $this->t('Column Start'),
       '#description' => $this->t("Indicates which column the component's start position is in, based on the number of columns in the document or parent container. By default, the component will start in the first column (note that the first column is 0, not 1)."),
     ];
 
-    $element['component_layout']['column_span'] = [
+    $element['component_settings']['component_layout']['column_span'] = [
       '#type' => 'number',
       '#title' => $this->t('Column Span'),
       '#description' => $this->t("Indicates how many columns the component spans, based on the number of columns in the document. By default, the component spans the entire width of the document or the width of its container component."),
@@ -54,9 +56,15 @@ abstract class ApplenewsComponentTypeBase extends PluginBase implements Applenew
       }
     }
 
-    $element['component_field'] = [
+    $element['component_settings']['component_field'] = [
       '#type' => 'select',
+      '#title' => $this->t('Source field'),
       '#options' => $field_options,
+    ];
+
+    $element['component_settings']['new_component_type'] = [
+      '#type' => 'hidden',
+      '#value' => $this->pluginId,
     ];
 
     // @todo add more component layout form elements

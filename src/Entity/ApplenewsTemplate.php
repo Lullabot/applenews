@@ -47,6 +47,11 @@ class ApplenewsTemplate extends ConfigEntityBase implements ApplenewsTemplateInt
   public $label;
 
   /**
+   * @var array
+   */
+  protected $components;
+
+  /**
    * {@inheritdoc}
    */
   public function getLayout() {
@@ -62,6 +67,15 @@ class ApplenewsTemplate extends ConfigEntityBase implements ApplenewsTemplateInt
    * {@inheritdoc}
    */
   public function getComponents() {
-    return [];
+    return $this->components;
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function addComponent(array $component) {
+    $this->components[] = $component;
+  }
+
+
 }
