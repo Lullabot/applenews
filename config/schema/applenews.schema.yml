@@ -34,9 +34,9 @@ applenews.applenews_template.*:
 applenews.applenews_component_type.*:
   type: config_object
   mapping:
-    id:
+    component_type:
       type: string
-      label: 'Component Type ID'
+      label: 'Component Type'
     weight:
       type: integer
       label: 'Weight'

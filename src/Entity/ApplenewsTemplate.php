@@ -77,5 +77,11 @@ class ApplenewsTemplate extends ConfigEntityBase implements ApplenewsTemplateInt
     $this->components[] = $component;
   }
 
-
+  /**
+   * {@inheritdoc}
+   */
+  public function deleteComponent($id) {
+    unset($this->components[$id]);
+    array_values($this->components);
+  }
 }

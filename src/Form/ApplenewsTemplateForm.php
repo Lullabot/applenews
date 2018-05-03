@@ -136,18 +136,85 @@ class ApplenewsTemplateForm extends EntityForm {
       '#default_value' => $layout['margin'] ? $layout['margin'] : 60,
     ];
 
-    $component_num = $form_state->get('component_num');
-    if (empty($component_num)) {
-      $form_state->set('component_num', 0);
-    }
+    $components = $template->getComponents();
 
-    $form['components'] = [
+    $form['components_list'] = [
       '#type' => 'fieldset',
       '#title' => $this->t('Components'),
+    ];
+
+    $form['components_list']['components_table'] = [
+      '#type' => 'table',
+      '#header' => [
+        $this->t('Type'),
+        $this->t('Field'),
+        $this->t('Operations'),
+        $this->t('Weight'),
+      ],
+      '#empty' => $this->t('This template has no components yet.'),
       '#prefix' => '<div id="components-fieldset-wrapper">',
       '#suffix' => '</div>',
-      '#tree' => TRUE,
     ];
+
+    $rows = [];
+    $delete_form = $form_state->get('delete_component');
+    foreach($components as $id => $component) {
+      $rows[$id]['type'] = [
+        '#markup' => $component['component_type'],
+      ];
+      $rows[$id]['field'] = [
+        '#markup' => $component['field_name'],
+      ];
+      $rows[$id]['operations'] = [
+        '#type' => 'actions',
+      ];
+
+      if ($delete_form === $id) {
+        $rows[$id]['operations']['yes'] = [
+          '#type' => 'submit',
+          '#value' => $this->t('Yes'),
+          '#submit' => ['::deleteComponent'],
+          '#button_type' => 'primary',
+          '#prefix' => '<span>' . $this->t('Are you sure?') . '</span>',
+          '#ajax' => [
+            'callback' => '::refreshComponentTable',
+            'wrapper' => 'components-fieldset-wrapper',
+          ],
+        ];
+
+        $rows[$id]['operations']['cancel'] = [
+          '#type' => 'submit',
+          '#value' => $this->t('Cancel'),
+          '#submit' => ['::resetTempFormValues'],
+          '#ajax' => [
+            'callback' => '::refreshComponentTable',
+            'wrapper' => 'components-fieldset-wrapper',
+          ],
+        ];
+
+        $rows[$id]['operations']['component_to_delete'] = [
+          '#type' => 'hidden',
+          '#value' => $id,
+        ];
+      }
+      else {
+        $rows[$id]['operations']['delete'] = [
+          '#type' => 'submit',
+          '#value' => $this->t('delete'),
+          '#name' => 'component_delete_' . $id,
+          '#submit' => ['::setDeleteComponentForm'],
+          '#ajax' => [
+            'callback' => '::refreshComponentTable',
+            'wrapper' => 'components-fieldset-wrapper',
+          ],
+        ];
+      }
+      $rows[$id]['weight'] = [
+        '#markup' => $component['weight'],
+      ];
+    }
+
+    $form['components_list']['components_table'] += $rows;
 
     $form['add_components'] = [
       '#type' => 'fieldset',
@@ -181,8 +248,6 @@ class ApplenewsTemplateForm extends EntityForm {
       $form['add_components'] += $component_plugin->settingsForm($form, $form_state);
       unset($form['add_components']['add_component_form']);
       unset($form['add_components']['component_type']);
-//      $form['add_components']['component_type']['#attributes'] = ['disabled' => TRUE];
-//      $form['add_components']['add_component_form']['#attributes'] = ['disabled' => TRUE];
     }
 
     if ($form_step == 'component_form' || isset($input['save_component'])) {
@@ -206,7 +271,7 @@ class ApplenewsTemplateForm extends EntityForm {
         '#type' => 'submit',
         '#value' => $this->t('Cancel'),
         '#button_type' => 'danger',
-        '#submit' => ['::resetFormStep'],
+        '#submit' => ['::resetTempFormValues'],
         '#ajax' => [
           'callback' => '::cancelComponentForm',
           'wrapper' => 'add-components-fieldset-wrapper',
@@ -280,13 +345,18 @@ class ApplenewsTemplateForm extends EntityForm {
     $form_state->setRebuild();
   }
 
-  public function resetFormStep(array &$form, FormStateInterface $form_state) {
+  public function resetTempFormValues(array &$form, FormStateInterface $form_state) {
     $form_state->set('form_step', NULL);
+    $form_state->set('delete_component', NULL);
     $form_state->setRebuild();
   }
 
   public function addComponentForm(array &$form, FormStateInterface $form_state) {
     return $form['add_components'];
+  }
+
+  public function refreshComponentTable(array &$form, FormStateInterface $form_state) {
+    return $form['components_list']['components_table'];
   }
 
   public function addComponent(array &$form, FormStateInterface $form_state) {
@@ -296,10 +366,28 @@ class ApplenewsTemplateForm extends EntityForm {
     }
 
     $this->entity->save();
+    drupal_set_message('Component added successfully.');
+    $form_state->setRebuild();
+  }
+
+  public function setDeleteComponentForm(array &$form, FormStateInterface $form_state) {
+    $delete_button = $form_state->getTriggeringElement();
+    preg_match('#_(\d+)$#', $delete_button['#name'], $matches);
+    $form_state->set('delete_component', (int) $matches[1]);
+    $form_state->setRebuild();
+  }
+
+  public function deleteComponent(array &$form, FormStateInterface $form_state) {
+    $form_state->set('delete_component', NULL);
+    $id = $this->getTriggeringRowIndex($form_state->getTriggeringElement());
+    $this->entity->deleteComponent($id);
+    $this->entity->save();
+    drupal_set_message('Component deleted.');
     $form_state->setRebuild();
   }
 
   public function saveComponent(array &$form, FormStateInterface $form_state) {
+    // @todo return commands and replace both form and component table.
     return $form;
   }
 
@@ -311,7 +399,7 @@ class ApplenewsTemplateForm extends EntityForm {
     $values = $form_state->getValues();
     if (isset($values['new_component_type'])) {
       return [
-        'id' => $values['new_component_type'],
+        'component_type' => $values['new_component_type'],
         'weight' => 0,
         'field_name' => $values['component_field'],
         'component_layout' => [
@@ -323,5 +411,9 @@ class ApplenewsTemplateForm extends EntityForm {
 
 
     return [];
+  }
+
+  protected function getTriggeringRowIndex(array $triggering_element) {
+    return $triggering_element['#parents'][1];
   }
 }
