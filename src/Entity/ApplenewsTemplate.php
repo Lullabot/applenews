@@ -84,4 +84,22 @@ class ApplenewsTemplate extends ConfigEntityBase implements ApplenewsTemplateInt
     unset($this->components[$id]);
     array_values($this->components);
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setComponents(array $components) {
+    usort($components, [$this, 'sortHelper']);
+    $this->components = $components;
+  }
+
+  /**
+   * Callable function to be used in a usort call for the template's components.
+   *
+   * @param $a
+   * @param $b
+   */
+  public function sortHelper($a, $b) {
+    return $a['weight'] - $b['weight'];
+  }
 }

@@ -154,11 +154,19 @@ class ApplenewsTemplateForm extends EntityForm {
       '#empty' => $this->t('This template has no components yet.'),
       '#prefix' => '<div id="components-fieldset-wrapper">',
       '#suffix' => '</div>',
+      '#tabledrag' => [
+        [
+          'action' => 'order',
+          'relationship' => 'sibling',
+          'group' => 'component-weight',
+        ]
+      ],
     ];
 
     $rows = [];
     $delete_form = $form_state->get('delete_component');
     foreach($components as $id => $component) {
+      $rows[$id]['#attributes']['class'][] = 'draggable';
       $rows[$id]['type'] = [
         '#markup' => $component['component_type'],
       ];
@@ -170,32 +178,7 @@ class ApplenewsTemplateForm extends EntityForm {
       ];
 
       if ($delete_form === $id) {
-        $rows[$id]['operations']['yes'] = [
-          '#type' => 'submit',
-          '#value' => $this->t('Yes'),
-          '#submit' => ['::deleteComponent'],
-          '#button_type' => 'primary',
-          '#prefix' => '<span>' . $this->t('Are you sure?') . '</span>',
-          '#ajax' => [
-            'callback' => '::refreshComponentTable',
-            'wrapper' => 'components-fieldset-wrapper',
-          ],
-        ];
-
-        $rows[$id]['operations']['cancel'] = [
-          '#type' => 'submit',
-          '#value' => $this->t('Cancel'),
-          '#submit' => ['::resetTempFormValues'],
-          '#ajax' => [
-            'callback' => '::refreshComponentTable',
-            'wrapper' => 'components-fieldset-wrapper',
-          ],
-        ];
-
-        $rows[$id]['operations']['component_to_delete'] = [
-          '#type' => 'hidden',
-          '#value' => $id,
-        ];
+        $rows[$id]['operations'] = $this->getComponentRowDeleteConfirmation();
       }
       else {
         $rows[$id]['operations']['delete'] = [
@@ -210,7 +193,11 @@ class ApplenewsTemplateForm extends EntityForm {
         ];
       }
       $rows[$id]['weight'] = [
-        '#markup' => $component['weight'],
+        '#type' => 'weight',
+        '#title' => $this->t('Weight'),
+        '#title_display' => 'invisible',
+        '#default_value' => $component['weight'],
+        '#attributes' => array('class' => array('component-weight')),
       ];
     }
 
@@ -287,6 +274,7 @@ class ApplenewsTemplateForm extends EntityForm {
    * {@inheritdoc}
    */
   public function save(array $form, FormStateInterface $form_state) {
+    $this->saveComponentOrder($form_state);
     $template = $this->entity;
     $status = $template->save();
 
@@ -371,9 +359,8 @@ class ApplenewsTemplateForm extends EntityForm {
   }
 
   public function setDeleteComponentForm(array &$form, FormStateInterface $form_state) {
-    $delete_button = $form_state->getTriggeringElement();
-    preg_match('#_(\d+)$#', $delete_button['#name'], $matches);
-    $form_state->set('delete_component', (int) $matches[1]);
+    $id = $this->getTriggeringRowIndex($form_state->getTriggeringElement());
+    $form_state->set('delete_component', $id);
     $form_state->setRebuild();
   }
 
@@ -381,13 +368,13 @@ class ApplenewsTemplateForm extends EntityForm {
     $form_state->set('delete_component', NULL);
     $id = $this->getTriggeringRowIndex($form_state->getTriggeringElement());
     $this->entity->deleteComponent($id);
-    $this->entity->save();
+    $this->saveComponentOrder($form_state);
     drupal_set_message('Component deleted.');
     $form_state->setRebuild();
   }
 
   public function saveComponent(array &$form, FormStateInterface $form_state) {
-    // @todo return commands and replace both form and component table.
+    // @todo return commands and replace both form and component table so we don't have to replace the whole form.
     return $form;
   }
 
@@ -409,11 +396,55 @@ class ApplenewsTemplateForm extends EntityForm {
       ];
     }
 
-
     return [];
   }
 
   protected function getTriggeringRowIndex(array $triggering_element) {
     return $triggering_element['#parents'][1];
+  }
+
+  /**
+   * Get form elements to display to confirm a component will be deleted. Used
+   * in the components list table.
+   *
+   * @return array
+   *  The form array containing a Yes and Cancel button.
+   */
+  protected function getComponentRowDeleteConfirmation() {
+    $operations = [];
+
+    $operations['yes'] = [
+      '#type' => 'submit',
+      '#value' => $this->t('Yes'),
+      '#submit' => ['::deleteComponent'],
+      '#button_type' => 'primary',
+      '#prefix' => '<span>' . $this->t('Are you sure?') . '</span>',
+      '#ajax' => [
+        'callback' => '::refreshComponentTable',
+        'wrapper' => 'components-fieldset-wrapper',
+      ],
+    ];
+
+    $operations['cancel'] = [
+      '#type' => 'submit',
+      '#value' => $this->t('Cancel'),
+      '#submit' => ['::resetTempFormValues'],
+      '#ajax' => [
+        'callback' => '::refreshComponentTable',
+        'wrapper' => 'components-fieldset-wrapper',
+      ],
+    ];
+
+    return $operations;
+  }
+
+  protected function saveComponentOrder(FormStateInterface $form_state) {
+    $component_weights = $form_state->getValue('components_table');
+    $components = $this->entity->getComponents();
+    foreach ($components as $id => $component) {
+      $components[$id]['weight'] = $component_weights[$id]['weight'];
+    }
+    $this->entity->setComponents($components);
+    $this->entity->save();
   }
 }

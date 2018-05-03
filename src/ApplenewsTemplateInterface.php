@@ -29,4 +29,20 @@ interface ApplenewsTemplateInterface extends ConfigEntityInterface {
    *  An array representing a component config object. @see applenews.schema.yml
    */
   public function addComponent(array $component);
+
+  /**
+   * Delete a component from the template.
+   *
+   * @param int $id
+   *  The id corresponding to the correct component in the components array.
+   */
+  public function deleteComponent($id);
+
+  /**
+   * Set the templates components.
+   *
+   * @param array $components
+   *  An array of component arrays, each matching the schema. @see applenews.schema.yml
+   */
+  public function setComponents(array $components);
 }
