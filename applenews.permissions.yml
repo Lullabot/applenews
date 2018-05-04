@@ -1,3 +1,6 @@
 'administer applenews templates':
   title: 'Administer Apple News templates'
   description: 'Create, edit, and delete Apple News templates.'
+'export applenews content':
+  title: 'Export content to Apple News'
+  description: 'Manually export content to Apple News.'

@@ -74,7 +74,7 @@ class ApplenewsTemplate extends ConfigEntityBase implements ApplenewsTemplateInt
    * {@inheritdoc}
    */
   public function addComponent(array $component) {
-    $this->components[] = $component;
+    $this->components[$component['uuid']] = $component;
   }
 
   /**
@@ -82,19 +82,19 @@ class ApplenewsTemplate extends ConfigEntityBase implements ApplenewsTemplateInt
    */
   public function deleteComponent($id) {
     unset($this->components[$id]);
-    array_values($this->components);
+    uasort($components, [$this, 'sortHelper']);
   }
 
   /**
    * {@inheritdoc}
    */
   public function setComponents(array $components) {
-    usort($components, [$this, 'sortHelper']);
+    uasort($components, [$this, 'sortHelper']);
     $this->components = $components;
   }
 
   /**
-   * Callable function to be used in a usort call for the template's components.
+   * Callable function to be used in a uasort call for the template's components.
    *
    * @param $a
    * @param $b

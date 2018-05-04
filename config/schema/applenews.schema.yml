@@ -29,28 +29,48 @@ applenews.applenews_template.*:
     components:
       type: sequence
       sequence:
-        type: applenews.applenews_component_type.[%key]
+        type: applenews.applenews_component.[%key]
 
-applenews.applenews_component_type.*:
+applenews.applenews_component.*:
   type: config_object
   mapping:
+    uuid:
+      type: string
+    id:
+      type: string
+      label: 'Plugin ID'
     component_type:
       type: string
-      label: 'Component Type'
     weight:
       type: integer
       label: 'Weight'
-    field_name:
-      type: string
-      label: 'Field'
     component_layout:
-      type: mapping
-      mapping:
-        column_start:
-          type: integer
-        column_span:
-          type: integer
-    components:
-      type: sequence
-      sequence:
-        type: applenews.applenews_component_type.[%key]
+      type: applenews.component_layout
+    component_data:
+      type: applenews.component_type.[%parent.component_type]
+
+applenews.component_type.text:
+  type: mapping
+  mapping:
+    text_field:
+      type: string
+      label: 'Source field for text'
+
+applenews.component_type.image:
+  type: mapping
+  mapping:
+    url_field:
+      type: string
+      label: 'Source field'
+    caption_field:
+      type: string
+      label: 'Source field for caption'
+
+applenews.component_layout:
+  type: mapping
+  mapping:
+    column_start:
+      type: integer
+    column_span:
+      type: integer
+

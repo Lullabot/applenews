@@ -18,14 +18,12 @@ abstract class ApplenewsComponentTypeBase extends PluginBase implements Applenew
    * {@inheritdoc}
    */
   public function settingsForm(array $form, FormStateInterface $form_state) {
-
-    $input = $form_state->getUserInput();
-
     $element = [];
 
     $element['component_settings'] = [
       '#type' => 'fieldset',
       '#title' => $this->t('Adding @component_name component', ['@component_name' => $this->label()]),
+      '#tree' => TRUE,
     ];
 
     $element['component_settings']['component_layout'] = [
@@ -46,30 +44,17 @@ abstract class ApplenewsComponentTypeBase extends PluginBase implements Applenew
       '#description' => $this->t("Indicates how many columns the component spans, based on the number of columns in the document. By default, the component spans the entire width of the document or the width of its container component."),
     ];
 
-    $node_type = $input['node_type'];
-    $fields = $this->fieldManager->getFieldDefinitions('node', $node_type);
-    $field_options = [];
-    foreach ($fields as $field_name => $field) {
-      $field_options[$field_name] = $field->getLabel();
-      if (!$field->getFieldStorageDefinition()->isBaseField()) {
-        $field_options[$field_name] .= ' (' . $field->getType() . ')';
-      }
-    }
-
-    $element['component_settings']['component_field'] = [
-      '#type' => 'select',
-      '#title' => $this->t('Source field'),
-      '#options' => $field_options,
-    ];
-
-    $element['component_settings']['new_component_type'] = [
+    $element['component_settings']['id'] = [
       '#type' => 'hidden',
       '#value' => $this->pluginId,
     ];
 
-    // @todo add more component layout form elements
+    $element['component_settings']['component_data'] = [
+      '#type' => 'fieldset',
+      '#title' => $this->t('Component Data'),
+    ];
 
-    // @todo form elements based on underlying component class (text vs photo)
+    // @todo add more component layout form elements
 
     return $element;
   }
@@ -109,4 +94,16 @@ abstract class ApplenewsComponentTypeBase extends PluginBase implements Applenew
     );
   }
 
+  protected function getFieldOptions($node_type) {
+    $fields = $this->fieldManager->getFieldDefinitions('node', $node_type);
+    $field_options = [];
+    foreach ($fields as $field_name => $field) {
+      $field_options[$field_name] = $field->getLabel();
+      if (!$field->getFieldStorageDefinition()->isBaseField()) {
+        $field_options[$field_name] .= ' (' . $field->getType() . ')';
+      }
+    }
+
+    return $field_options;
+  }
 }

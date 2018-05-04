@@ -5,6 +5,7 @@ namespace Drupal\applenews\Form;
 use Drupal\applenews\ApplenewsTemplateInterface;
 use Drupal\applenews\Plugin\ApplenewsComponentTypeInterface;
 use Drupal\applenews\Plugin\ApplenewsComponentTypeManager;
+use Drupal\Component\Uuid\Uuid;
 use Drupal\Core\Entity\Entity\EntityViewMode;
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Entity\EntityInterface;
@@ -147,7 +148,7 @@ class ApplenewsTemplateForm extends EntityForm {
       '#type' => 'table',
       '#header' => [
         $this->t('Type'),
-        $this->t('Field'),
+        $this->t('Data Mapping'),
         $this->t('Operations'),
         $this->t('Weight'),
       ],
@@ -168,10 +169,10 @@ class ApplenewsTemplateForm extends EntityForm {
     foreach($components as $id => $component) {
       $rows[$id]['#attributes']['class'][] = 'draggable';
       $rows[$id]['type'] = [
-        '#markup' => $component['component_type'],
+        '#markup' => $component['id'],
       ];
       $rows[$id]['field'] = [
-        '#markup' => $component['field_name'],
+        '#markup' => $this->displayComponentData($component),
       ];
       $rows[$id]['operations'] = [
         '#type' => 'actions',
@@ -359,6 +360,7 @@ class ApplenewsTemplateForm extends EntityForm {
   }
 
   public function setDeleteComponentForm(array &$form, FormStateInterface $form_state) {
+    $this->saveComponentOrder($form_state);
     $id = $this->getTriggeringRowIndex($form_state->getTriggeringElement());
     $form_state->set('delete_component', $id);
     $form_state->setRebuild();
@@ -384,15 +386,13 @@ class ApplenewsTemplateForm extends EntityForm {
 
   protected function getNewComponentValues(FormStateInterface $form_state) {
     $values = $form_state->getValues();
-    if (isset($values['new_component_type'])) {
+    if (isset($values['component_settings']['id'])) {
       return [
-        'component_type' => $values['new_component_type'],
+        'uuid' => \Drupal::service('uuid')->generate(),
+        'id' => $values['component_settings']['id'],
         'weight' => 0,
-        'field_name' => $values['component_field'],
-        'component_layout' => [
-          'column_start' => $values['column_start'],
-          'column_span' => $values['column_span'],
-        ],
+        'component_layout' => $values['component_settings']['component_layout'],
+        'component_data' => $values['component_settings']['component_data'],
       ];
     }
 
@@ -441,10 +441,20 @@ class ApplenewsTemplateForm extends EntityForm {
   protected function saveComponentOrder(FormStateInterface $form_state) {
     $component_weights = $form_state->getValue('components_table');
     $components = $this->entity->getComponents();
-    foreach ($components as $id => $component) {
-      $components[$id]['weight'] = $component_weights[$id]['weight'];
+    if ($components) {
+      foreach ($components as $id => $component) {
+        $components[$id]['weight'] = $component_weights[$id]['weight'];
+      }
+      $this->entity->setComponents($components);
+      $this->entity->save();
     }
-    $this->entity->setComponents($components);
-    $this->entity->save();
+  }
+
+  protected function displayComponentData($component) {
+    $return = '';
+    foreach ($component['component_data'] as $key => $data) {
+      $return .= $key . ': ' . $data . '<br />';
+    }
+    return $return;
   }
 }

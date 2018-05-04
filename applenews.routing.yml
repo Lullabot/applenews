@@ -29,3 +29,11 @@ entity.applenews_template.delete_form:
     _title: 'Delete Apple News template'
   requirements:
     _permission: 'administer applenews templates'
+
+applenews.export:
+  path: '/node/{node}/applenews-export'
+  defaults:
+    _controller: '\Drupal\applenews\Controller\ApplenewsExportController::export'
+    _title: 'Export to Apple News'
+  requirements:
+    _permission: 'export applenews content'

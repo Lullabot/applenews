@@ -25,6 +25,13 @@ class ApplenewsComponentType extends Plugin {
   public $component_class;
 
   /**
+   * The type of component based on the content it will hold, such at text or url.
+   *
+   * @var string
+   */
+  public $component_type;
+
+  /**
    * The data source plugin ID.
    *
    * @var string
