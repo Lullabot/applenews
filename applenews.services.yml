@@ -2,3 +2,12 @@ services:
   plugin.manager.applenews_component_type:
     class: Drupal\applenews\Plugin\ApplenewsComponentTypeManager
     parent: default_plugin_manager
+
+  serializer.applenews.content_entity:
+    class: Drupal\applenews\Normalizer\ApplenewsContentEntityNormalizer
+    tags:
+      - { name: normalizer, priority: 10 }
+
+  applenews.template_selection:
+    class: Drupal\applenews\ApplenewsTemplateSelection
+    arguments: ['@entity_type.manager']
