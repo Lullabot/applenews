@@ -3,6 +3,7 @@
 namespace Drupal\applenews\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Link;
 use Drupal\Core\Url;
 use Drupal\node\NodeInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -14,13 +15,11 @@ class ApplenewsPreviewController extends ControllerBase {
     $uri = 'public://applenews_preview/';
     $filename = 'applenews-node-' . $node->id() . '-' . $template_id . '.json';
 
-    $response = new BinaryFileResponse($uri . $filename);
-    $response->setContentDisposition(
-      ResponseHeaderBag::DISPOSITION_INLINE,
-      $filename
-    );
+    $link = Link::fromTextAndUrl($this->t('Download files'), Url::fromUserInput(file_url_transform_relative(file_create_url($uri . $filename))));
 
-    return $response;
+    return [
+      '#markup' => $link->toString(),
+    ];
   }
 
 }
