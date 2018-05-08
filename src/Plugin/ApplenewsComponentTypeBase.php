@@ -80,6 +80,10 @@ abstract class ApplenewsComponentTypeBase extends PluginBase implements Applenew
     return $this->pluginDefinition['component_class'];
   }
 
+  public function getComponentType() {
+    return $this->pluginDefinition['component_type'];
+  }
+
   public function __construct(array $configuration, $plugin_id, $plugin_definition, EntityFieldManagerInterface $field_manager) {
     $this->fieldManager = $field_manager;
     parent::__construct($configuration, $plugin_id, $plugin_definition);

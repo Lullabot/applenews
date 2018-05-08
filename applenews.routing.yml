@@ -41,3 +41,11 @@ applenews.preview:
     parameters:
       node:
         type: 'entity:node'
+
+applenews.preview_download:
+  path: '/node/{node}/applenews-preview/{template_id}'
+  defaults:
+    _controller: '\Drupal\applenews\Controller\ApplenewsPreviewController::preview'
+    _title: 'Download Apple News Preview'
+  requirements:
+    _permission: 'preview applenews content'

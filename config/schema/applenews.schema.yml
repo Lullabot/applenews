@@ -39,8 +39,6 @@ applenews.applenews_component.*:
     id:
       type: string
       label: 'Plugin ID'
-    component_type:
-      type: string
     weight:
       type: integer
       label: 'Weight'

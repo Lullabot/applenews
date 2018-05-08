@@ -85,6 +85,7 @@ class ApplenewsTemplateForm extends EntityForm {
       '#title' => $this->t('Node Type'),
       '#description' => $this->t('The node type to which this template should apply.'),
       '#options' => $node_type_options,
+      '#default_value' => $template->node_type,
     ];
 
 

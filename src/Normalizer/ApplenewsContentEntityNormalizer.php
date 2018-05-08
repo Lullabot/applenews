@@ -4,6 +4,7 @@ namespace Drupal\applenews\Normalizer;
 
 use ChapterThree\AppleNewsAPI\Document;
 use Drupal\Core\Entity\ContentEntityInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 
 /**
  * Applenews content entity normalizer. Takes a content entity, normalizes it
@@ -12,11 +13,25 @@ use Drupal\Core\Entity\ContentEntityInterface;
 class ApplenewsContentEntityNormalizer extends ApplenewsNormalizerBase {
 
   /**
+   * @var EntityTypeManagerInterface
+   */
+  protected $entityTypeManager;
+
+  /**
+   * Constructs an ApplenewsTemplateSelection object.
+   *
+   * @param EntityTypeManagerInterface $entity_type_manager
+   */
+  public function __construct(EntityTypeManagerInterface $entity_type_manager) {
+    $this->entityTypeManager = $entity_type_manager;
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function supportsNormalization($data, $format = NULL) {
     // Only consider this normalizer if we are trying to normalize a content
-    // entity into the 'fbia' format.
+    // entity into the 'applenews' format.
     return $format === $this->format && $data instanceof ContentEntityInterface;
   }
 
@@ -26,15 +41,16 @@ class ApplenewsContentEntityNormalizer extends ApplenewsNormalizerBase {
   public function normalize($data, $format = NULL, array $context = []) {
     // @todo check cache
     // @todo grab template connected to this entity type and get layout.
-    $template = '';
-    $layout = new Document\Layouts\Layout(10, 1024);
-    $document = new Document($data->uuid(), $data->getTitle(), $data->language(), $layout);
+    $template = $this->entityTypeManager->getStorage('applenews_template')->load($context['template_id']);
+    $layout = new Document\Layouts\Layout($template->columns, $template->width);
+    $document = new Document($data->uuid(), $data->getTitle(), $data->language()->getId(), $layout);
 
     // @todo grab template and get list of components. Loop through and serialize them, adding results to document here.
     $context['entity'] = $data;
-    foreach ($template->components as $component) {
+    $context['view_mode'] = $template->view_mode;
+    foreach ($template->getComponents() as $component) {
       $document->addComponent($this->serializer->normalize($component, $format, $context));
     }
-    return $document;
+    return $document->jsonSerialize();
   }
 }

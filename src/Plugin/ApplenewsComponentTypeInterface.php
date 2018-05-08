@@ -34,6 +34,15 @@ interface ApplenewsComponentTypeInterface extends PluginInspectionInterface, Der
   public function getComponentClass();
 
   /**
+   * Returns the component type, which is based on the type of content the
+   * component is configured to store and display.
+   *
+   * @return string
+   *  A string representing the component type. (text, url, etc.)
+   */
+  public function getComponentType();
+
+  /**
    * Returns the settings form for the Component type.
    *
    * @param array $form

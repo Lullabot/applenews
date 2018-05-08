@@ -3,3 +3,5 @@ description: Push content to Apple News.
 type: module
 core: 8.x
 package: Apple News
+dependencies:
+  - serialization

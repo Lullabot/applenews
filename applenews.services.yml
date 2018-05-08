@@ -5,6 +5,13 @@ services:
 
   serializer.applenews.content_entity:
     class: Drupal\applenews\Normalizer\ApplenewsContentEntityNormalizer
+    arguments: ['@entity_type.manager']
+    tags:
+      - { name: normalizer, priority: 10 }
+
+  serializer.applenews.text.component:
+    class: Drupal\applenews\Normalizer\ApplenewsTextComponentNormalizer
+    arguments: ['@plugin.manager.applenews_component_type', '@renderer']
     tags:
       - { name: normalizer, priority: 10 }
 
