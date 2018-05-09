@@ -4,6 +4,6 @@
   "type": "drupal-module",
   "minimum-stability": "dev",
   "require": {
-    "chapter-three/apple-news-api": "^0.3"
+    "chapter-three/apple-news-api": "dev-master"
   }
 }
