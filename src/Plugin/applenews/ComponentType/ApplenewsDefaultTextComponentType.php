@@ -23,13 +23,17 @@ class ApplenewsDefaultTextComponentType extends ApplenewsComponentTypeBase {
   public function settingsForm(array $form, FormStateInterface $form_state) {
     $element = parent::settingsForm($form, $form_state);
 
-    $input = $form_state->getUserInput();
-    $node_type = $input['node_type'];
+    $element['component_settings']['component_data']['text'] = $this->getFieldSelectionElement($form_state, 'text', 'Source field for main text');
 
-    $element['component_settings']['component_data']['text_field'] = [
+    $element['component_settings']['component_data']['format'] = [
       '#type' => 'select',
-      '#title' => $this->t('Source field for main text'),
-      '#options' => $this->getFieldOptions($node_type),
+      '#title' => $this->t('Format'),
+      '#options' => [
+        'none' => $this->t('None'),
+        'html' => $this->t('HTML'),
+        'markdown' => $this->t('Markdown'),
+      ],
+      '#description' => $this->t('The formatting or markup method applied to the main text.'),
     ];
 
     return $element;

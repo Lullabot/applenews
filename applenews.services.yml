@@ -15,6 +15,12 @@ services:
     tags:
       - { name: normalizer, priority: 10 }
 
+  serializer.applenews.image.component:
+    class: Drupal\applenews\Normalizer\ApplenewsImageComponentNormalizer
+    arguments: ['@plugin.manager.applenews_component_type', '@renderer']
+    tags:
+      - { name: normalizer, priority: 10 }
+
   applenews.template_selection:
     class: Drupal\applenews\ApplenewsTemplateSelection
     arguments: ['@entity_type.manager']

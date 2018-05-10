@@ -23,20 +23,9 @@ class ApplenewsDefaultImageComponentType extends ApplenewsComponentTypeBase {
   public function settingsForm(array $form, FormStateInterface $form_state) {
     $element = parent::settingsForm($form, $form_state);
 
-    $input = $form_state->getUserInput();
-    $node_type = $input['node_type'];
+    $element['component_settings']['component_data']['URL'] = $this->getFieldSelectionElement($form_state, 'URL', 'Source field for URL');
 
-    $element['component_settings']['component_data']['url_field'] = [
-      '#type' => 'select',
-      '#title' => $this->t('Source field for Url'),
-      '#options' => $this->getFieldOptions($node_type),
-    ];
-
-    $element['component_settings']['component_data']['caption_field'] = [
-      '#type' => 'select',
-      '#title' => $this->t('Source for caption text'),
-      '#options' => $this->getFieldOptions($node_type),
-    ];
+    $element['component_settings']['component_data']['caption'] = $this->getFieldSelectionElement($form_state, 'caption', 'Source field for caption');
 
     return $element;
   }

@@ -50,19 +50,19 @@ applenews.applenews_component.*:
 applenews.component_type.text:
   type: mapping
   mapping:
-    text_field:
+    text:
+      type: applenews.field_mapping
+    format:
       type: string
-      label: 'Source field for text'
+      label: 'Format for included text (none, html, or markdown)'
 
 applenews.component_type.image:
   type: mapping
   mapping:
-    url_field:
-      type: string
-      label: 'Source field'
-    caption_field:
-      type: string
-      label: 'Source field for caption'
+    URL:
+      type: applenews.field_mapping
+    caption:
+      type: applenews.field_mapping
 
 applenews.component_layout:
   type: mapping
@@ -71,4 +71,15 @@ applenews.component_layout:
       type: integer
     column_span:
       type: integer
+    margin_top:
+      type: integer
+    margin_bottom:
+      type: integer
 
+applenews.field_mapping:
+  type: mapping
+  mapping:
+    field_name:
+      type: string
+    field_property:
+      type: string

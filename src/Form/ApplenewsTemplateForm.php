@@ -5,6 +5,7 @@ namespace Drupal\applenews\Form;
 use Drupal\applenews\ApplenewsTemplateInterface;
 use Drupal\applenews\Plugin\ApplenewsComponentTypeInterface;
 use Drupal\applenews\Plugin\ApplenewsComponentTypeManager;
+use Drupal\Component\Serialization\Json;
 use Drupal\Component\Uuid\Uuid;
 use Drupal\Core\Entity\Entity\EntityViewMode;
 use Drupal\Core\Entity\EntityForm;
@@ -230,16 +231,15 @@ class ApplenewsTemplateForm extends EntityForm {
     ];
 
     $input = $form_state->getUserInput();
-    $form_step = $form_state->get('form_step');
-    if ($form_step == 'component_form') {
-      $component_type = $input['component_type'];
+    $component_type = $form_state->get('sub_form_component_type');
+    if ($component_type) {
       $component_plugin = $this->applenewsComponentTypeManager->createInstance($component_type);
       $form['add_components'] += $component_plugin->settingsForm($form, $form_state);
       unset($form['add_components']['add_component_form']);
       unset($form['add_components']['component_type']);
     }
 
-    if ($form_step == 'component_form' || isset($input['save_component'])) {
+    if ($component_type || isset($input['save_component'])) {
 
       $form['add_components']['component_actions'] = [
         '#type' => 'actions',
@@ -326,17 +326,14 @@ class ApplenewsTemplateForm extends EntityForm {
     return $view_mode_options;
   }
 
-  public function rebuildForm(array &$form, FormStateInterface $form_state) {
-    $form_state->setRebuild();
-  }
-
   public function setComponentFormStep(array &$form, FormStateInterface $form_state) {
-    $form_state->set('form_step', 'component_form');
+    $input = $form_state->getUserInput();
+    $form_state->set('sub_form_component_type', $input['component_type']);
     $form_state->setRebuild();
   }
 
   public function resetTempFormValues(array &$form, FormStateInterface $form_state) {
-    $form_state->set('form_step', NULL);
+    $form_state->set('sub_form_component_type', NULL);
     $form_state->set('delete_component', NULL);
     $form_state->setRebuild();
   }
@@ -350,7 +347,7 @@ class ApplenewsTemplateForm extends EntityForm {
   }
 
   public function addComponent(array &$form, FormStateInterface $form_state) {
-    $form_state->set('form_step', NULL);
+    $form_state->set('sub_form_component_type', NULL);
     if ($component = $this->getNewComponentValues($form_state)) {
       $this->entity->addComponent($component);
     }
@@ -371,7 +368,12 @@ class ApplenewsTemplateForm extends EntityForm {
     $form_state->set('delete_component', NULL);
     $id = $this->getTriggeringRowIndex($form_state->getTriggeringElement());
     $this->entity->deleteComponent($id);
-    $this->saveComponentOrder($form_state);
+    if (count($this->entity->getComponents()) == 0) {
+      $this->entity->save();
+    }
+    else {
+      $this->saveComponentOrder($form_state);
+    }
     drupal_set_message('Component deleted.');
     $form_state->setRebuild();
   }
@@ -388,10 +390,12 @@ class ApplenewsTemplateForm extends EntityForm {
   protected function getNewComponentValues(FormStateInterface $form_state) {
     $values = $form_state->getValues();
     if (isset($values['component_settings']['id'])) {
+      $components = $this->entity->getComponents();
+      $last_component = end($components);
       return [
         'uuid' => \Drupal::service('uuid')->generate(),
         'id' => $values['component_settings']['id'],
-        'weight' => 0,
+        'weight' => $last_component['weight'] + 1,
         'component_layout' => $values['component_settings']['component_layout'],
         'component_data' => $values['component_settings']['component_data'],
       ];
@@ -454,6 +458,9 @@ class ApplenewsTemplateForm extends EntityForm {
   protected function displayComponentData($component) {
     $return = '';
     foreach ($component['component_data'] as $key => $data) {
+      if (is_array($data)) {
+        $data = Json::encode($data);
+      }
       $return .= $key . ': ' . $data . '<br />';
     }
     return $return;

@@ -2,6 +2,8 @@
 
 namespace Drupal\applenews\Normalizer;
 
+use ChapterThree\AppleNewsAPI\Document\Layouts\ComponentLayout;
+use ChapterThree\AppleNewsAPI\Document\Margin;
 use Drupal\applenews\Plugin\ApplenewsComponentTypeManager;
 use Drupal\Core\Render\RendererInterface;
 
@@ -52,5 +54,13 @@ abstract class ApplenewsComponentNormalizerBase extends ApplenewsNormalizerBase 
   protected function getComponentClass($plugin_id) {
     $component = $this->applenewsComponentTypeManager->createInstance($plugin_id);
     return $component->getComponentClass();
+  }
+
+  protected function getComponentLayout($component_layout) {
+    $layout = new ComponentLayout();
+    $layout->setColumnSpan($component_layout['column_span']);
+    $layout->setColumnStart($component_layout['column_start']);
+    $layout->setMargin(new Margin($component_layout['margin_top'], $component_layout['margin_bottom']));
+    return $layout;
   }
 }
