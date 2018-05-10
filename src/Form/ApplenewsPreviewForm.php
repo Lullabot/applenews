@@ -61,7 +61,7 @@ class ApplenewsPreviewForm extends FormBase {
 
     $form['actions']['download'] = [
       '#type' => 'submit',
-      '#value' => $this->t('Download'),
+      '#value' => $this->t('Generate'),
       '#button_type' => 'primary',
     ];
 
