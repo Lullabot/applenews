@@ -41,6 +41,7 @@ abstract class ApplenewsComponentTypeBase extends PluginBase implements Applenew
       '#type' => 'number',
       '#title' => $this->t('Column Start'),
       '#description' => $this->t("Indicates which column the component's start position is in, based on the number of columns in the document or parent container. By default, the component will start in the first column (note that the first column is 0, not 1)."),
+      '#default_value' => 0,
     ];
 
     $element['component_settings']['component_layout']['column_span'] = [

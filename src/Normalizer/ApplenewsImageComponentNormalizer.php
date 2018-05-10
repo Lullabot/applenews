@@ -14,12 +14,15 @@ class ApplenewsImageComponentNormalizer extends ApplenewsComponentNormalizerBase
     $entity = $context['entity'];
     $view_mode = $context['view_mode'];
 
-    $field_name = $data['component_data']['URL'];
-    $url = $entity->get($field_name);
-    $component = new $component_class($this->renderer->renderRoot($url));
+    $field_name = $data['component_data']['URL']['field_name'];
+    $context['field_property'] = $data['component_data']['URL']['field_property'];
+    $text = $this->serializer->normalize($entity->get($field_name), $format, $context);
+    $component = new $component_class($text);
 
-    $caption = $entity->get($data['component_data']['caption'])->view($view_mode);
-    $component->setCaption($this->renderer->renderRoot($caption));
+    $field_name = $data['component_data']['caption']['field_name'];
+    $context['field_property'] = $data['component_data']['caption']['field_property'];
+    $text = $this->serializer->normalize($entity->get($field_name), $format, $context);
+    $component->setCaption($text);
     $component->setLayout($this->getComponentLayout($data['component_layout']));
 
     return $component;

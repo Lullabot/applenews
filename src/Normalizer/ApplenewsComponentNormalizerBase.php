@@ -23,17 +23,13 @@ abstract class ApplenewsComponentNormalizerBase extends ApplenewsNormalizerBase 
    */
   protected $applenewsComponentTypeManager;
 
-  protected $renderer;
-
   /**
    * Constructs a normalizer object.
    *
    * @param ApplenewsComponentTypeManager $component_type_manager
-   * @param RendererInterface $renderer
    */
-  public function __construct(ApplenewsComponentTypeManager $component_type_manager, RendererInterface $renderer) {
+  public function __construct(ApplenewsComponentTypeManager $component_type_manager) {
     $this->applenewsComponentTypeManager = $component_type_manager;
-    $this->renderer = $renderer;
   }
 
   /**
@@ -44,7 +40,6 @@ abstract class ApplenewsComponentNormalizerBase extends ApplenewsNormalizerBase 
     // entity into the 'applenews' format and the component is of type "text"
     if ($format === $this->format && is_array($data) && isset($data['id'])) {
       $component = $this->applenewsComponentTypeManager->createInstance($data['id']);
-      $type = $component->getComponentType();
       return $component->getComponentType() == $this->componentType;
     }
 
