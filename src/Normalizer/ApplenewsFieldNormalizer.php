@@ -17,14 +17,9 @@ class ApplenewsFieldNormalizer extends ApplenewsNormalizerBase {
    */
   public function normalize($field, $format = NULL, array $context = []) {
     $value = '';
-    $property = $context['field_property'];
-    if ($property == 'base') {
-      $value .= $field->value;
-    }
-    else {
-      foreach ($field as $field_item) {
-        $value .= $this->serializer->normalize($field_item->{$property});
-      }
+
+    foreach ($field as $field_item) {
+      $value .= $this->serializer->normalize($field_item, $format, $context);
     }
 
     return $value;

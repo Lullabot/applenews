@@ -2,6 +2,9 @@
 
 namespace Drupal\applenews\Normalizer;
 
+/**
+ * Normalizer for "image" type com
+ */
 class ApplenewsImageComponentNormalizer extends ApplenewsComponentNormalizerBase {
 
   protected $componentType = 'image';
@@ -12,7 +15,6 @@ class ApplenewsImageComponentNormalizer extends ApplenewsComponentNormalizerBase
   public function normalize($data, $format = NULL, array $context = []) {
     $component_class = $this->getComponentClass($data['id']);
     $entity = $context['entity'];
-    $view_mode = $context['view_mode'];
 
     $field_name = $data['component_data']['URL']['field_name'];
     $context['field_property'] = $data['component_data']['URL']['field_property'];

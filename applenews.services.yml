@@ -26,6 +26,11 @@ services:
     tags:
       - { name: normalizer, priority: 10 }
 
+  serializer.applenews.field_item:
+    class: Drupal\applenews\Normalizer\ApplenewsFieldItemNormalizer
+    tags:
+      - { name: normalizer, priority: 10 }
+
   applenews.template_selection:
     class: Drupal\applenews\ApplenewsTemplateSelection
     arguments: ['@entity_type.manager']

@@ -7,6 +7,10 @@ use ChapterThree\AppleNewsAPI\Document\Margin;
 use Drupal\applenews\Plugin\ApplenewsComponentTypeManager;
 use Drupal\Core\Render\RendererInterface;
 
+/**
+ * Class ApplenewsComponentNormalizerBase. Component normalizers should be
+ * extended from this class.
+ */
 abstract class ApplenewsComponentNormalizerBase extends ApplenewsNormalizerBase {
 
   /**

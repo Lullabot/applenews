@@ -6,6 +6,9 @@ use Drupal\Core\Entity\EntityConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 
+/**
+ * Confirmation form to delete an ApplenewsTemplate.
+ */
 class ApplenewsTemplateDeleteForm extends EntityConfirmFormBase {
   /**
    * {@inheritdoc}
