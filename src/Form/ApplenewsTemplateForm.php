@@ -290,6 +290,12 @@ class ApplenewsTemplateForm extends EntityForm {
     return (bool) $entity;
   }
 
+  /**
+   * Get all the available Applenews component plugins to use in a select element.
+   *
+   * @return array
+   *  An array of component options suitable for a select element.
+   */
   protected function getComponentOptions() {
     $component_options = [];
     foreach ($this->applenewsComponentTypeManager->getDefinitions() as $id => $component_type) {
@@ -298,26 +304,46 @@ class ApplenewsTemplateForm extends EntityForm {
     return $component_options;
   }
 
+  /**
+   * Ajax submit handler when someone clicks "Add new component". Stores the
+   * selected component type for later use.
+   */
   public function setComponentFormStep(array &$form, FormStateInterface $form_state) {
     $input = $form_state->getUserInput();
     $form_state->set('sub_form_component_type', $input['component_type']);
     $form_state->setRebuild();
   }
 
+  /**
+   * Ajax submit handler used when a "Cancel" button is clicked.
+   */
   public function resetTempFormValues(array &$form, FormStateInterface $form_state) {
     $form_state->set('sub_form_component_type', NULL);
     $form_state->set('delete_component', NULL);
     $form_state->setRebuild();
   }
 
+  /**
+   * Ajax callback responsible for displaying the component form. Triggered when
+   * the "Add new component" button is clicked.
+   */
   public function addComponentForm(array &$form, FormStateInterface $form_state) {
     return $form['add_components'];
   }
 
+  /**
+   * Ajax callback respsonsible for returning the updated components table.
+   * Triggered when either the "delete" button or either of its confirmation
+   * buttons are clicked.
+   */
   public function refreshComponentTable(array &$form, FormStateInterface $form_state) {
     return $form['components_list']['components_table'];
   }
 
+  /**
+   * Ajax submit handler responsible for saving a new component. Triggered when
+   * the "Save Component" button is clicked.
+   */
   public function addComponent(array &$form, FormStateInterface $form_state) {
     $form_state->set('sub_form_component_type', NULL);
     if ($component = $this->getNewComponentValues($form_state)) {
@@ -329,6 +355,26 @@ class ApplenewsTemplateForm extends EntityForm {
     $form_state->setRebuild();
   }
 
+  /**
+   * Ajax callback that refreshed the whole form. Triggered when
+   * the "Save Component" button is clicked.
+   */
+  public function saveComponent(array &$form, FormStateInterface $form_state) {
+    // @todo return commands and replace both form and component table so we don't have to replace the whole form.
+    return $form;
+  }
+
+  /**
+   * Ajax callback that gets rid of the new component form. Triggered when the
+   * "Cancel" button is clicked on the new component form.
+   */
+  public function cancelComponentForm(array &$form, FormStateInterface $form_state) {
+    return $form['add_components'];
+  }
+
+  /**
+   * Ajax submit handler that stores the row the "delete" button was clicked on.
+   */
   public function setDeleteComponentForm(array &$form, FormStateInterface $form_state) {
     $this->saveComponentOrder($form_state);
     $id = $this->getTriggeringRowIndex($form_state->getTriggeringElement());
@@ -336,6 +382,10 @@ class ApplenewsTemplateForm extends EntityForm {
     $form_state->setRebuild();
   }
 
+  /**
+   * Ajax submit handler responsible for deleting a component from the table
+   * and entity. Triggered when the "Yes" button is clicked in confirmation.
+   */
   public function deleteComponent(array &$form, FormStateInterface $form_state) {
     $form_state->set('delete_component', NULL);
     $id = $this->getTriggeringRowIndex($form_state->getTriggeringElement());
@@ -350,15 +400,14 @@ class ApplenewsTemplateForm extends EntityForm {
     $form_state->setRebuild();
   }
 
-  public function saveComponent(array &$form, FormStateInterface $form_state) {
-    // @todo return commands and replace both form and component table so we don't have to replace the whole form.
-    return $form;
-  }
-
-  public function cancelComponentForm(array &$form, FormStateInterface $form_state) {
-    return $form['add_components'];
-  }
-
+  /**
+   * Format the values from a newly added component into an array usable for
+   * an AppleTemplate.
+   *
+   * @param FormStateInterface $form_state
+   * @return array
+   *  An array in the proper format to pass to AppleTemplate::addComponent()
+   */
   protected function getNewComponentValues(FormStateInterface $form_state) {
     $values = $form_state->getValues();
     if (isset($values['component_settings']['id'])) {
@@ -376,6 +425,13 @@ class ApplenewsTemplateForm extends EntityForm {
     return [];
   }
 
+  /**
+   * Helper function to get the parent of a button that was pressed. Used for
+   * component deletion and confirmation forms.
+   *
+   * @param array $triggering_element
+   * @return string
+   */
   protected function getTriggeringRowIndex(array $triggering_element) {
     return $triggering_element['#parents'][1];
   }
@@ -415,6 +471,11 @@ class ApplenewsTemplateForm extends EntityForm {
     return $operations;
   }
 
+  /**
+   * Sorts the components based on their new weights from the draggable table.
+   *
+   * @param FormStateInterface $form_state
+   */
   protected function saveComponentOrder(FormStateInterface $form_state) {
     $component_weights = $form_state->getValue('components_table');
     $components = $this->entity->getComponents();
@@ -427,6 +488,13 @@ class ApplenewsTemplateForm extends EntityForm {
     }
   }
 
+  /**
+   * Return formatted component data as a summary to be used in the component
+   * table.
+   *
+   * @param array $component
+   * @return string
+   */
   protected function displayComponentData($component) {
     $return = '';
     foreach ($component['component_data'] as $key => $data) {
