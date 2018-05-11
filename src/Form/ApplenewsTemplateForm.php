@@ -2,14 +2,9 @@
 
 namespace Drupal\applenews\Form;
 
-use Drupal\applenews\ApplenewsTemplateInterface;
-use Drupal\applenews\Plugin\ApplenewsComponentTypeInterface;
 use Drupal\applenews\Plugin\ApplenewsComponentTypeManager;
 use Drupal\Component\Serialization\Json;
-use Drupal\Component\Uuid\Uuid;
-use Drupal\Core\Entity\Entity\EntityViewMode;
 use Drupal\Core\Entity\EntityForm;
-use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Core\Form\FormStateInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -87,15 +82,6 @@ class ApplenewsTemplateForm extends EntityForm {
       '#description' => $this->t('The node type to which this template should apply.'),
       '#options' => $node_type_options,
       '#default_value' => $template->node_type,
-    ];
-
-
-
-    $form['view_mode'] = [
-      '#type' => 'select',
-      '#title' => $this->t('View Mode'),
-      '#description' => $this->t('The view mode used to render content for this template.'),
-      '#options' => $this->getViewModeOptions(),
     ];
 
     $form['layout'] = [
@@ -310,20 +296,6 @@ class ApplenewsTemplateForm extends EntityForm {
       $component_options[$id] = $component_type['label'];
     }
     return $component_options;
-  }
-
-  protected function getViewModeOptions() {
-    $view_mode_ids = $this->entityTypeManager->getStorage('entity_view_mode')->getQuery()
-      ->condition('targetEntityType', 'node')
-      ->execute();
-
-    $view_modes = EntityViewMode::loadMultiple($view_mode_ids);
-    $view_mode_options = [];
-    foreach ($view_modes as $id => $view_mode) {
-      $view_mode_options[$id] = $view_mode->label();
-    }
-
-    return $view_mode_options;
   }
 
   public function setComponentFormStep(array &$form, FormStateInterface $form_state) {

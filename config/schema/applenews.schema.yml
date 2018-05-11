@@ -11,9 +11,6 @@ applenews.applenews_template.*:
     node_type:
       type: string
       label: 'Node type'
-    view_mode:
-      type: string
-      label: 'View mode'
     columns:
       type: integer
       label: 'Columns'
