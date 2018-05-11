@@ -83,3 +83,29 @@ applenews.field_mapping:
       type: string
     field_property:
       type: string
+
+applenews.settings:
+  type: config_object
+  mapping:
+    channels:
+      type: sequence
+      sequence: applenews.channel.[%key]
+    endpoint:
+      type: string
+      label: 'API Endpoint'
+    api_key:
+      type: string
+      label: 'API Key'
+    api_secret:
+      type: string
+      label: 'API Secret'
+
+applenews.channel.*:
+  type: mapping
+  mapping:
+    name:
+      type: string
+      label: 'Channel Name'
+    id:
+      type: string
+      label: 'Channel ID'
