@@ -4,7 +4,11 @@ namespace Drupal\applenews\Derivative;
 
 use Drupal\Component\Plugin\Derivative\DeriverBase;
 
-class ApplenewsDefaultComponentTextTypeDeriver extends DeriverBase {
+/**
+ * Creates all the default Apple News plugins that contain text.
+ */
+
+class ApplenewsDefaultComponentTextTypeDeriver extends DeriverBase implements ApplenewsDefaultDeriverInterface {
   /**
    * {@inheritdoc}
    */
@@ -17,7 +21,10 @@ class ApplenewsDefaultComponentTextTypeDeriver extends DeriverBase {
     return parent::getDerivativeDefinitions($base_plugin_definition);
   }
 
-  protected function getComponentClasses() {
+  /**
+   * {@inheritdoc}
+   */
+  public function getComponentClasses() {
     return array(
       'author' => [
         'component_class' => 'ChapterThree\AppleNewsAPI\Document\Components\Author',
