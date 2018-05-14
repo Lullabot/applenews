@@ -10,7 +10,7 @@ use Drupal\Core\Form\FormStateInterface;
  *
  * @ApplenewsComponentType(
  *  id = "default_text",
- *  label = @Translation("Default Component Type"),
+ *  label = @Translation("Default Text Component Type"),
  *  description = @Translation("Default component types based on AppleNewsAPI library."),
  *  component_type = "text",
  *  deriver = "Drupal\applenews\Derivative\ApplenewsDefaultComponentTextTypeDeriver"

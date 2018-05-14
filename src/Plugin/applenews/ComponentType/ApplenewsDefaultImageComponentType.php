@@ -10,7 +10,7 @@ use Drupal\Core\Form\FormStateInterface;
  *
  * @ApplenewsComponentType(
  *  id = "default_image",
- *  label = @Translation("Default Component Type"),
+ *  label = @Translation("Default Image Component Type"),
  *  description = @Translation("Default component types based on AppleNewsAPI library."),
  *  component_type = "image",
  *  deriver = "Drupal\applenews\Derivative\ApplenewsDefaultComponentImageTypeDeriver"

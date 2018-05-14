@@ -61,6 +61,24 @@ applenews.component_type.image:
     caption:
       type: applenews.field_mapping
 
+applenews.component_type.nested:
+  type: mapping
+  mapping:
+    components:
+      type: sequence
+      sequence:
+        type: applenews.applenews_component.[%key]
+
+applenews.component_type.divider:
+  type: mapping
+  mapping:
+    stroke_width:
+      type: integer
+    stroke_color:
+      type: string
+    stroke_style:
+      type: string
+
 applenews.component_layout:
   type: mapping
   mapping:
