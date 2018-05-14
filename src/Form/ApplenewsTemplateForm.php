@@ -153,41 +153,8 @@ class ApplenewsTemplateForm extends EntityForm {
     ];
 
     $rows = [];
-    $delete_form = $form_state->get('delete_component');
     foreach($components as $id => $component) {
-      $rows[$id]['#attributes']['class'][] = 'draggable';
-      $rows[$id]['type'] = [
-        '#markup' => $component['id'],
-      ];
-      $rows[$id]['field'] = [
-        '#markup' => $this->displayComponentData($component),
-      ];
-      $rows[$id]['operations'] = [
-        '#type' => 'actions',
-      ];
-
-      if ($delete_form === $id) {
-        $rows[$id]['operations'] = $this->getComponentRowDeleteConfirmation();
-      }
-      else {
-        $rows[$id]['operations']['delete'] = [
-          '#type' => 'submit',
-          '#value' => $this->t('delete'),
-          '#name' => 'component_delete_' . $id,
-          '#submit' => ['::setDeleteComponentForm'],
-          '#ajax' => [
-            'callback' => '::refreshComponentTable',
-            'wrapper' => 'components-fieldset-wrapper',
-          ],
-        ];
-      }
-      $rows[$id]['weight'] = [
-        '#type' => 'weight',
-        '#title' => $this->t('Weight'),
-        '#title_display' => 'invisible',
-        '#default_value' => $component['weight'],
-        '#attributes' => array('class' => array('component-weight')),
-      ];
+      $rows[$id] = $this->getComponentRow($component, $form_state);
     }
 
     $form['components_list']['components_table'] += $rows;
@@ -504,5 +471,71 @@ class ApplenewsTemplateForm extends EntityForm {
       $return .= $key . ': ' . $data . '<br />';
     }
     return $return;
+  }
+
+  protected function getComponentRow($component, $form_state) {
+    $row = [];
+    $component_plugin = $this->applenewsComponentTypeManager->createInstance($component['id']);
+    $row['#attributes']['class'][] = 'draggable';
+
+    // If not a nested component, it cannot be a parent of other components.
+    if ($component_plugin->getComponentType() != 'nested') {
+      $row['#attributes']['class'][] = 'tabledrag-leaf';
+    }
+
+    $row['type'] = [
+      '#markup' => $component_plugin->label(),
+    ];
+    $row['field'] = [
+      '#markup' => $this->displayComponentData($component),
+    ];
+    $row['operations'] = [
+      '#type' => 'actions',
+    ];
+
+    if ($form_state->get('delete_component') === $component['uuid']) {
+      $row['operations'] = $this->getComponentRowDeleteConfirmation();
+    }
+    else {
+      $row['operations']['delete'] = [
+        '#type' => 'submit',
+        '#value' => $this->t('delete'),
+        '#name' => 'component_delete_' . $component['uuid'],
+        '#submit' => ['::setDeleteComponentForm'],
+        '#ajax' => [
+          'callback' => '::refreshComponentTable',
+          'wrapper' => 'components-fieldset-wrapper',
+        ],
+      ];
+    }
+
+    $row['weight'] = [
+      '#type' => 'weight',
+      '#title' => $this->t('Weight'),
+      '#title_display' => 'invisible',
+      '#default_value' => $component['weight'],
+      '#attributes' => array('class' => array('component-weight')),
+    ];
+
+    $row['parent_id'] = [
+      '#type' => 'string',
+      '#title' => $this->t('Parent ID'),
+      '#attributes' => [
+        'class' => [
+          'row-parent-id',
+        ],
+      ],
+    ];
+
+    return $row;
+  }
+
+  protected function getChildComponents($component, $form_state) {
+    $rows = [];
+    foreach ($component['component_data']['components'] as $child_component) {
+
+    }
+
+    return $rows;
   }
 }
