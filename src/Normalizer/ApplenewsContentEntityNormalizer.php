@@ -40,14 +40,11 @@ class ApplenewsContentEntityNormalizer extends ApplenewsNormalizerBase {
    */
   public function normalize($data, $format = NULL, array $context = []) {
     // @todo check cache
-    // @todo grab template connected to this entity type and get layout.
     $template = $this->entityTypeManager->getStorage('applenews_template')->load($context['template_id']);
     $layout = new Document\Layouts\Layout($template->columns, $template->width);
     $document = new Document($data->uuid(), $data->getTitle(), $data->language()->getId(), $layout);
 
-    // @todo grab template and get list of components. Loop through and serialize them, adding results to document here.
     $context['entity'] = $data;
-    $context['view_mode'] = $template->view_mode;
     foreach ($template->getComponents() as $component) {
       $document->addComponent($this->serializer->normalize($component, $format, $context));
     }

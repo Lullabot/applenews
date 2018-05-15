@@ -21,6 +21,12 @@ services:
     tags:
       - { name: normalizer, priority: 10 }
 
+  serializer.applenews.nested.component:
+    class: Drupal\applenews\Normalizer\ApplenewsNestedComponentNormalizer
+    arguments: ['@plugin.manager.applenews_component_type']
+    tags:
+      - { name: normalizer, priority: 10 }
+
   serializer.applenews.field:
     class: Drupal\applenews\Normalizer\ApplenewsFieldNormalizer
     tags:
