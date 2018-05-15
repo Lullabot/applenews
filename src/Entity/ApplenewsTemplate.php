@@ -47,6 +47,8 @@ class ApplenewsTemplate extends ConfigEntityBase implements ApplenewsTemplateInt
   public $label;
 
   /**
+   * @todo make this a list of value objects
+   *
    * @var array
    */
   protected $components;
@@ -73,6 +75,35 @@ class ApplenewsTemplate extends ConfigEntityBase implements ApplenewsTemplateInt
   /**
    * {@inheritdoc}
    */
+  public function getComponent($id) {
+    foreach ($this->components as $component_id => $component) {
+      if ($id == $component_id) {
+        return $component;
+      }
+      if ($found = $this->getNestedComponent($component['component_data']['components'], $id)) {
+        return $found;
+      }
+    }
+
+    return NULL;
+  }
+
+  protected function getNestedComponent($components, $id) {
+    foreach ($components as $component_id => $component) {
+      if ($id == $component_id) {
+        return $component;
+      }
+      if ($found = $this->getNestedComponent($component['component_data']['components'], $id)) {
+        return $found;
+      }
+    }
+
+    return NULL;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function addComponent(array $component) {
     $this->components[$component['uuid']] = $component;
   }
@@ -81,8 +112,34 @@ class ApplenewsTemplate extends ConfigEntityBase implements ApplenewsTemplateInt
    * {@inheritdoc}
    */
   public function deleteComponent($id) {
-    unset($this->components[$id]);
+    foreach ($this->components as $component_id => &$component) {
+      if ($id == $component_id) {
+        unset($this->components[$id]);
+        return TRUE;
+      }
+      if ($this->deleteNestedComponent($component['component_data']['components'], $id)) {
+        return TRUE;
+      }
+
+    }
     uasort($components, [$this, 'sortHelper']);
+  }
+
+  protected function deleteNestedComponent(&$components, $id) {
+    foreach ($components as $component_id => $component) {
+      if ($id == $component_id) {
+        unset($components[$id]);
+        if (!$components) {
+          $components = NULL;
+        }
+        return TRUE;
+      }
+      if ($this->deleteNestedComponent($component['component_data']['components'], $id)) {
+        return TRUE;
+      }
+    }
+
+    return FALSE;
   }
 
   /**

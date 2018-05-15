@@ -7,6 +7,7 @@ use Drupal\Component\Serialization\Json;
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Render\RendererInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class ApplenewsTemplateForm extends EntityForm {
@@ -22,14 +23,19 @@ class ApplenewsTemplateForm extends EntityForm {
   protected $entityTypeManager;
 
   /**
+   * @var RendererInterface
+   */
+  protected $renderer;
+
+  /**
    * Constructs an ApplenewsTemplateForm object.
    *
    * @param ApplenewsComponentTypeManager $component_type_manager
    */
-  public function __construct(ApplenewsComponentTypeManager $component_type_manager, EntityTypeManager $entity_type_manager) {
+  public function __construct(ApplenewsComponentTypeManager $component_type_manager, EntityTypeManager $entity_type_manager, RendererInterface $renderer) {
     $this->applenewsComponentTypeManager = $component_type_manager;
     $this->entityTypeManager = $entity_type_manager;
-
+    $this->renderer = $renderer;
   }
 
   /**
@@ -38,7 +44,8 @@ class ApplenewsTemplateForm extends EntityForm {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('plugin.manager.applenews_component_type'),
-      $container->get('entity_type.manager')
+      $container->get('entity_type.manager'),
+      $container->get('renderer')
     );
   }
 
@@ -139,11 +146,18 @@ class ApplenewsTemplateForm extends EntityForm {
         $this->t('Data Mapping'),
         $this->t('Operations'),
         $this->t('Weight'),
+        $this->t('Parent')
       ],
       '#empty' => $this->t('This template has no components yet.'),
       '#prefix' => '<div id="components-fieldset-wrapper">',
       '#suffix' => '</div>',
       '#tabledrag' => [
+        [
+          'action' => 'match',
+          'relationship' => 'parent',
+          'group' => 'row-parent-id',
+          'source' => 'row-id',
+        ],
         [
           'action' => 'order',
           'relationship' => 'sibling',
@@ -155,6 +169,15 @@ class ApplenewsTemplateForm extends EntityForm {
     $rows = [];
     foreach($components as $id => $component) {
       $rows[$id] = $this->getComponentRow($component, $form_state);
+      $component_plugin = $this->applenewsComponentTypeManager->createInstance($component['id']);
+      // If not a nested component, it cannot be a parent of other components.
+      if ($component_plugin->getComponentType() != 'nested') {
+        $rows[$id]['#attributes']['class'][] = 'tabledrag-leaf';
+      }
+      else {
+        $rows += $this->getChildComponentRows($component, $form_state);
+        $rows[$id]['type']['#markup'] = '<strong>' . $component['id'] . '</strong>';
+      }
     }
 
     $form['components_list']['components_table'] += $rows;
@@ -371,6 +394,8 @@ class ApplenewsTemplateForm extends EntityForm {
    * Format the values from a newly added component into an array usable for
    * an AppleTemplate.
    *
+   * @todo Replace with a value object
+   *
    * @param FormStateInterface $form_state
    * @return array
    *  An array in the proper format to pass to AppleTemplate::addComponent()
@@ -444,15 +469,83 @@ class ApplenewsTemplateForm extends EntityForm {
    * @param FormStateInterface $form_state
    */
   protected function saveComponentOrder(FormStateInterface $form_state) {
-    $component_weights = $form_state->getValue('components_table');
+    $component_table = $form_state->getValue('components_table');
     $components = $this->entity->getComponents();
     if ($components) {
-      foreach ($components as $id => $component) {
-        $components[$id]['weight'] = $component_weights[$id]['weight'];
+      foreach ($component_table as $id => $new_component_values) {
+
+        // If something was moved out of a parent relationship
+        if (!isset($components[$id]) && !$new_component_values['parent_id']) {
+          if ($former_child = $this->entity->getComponent($id)) {
+            $components[$id] = $former_child;
+            $this->deleteChildComponent($components, $id);
+          }
+        }
+
+        if ($new_component_values['parent_id']) {
+          if ($child_component = $this->entity->getComponent($id)) {
+            // In case it was a child of another parent, go ahead and delete it
+            $this->deleteChildComponent($components, $id);
+            $this->addChildComponent($components, $new_component_values['parent_id'], $child_component);
+          }
+          unset($components[$id]);
+        }
+        else {
+          $components[$id]['weight'] = $new_component_values['weight'];
+        }
+
+        // Clean up, in case was triggered by a deletion.
+        if (!$components[$id]['id']) {
+          unset($components[$id]);
+        }
+
       }
+
+
+      // Find all nested components and sort their children.
+      foreach($components as $id => $component) {
+        if (isset($component['component_data']['components'])) {
+          uasort($component['component_data']['components'], [$this->entity, 'sortHelper']);
+        }
+      }
+
       $this->entity->setComponents($components);
       $this->entity->save();
     }
+  }
+
+  protected function deleteChildComponent(&$components, $child_id) {
+    foreach ($components as &$component) {
+      foreach ($component['component_data']['components'] as $id => $child_component) {
+        if ($id == $child_id) {
+          unset($component['component_data']['components'][$id]);
+          if (!$component['component_data']['components']) {
+            $component['component_data']['components'] = NULL;
+          }
+          break;
+        }
+        if (isset($child_component['component_data']['components'])) {
+          $this->deleteChildComponent($child_component['component_data']['components'], $child_id);
+        }
+      }
+    }
+  }
+
+  protected function addChildComponent(&$components, $parent_id, $child_component) {
+    // Go through top level components.
+    foreach ($components as $id => &$component) {
+      if ($id == $parent_id) {
+        $component['component_data']['components'][$child_component['uuid']] = $child_component;
+        return TRUE;
+      }
+    }
+
+    // Go through any children they might have if we haven't found the parent id
+    foreach ($components as $id => &$component) {
+      return $this->addChildComponent($component['component_data']['components'], $parent_id, $child_component);
+    }
+
+    return FALSE;
   }
 
   /**
@@ -465,26 +558,20 @@ class ApplenewsTemplateForm extends EntityForm {
   protected function displayComponentData($component) {
     $return = '';
     foreach ($component['component_data'] as $key => $data) {
-      if (is_array($data)) {
+      if (is_array($data) && $key != 'components') {
         $data = Json::encode($data);
+        $return .= $key . ': ' . $data . '<br />';
       }
-      $return .= $key . ': ' . $data . '<br />';
     }
     return $return;
   }
 
-  protected function getComponentRow($component, $form_state) {
+  protected function getComponentRow($component, $form_state, $parent_id = NULL) {
     $row = [];
-    $component_plugin = $this->applenewsComponentTypeManager->createInstance($component['id']);
     $row['#attributes']['class'][] = 'draggable';
 
-    // If not a nested component, it cannot be a parent of other components.
-    if ($component_plugin->getComponentType() != 'nested') {
-      $row['#attributes']['class'][] = 'tabledrag-leaf';
-    }
-
     $row['type'] = [
-      '#markup' => $component_plugin->label(),
+      '#markup' => $component['id'],
     ];
     $row['field'] = [
       '#markup' => $this->displayComponentData($component),
@@ -518,8 +605,9 @@ class ApplenewsTemplateForm extends EntityForm {
     ];
 
     $row['parent_id'] = [
-      '#type' => 'string',
+      '#type' => 'textfield',
       '#title' => $this->t('Parent ID'),
+      '#default_value' => $parent_id,
       '#attributes' => [
         'class' => [
           'row-parent-id',
@@ -527,13 +615,38 @@ class ApplenewsTemplateForm extends EntityForm {
       ],
     ];
 
+    // Needed for tabledrag functionality in determining a parent.
+    $row['row_id'] = [
+      '#type' => 'hidden',
+      '#value' => $component['uuid'],
+      '#attributes' => [
+        'class' => [
+          'row-id',
+        ],
+      ],
+    ];
+
     return $row;
   }
 
-  protected function getChildComponents($component, $form_state) {
+  protected function getChildComponentRows($component, $form_state, $depth = 1) {
     $rows = [];
-    foreach ($component['component_data']['components'] as $child_component) {
-
+    foreach ($component['component_data']['components'] as $id => $child_component) {
+      $rows[$id] = $this->getComponentRow($child_component, $form_state, $component['uuid']);
+      $indentation = [
+        '#theme' => 'indentation',
+        '#size' => $depth,
+      ];
+      $rows[$id]['type']['#prefix'] = $this->renderer->render($indentation);
+      $component_plugin = $this->applenewsComponentTypeManager->createInstance($child_component['id']);
+      // If not a nested component, it cannot be a parent of other components.
+      if ($component_plugin->getComponentType() != 'nested') {
+        $rows[$id]['#attributes']['class'][] = 'tabledrag-leaf';
+      }
+      else {
+        $rows[$id]['type']['#markup'] = '<strong>' . $child_component['id'] . '</strong>';
+        $rows += $this->getChildComponentRows($child_component, $form_state, $depth + 1);
+      }
     }
 
     return $rows;

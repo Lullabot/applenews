@@ -3,6 +3,7 @@
 namespace Drupal\applenews\Plugin\applenews\ComponentType;
 
 use Drupal\applenews\Plugin\ApplenewsComponentTypeBase;
+use Drupal\Core\Form\FormStateInterface;
 
 /**
  * Plugin class to generate all the default Component plugins.
@@ -16,5 +17,17 @@ use Drupal\applenews\Plugin\ApplenewsComponentTypeBase;
  * )
  */
 class ApplenewsDefaultNestedComponentType extends ApplenewsComponentTypeBase {
+  /**
+   * {@inheritdoc}
+   */
+  public function settingsForm(array $form, FormStateInterface $form_state) {
+    $element = parent::settingsForm($form, $form_state);
 
+    $element['component_settings']['component_data']['components'] = [
+      '#type' => 'hidden',
+      '#value' => NULL,
+    ];
+
+    return $element;
+  }
 }

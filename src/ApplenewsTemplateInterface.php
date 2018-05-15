@@ -33,7 +33,7 @@ interface ApplenewsTemplateInterface extends ConfigEntityInterface {
   /**
    * Delete a component from the template.
    *
-   * @param int $id
+   * @param string $id
    *  The id corresponding to the correct component in the components array.
    */
   public function deleteComponent($id);
@@ -45,4 +45,13 @@ interface ApplenewsTemplateInterface extends ConfigEntityInterface {
    *  An array of component arrays, each matching the schema. @see applenews.schema.yml
    */
   public function setComponents(array $components);
+
+  /**
+   * Get a specific component from the template.
+   *
+   * @param string $id
+   * @return array|NULL
+   *  The array representation of the component, as defined by the schema.
+   */
+  public function getComponent($id);
 }
