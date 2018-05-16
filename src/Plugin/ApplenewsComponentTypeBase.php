@@ -97,7 +97,7 @@ abstract class ApplenewsComponentTypeBase extends PluginBase implements Applenew
     $element['component_settings']['component_layout']['minimum_height_unit'] = [
       '#type' => 'select',
       '#options' => $this->getUnitsOfMeasure(),
-      '#description' => $this->t('Available units of measure for minimum height. See @link', ['@link' => 'https://developer.apple.com/library/content/documentation/General/Conceptual/Apple_News_Format_Ref/Layout.html#//apple_ref/doc/uid/TP40015408-CH65-SW1']),
+      '#description' => $this->t('Available units of measure for minimum height. See <a href="@link">Apple News unit documentation</a>.', ['@link' => 'https://developer.apple.com/library/content/documentation/General/Conceptual/Apple_News_Format_Ref/Layout.html#//apple_ref/doc/uid/TP40015408-CH65-SW1']),
     ];
 
     $element['component_settings']['id'] = [
@@ -298,5 +298,30 @@ abstract class ApplenewsComponentTypeBase extends PluginBase implements Applenew
       'dm' => $this->t('Document Margin'),
       'cw' => $this->t('Component Width'),
     ];
+  }
+
+  /**
+   * Get the form fields necessary for setting the maximum content width for a
+   * component. Only a few component types recognize this setting.
+   *
+   * @return array
+   *  A Form API render array
+   */
+  protected function getMaximumContentWidthElement() {
+    $element = [];
+
+    $element['maximum_width'] = [
+      '#type' => 'number',
+      '#title' => $this->t('Maximum Content Width'),
+      '#description' => $this->t('Sets the maximum width of the content within the component.'),
+    ];
+
+    $element['maximum_width_unit'] = [
+      '#type' => 'select',
+      '#options' => $this->getUnitsOfMeasure(),
+      '#description' => $this->t('Available units of measure for maximum width. See <a href="@link">Apple News unit documentation</a>.', ['@link' => 'https://developer.apple.com/library/content/documentation/General/Conceptual/Apple_News_Format_Ref/Layout.html#//apple_ref/doc/uid/TP40015408-CH65-SW1']),
+    ];
+
+    return $element;
   }
 }

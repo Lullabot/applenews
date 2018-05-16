@@ -22,6 +22,8 @@ class ApplenewsDefaultDividerComponentType extends ApplenewsComponentTypeBase {
   public function settingsForm(array $form, FormStateInterface $form_state) {
     $element = parent::settingsForm($form, $form_state);
 
+    $element['component_settings']['component_layout'] += $this->getMaximumContentWidthElement();
+
     $element['component_settings']['component_data']['stroke_width'] = [
       '#type' => 'number',
       '#title' => $this->t('Stroke width'),

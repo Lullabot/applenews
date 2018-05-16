@@ -98,6 +98,10 @@ applenews.component_layout:
       type: integer
     minimum_height_unit:
       type: string
+    maximum_width:
+      type: integer
+    maximum_width_unit:
+      type: string
 
 applenews.field_mapping:
   type: mapping
