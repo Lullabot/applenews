@@ -12,6 +12,30 @@ use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\field\FieldStorageConfigInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+/**
+ * Defines a base class from which other Apple News component types may extend.
+ *
+ * Plugins extending this class need to define a plugin definition array through
+ * annotation. These definition arrays may be altered through
+ * hook_applenews_component_type_plugin_info_alter(). The definition includes the
+ * following keys:
+ * - id: The unique, system-wide identifier of the component type.
+ * - label: The human-readable name of the component type, translated.
+ * - description: A human-readable description for the component type, translated.
+ * - component_type: A schema-defined "meta-type" that describes the type of data
+ *  the component will display. Options: text, image, nested, or divider.
+ *
+ * A complete plugin definition should be written as in this example:
+ *
+ * @code
+ * @ApplenewsComponentType(
+ *  id = "your_component_id",
+ *  label = @Translation("Your component label"),
+ *  description = @Translation("Your component description"),
+ *  component_type = "image",
+ *)
+ * @endcode
+ */
 abstract class ApplenewsComponentTypeBase extends PluginBase implements ApplenewsComponentTypeInterface {
 
   /**

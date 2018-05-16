@@ -50,11 +50,24 @@ abstract class ApplenewsComponentNormalizerBase extends ApplenewsNormalizerBase 
     return FALSE;
   }
 
+  /**
+   * Get the class name needed to instantiate an Apple News component.
+   *
+   * @param string $plugin_id
+   * @return string
+   *  The fully-qualified name of the underlying Component class to use.
+   */
   protected function getComponentClass($plugin_id) {
     $component = $this->applenewsComponentTypeManager->createInstance($plugin_id);
     return $component->getComponentClass();
   }
 
+  /**
+   * Get the Component layout values.
+   *
+   * @param array $component_layout
+   * @return ComponentLayout
+   */
   protected function getComponentLayout($component_layout) {
     $layout = new ComponentLayout();
     $layout->setColumnSpan($component_layout['column_span']);
@@ -67,7 +80,7 @@ abstract class ApplenewsComponentNormalizerBase extends ApplenewsNormalizerBase 
     if (isset($component_layout['maximum_width'])) {
       $layout->setMaximumContentWidth($component_layout['maximum_width'] . $component_layout['maximum_width_unit']);
     }
-    
+
     return $layout;
   }
 }

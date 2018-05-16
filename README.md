@@ -11,7 +11,7 @@ in the UI or as YAML in your custom module.
 
 Each component should have its own UUID.
 
-### Template Example
+### Template Definition Example
 
 ```
 uuid: 4650c85e-ec8c-4ebd-a9f5-d13b61622610
@@ -106,6 +106,9 @@ and using the correct annotation.
  component_type = "image",
 )
 ```
+
+Component plugins can be altered via 
+hook_applenews_component_type_plugin_info_alter().
 
 ## Normalizers
 
