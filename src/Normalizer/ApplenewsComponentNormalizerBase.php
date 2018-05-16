@@ -60,6 +60,8 @@ abstract class ApplenewsComponentNormalizerBase extends ApplenewsNormalizerBase 
     $layout->setColumnSpan($component_layout['column_span']);
     $layout->setColumnStart($component_layout['column_start']);
     $layout->setMargin(new Margin($component_layout['margin_top'], $component_layout['margin_bottom']));
+    $layout->setIgnoreDocumentGutter($component_layout['ignore_gutter']);
+    $layout->setIgnoreDocumentMargin($component_layout['ignore_margin']);
     return $layout;
   }
 }

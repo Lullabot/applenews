@@ -90,6 +90,10 @@ applenews.component_layout:
       type: integer
     margin_bottom:
       type: integer
+    ignore_margin:
+      type: string
+    ignore_gutter:
+      type: string
 
 applenews.field_mapping:
   type: mapping

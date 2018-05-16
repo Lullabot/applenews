@@ -64,6 +64,31 @@ abstract class ApplenewsComponentTypeBase extends PluginBase implements Applenew
       '#default_value' => 0,
     ];
 
+    $element['component_settings']['component_layout']['ignore_margin'] = [
+      '#type' => 'select',
+      '#title' => $this->t('Ignore Document Margin'),
+      '#description' => $this->t('Indicates whether a document\'s margins should be respected or ignored by the parent container.'),
+      '#options' => [
+        'none' => $this->t('None'),
+        'left' => $this->t('Left'),
+        'right' => $this->t('Right'),
+        'both' => $this->t('Both'),
+      ]
+    ];
+
+    $element['component_settings']['component_layout']['ignore_gutter'] = [
+      '#type' => 'select',
+      '#title' => $this->t('Ignore Document Gutter'),
+      '#description' => $this->t('Indicates whether the gutters (if any) to the left and right of the component should be ignored.'),
+      '#options' => [
+        'none' => $this->t('None'),
+        'left' => $this->t('Left'),
+        'right' => $this->t('Right'),
+        'both' => $this->t('Both'),
+      ]
+    ];
+
+
     $element['component_settings']['id'] = [
       '#type' => 'hidden',
       '#value' => $this->pluginId,
