@@ -94,6 +94,10 @@ applenews.component_layout:
       type: string
     ignore_gutter:
       type: string
+    minimum_height:
+      type: integer
+    minimum_height_unit:
+      type: string
 
 applenews.field_mapping:
   type: mapping

@@ -62,6 +62,7 @@ abstract class ApplenewsComponentNormalizerBase extends ApplenewsNormalizerBase 
     $layout->setMargin(new Margin($component_layout['margin_top'], $component_layout['margin_bottom']));
     $layout->setIgnoreDocumentGutter($component_layout['ignore_gutter']);
     $layout->setIgnoreDocumentMargin($component_layout['ignore_margin']);
+    $layout->setMinimumHeight($component_layout['minimum_height'] . $component_layout['minimum_height_unit']);
     return $layout;
   }
 }

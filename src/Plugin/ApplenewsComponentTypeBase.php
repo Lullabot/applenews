@@ -88,6 +88,17 @@ abstract class ApplenewsComponentTypeBase extends PluginBase implements Applenew
       ]
     ];
 
+    $element['component_settings']['component_layout']['minimum_height'] = [
+      '#type' => 'number',
+      '#title' => $this->t('Minimum Height'),
+      '#description' => $this->t('Sets the minimum height of the component.'),
+    ];
+
+    $element['component_settings']['component_layout']['minimum_height_unit'] = [
+      '#type' => 'select',
+      '#options' => $this->getUnitsOfMeasure(),
+      '#description' => $this->t('Available units of measure for minimum height. See @link', ['@link' => 'https://developer.apple.com/library/content/documentation/General/Conceptual/Apple_News_Format_Ref/Layout.html#//apple_ref/doc/uid/TP40015408-CH65-SW1']),
+    ];
 
     $element['component_settings']['id'] = [
       '#type' => 'hidden',
@@ -127,6 +138,9 @@ abstract class ApplenewsComponentTypeBase extends PluginBase implements Applenew
     return $this->pluginDefinition['component_class'];
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function getComponentType() {
     return $this->pluginDefinition['component_type'];
   }
@@ -145,6 +159,13 @@ abstract class ApplenewsComponentTypeBase extends PluginBase implements Applenew
     );
   }
 
+  /**
+   * Get all of the fields of a node type as options for a form.
+   *
+   * @param $node_type
+   * @return array
+   *  An array of options suitable for a Form API selection element.
+   */
   protected function getFieldOptions($node_type) {
     $fields = $this->fieldManager->getFieldDefinitions('node', $node_type);
     $field_options = [];
@@ -162,7 +183,7 @@ abstract class ApplenewsComponentTypeBase extends PluginBase implements Applenew
   }
 
   /**
-   * Get field machine names of base fields that are availabe to use for content.
+   * Get field machine names of base fields that are available to use for content.
    *
    * @return array
    */
@@ -174,6 +195,16 @@ abstract class ApplenewsComponentTypeBase extends PluginBase implements Applenew
     ];
   }
 
+  /**
+   * Get a field selection element that will have all fields on the selected
+   * content type as an option, and allow dynamic selection of their properties.
+   *
+   * @param FormStateInterface $form_state
+   * @param string $name
+   * @param string $label
+   * @return array
+   *  A Form API render array
+   */
   protected function getFieldSelectionElement(FormStateInterface $form_state, $name, $label) {
     $input = $form_state->getUserInput();
     $node_type = $input['node_type'];
@@ -218,10 +249,20 @@ abstract class ApplenewsComponentTypeBase extends PluginBase implements Applenew
     return $element;
   }
 
+  /**
+   * Ajax callback for the field name selection element.
+   */
   public function ajaxGetFieldPropertySelectionElement(array &$form, FormStateInterface $form_state) {
     return $form['add_components']['component_settings']['component_data'];
   }
 
+  /**
+   * Get all the properties of a field as a selection element.
+   *
+   * @param FieldStorageConfigInterface $config
+   * @return array
+   *  A Form API render array
+   */
   protected function getFieldPropertySelectionElement(FieldStorageConfigInterface $config) {
     $field_name = $config->getName();
     $properties = $config->getPropertyDefinitions();
@@ -235,6 +276,27 @@ abstract class ApplenewsComponentTypeBase extends PluginBase implements Applenew
       '#type' => 'select',
       '#title' => $this->t($field_name . ' Property'),
       '#options' => $property_options,
+    ];
+  }
+
+  /**
+   * Get the options for Units of Measure.
+   *
+   * @see https://developer.apple.com/library/content/documentation/General/Conceptual/Apple_News_Format_Ref/SupportedUnits.html#//apple_ref/doc/uid/TP40015408-CH75-SW1
+   *
+   * @return array
+   *  An array of options suitable for a Form API selection element.
+   */
+  protected function getUnitsOfMeasure() {
+    return [
+      'pt' => $this->t('Points'),
+      'vh' => $this->t('Viewport Height'),
+      'vw' => $this->t('Viewport Width'),
+      'vmin' => $this->t('Viewport Shortest Side'),
+      'vmax' => $this->t('Viewport Longest Side'),
+      'dg' => $this->t('Column Gutters'),
+      'dm' => $this->t('Document Margin'),
+      'cw' => $this->t('Component Width'),
     ];
   }
 }

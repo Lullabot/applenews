@@ -38,7 +38,7 @@ interface ApplenewsComponentTypeInterface extends PluginInspectionInterface, Der
    * component is configured to store and display.
    *
    * @return string
-   *  A string representing the component type. (text, url, etc.)
+   *  A string representing the component type. (text, image, nested, etc.)
    */
   public function getComponentType();
 
