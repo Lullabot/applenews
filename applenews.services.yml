@@ -40,3 +40,8 @@ services:
   applenews.template_selection:
     class: Drupal\applenews\ApplenewsTemplateSelection
     arguments: ['@entity_type.manager']
+
+  logger.channel.applenews:
+    class: Drupal\Core\Logger\LoggerChannel
+    factory: logger.factory:get
+    arguments: ['applenews']
