@@ -1,0 +1,26 @@
+<?php
+
+/**
+ * @file
+ * Apple News module file.
+ */
+
+use Drupal\Core\Entity\EntityInterface;
+
+/**
+ * Implements hook_entity_insert().
+ */
+function applenews_entity_insert(EntityInterface $entity) {
+  $fields = \Drupal::service('applenews.manager')->getFields($entity->getEntityTypeId());
+  print_r($fields);
+}
+
+
+/**
+ * Implements hook_entity_update().
+ */
+function applenews_entity_update(EntityInterface $entity) {
+  $fields = \Drupal::service('applenews.manager')->getFields($entity->getEntityTypeId());
+  print_r($fields);
+  exit;
+}

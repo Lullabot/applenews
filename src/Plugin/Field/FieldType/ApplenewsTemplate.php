@@ -52,11 +52,16 @@ class ApplenewsTemplate extends FieldItemBase {
     return [
       'columns' => [
         'status' => [
-          'description' => 'Enable applenews',
+          'description' => 'Publish to Apple News',
           'type' => 'int',
           'default' => 0,
         ],
         'template' => [
+          'description' => 'Template name',
+          'type' => 'varchar',
+          'length' => 128,
+        ],
+        'channel' => [
           'description' => 'Template name',
           'type' => 'varchar',
           'length' => 128,
