@@ -12,7 +12,6 @@ use Drupal\Core\Entity\EntityInterface;
  */
 function applenews_entity_insert(EntityInterface $entity) {
   $fields = \Drupal::service('applenews.manager')->getFields($entity->getEntityTypeId());
-  print_r($fields);
 }
 
 
@@ -20,7 +19,5 @@ function applenews_entity_insert(EntityInterface $entity) {
  * Implements hook_entity_update().
  */
 function applenews_entity_update(EntityInterface $entity) {
-//  $fields = \Drupal::service('applenews.manager')->getFields($entity->getEntityTypeId());
-//  print_r($fields);
-//  exit;
+
 }

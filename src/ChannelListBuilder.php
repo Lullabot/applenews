@@ -15,6 +15,8 @@ class ChannelListBuilder extends EntityListBuilder {
   public function buildHeader() {
     $header['name'] = $this->t('Name');
     $header['id'] = $this->t('Channel ID');
+    $header['sections'] = $this->t('Sections');
+    $header['section_ids'] = $this->t('Section ID');
     return $header + parent::buildHeader();
   }
 
@@ -22,9 +24,19 @@ class ChannelListBuilder extends EntityListBuilder {
    * {@inheritdoc}
    */
   public function buildRow(EntityInterface $entity) {
+    $channel_id = $entity->getChannelId();
+    $sections = $entity->getSections();
     /** @var \Drupal\applenews\Entity\ApplenewsChannel $entity */
     $row['name'] = $entity->getName();
-    $row['id'] = $entity->getId();
+    $row['id'] = $channel_id;
+    $row['sections']['data'] = [
+      '#type' => 'markup',
+      '#markup' => implode('<br />', $sections),
+    ];
+    $row['section_ids']['data'] = [
+      '#type' => 'markup',
+      '#markup' => implode('<br />', array_keys($sections)),
+    ];
     return $row + parent::buildRow($entity);
   }
 

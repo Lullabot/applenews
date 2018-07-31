@@ -94,6 +94,15 @@ class ChannelForm extends ContentEntityForm {
   }
 
   /**
+   * {@inheritdoc}
+   */
+  public function actions(array $form, FormStateInterface $form_state) {
+    $elements = parent::actions($form, $form_state);
+    $elements['submit']['#value'] = $this->t('Add new channel');
+    return $elements;
+  }
+
+  /**
    * @param array $form
    * @param \Drupal\Core\Form\FormStateInterface $form_state
    *
@@ -101,27 +110,29 @@ class ChannelForm extends ContentEntityForm {
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
     parent::validateForm($form, $form_state);
+    $channel_id = $form_state->getValue('id')[0]['value'];
     try {
-      $response = $this->publisher->getChannel($form_state->getValue('id')[0]['value']);
+      $response = $this->publisher->getChannel($channel_id);
     }
     catch (\Exception $e) {
       // Throw validation error.
-      echo 'error';exit;
-      return;
+      $form_state->setError($form['id'], $this->t('Invalid channel id'));
     }
-
     if ($response) {
       $this->entity->updateFromResponse($response);
-      $this->entity->save();
     }
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function actions(array $form, FormStateInterface $form_state) {
-    $elements = parent::actions($form, $form_state);
-    return $elements;
+
+  public function submitForm(array &$form, FormStateInterface $form_state) {
+    $channel_id = $form_state->getValue('id')[0]['value'];
+    parent::submitForm($form, $form_state);
+    // Fetch sections.
+    $response = $this->publisher->GetSections($channel_id);
+    if ($response) {
+      $this->entity->updateSections($response);
+    }
+    $this->entity->save();
   }
 
 }

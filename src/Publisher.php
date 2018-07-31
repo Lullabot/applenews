@@ -3,6 +3,7 @@
 namespace Drupal\applenews;
 
 use ChapterThree\AppleNewsAPI\PublisherAPI;
+use Drupal\applenews\Exception\ApplenewsInvalidResponseException;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 
@@ -20,28 +21,21 @@ class Publisher implements PublisherInterface {
   protected $config;
 
   /**
-   * The applenews publisher API object.
-   *
-   * @var \ChapterThree\AppleNewsAPI\PublisherAPI
-   */
-  protected $publisher;
-
-  /**
    * Construct the PublisherManager object.
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   The config factory.
    */
   public function __construct(ConfigFactoryInterface $config_factory) {
-    $config = $config_factory->get('applenews.settings');
-    $this->publisher = new PublisherAPI($config->get('api_key'), $config->get('api_secret'), $config->get('endpoint'));
+    $this->config = $config_factory->get('applenews.settings');
   }
 
   /**
    * {@inheritdoc}
    */
   public function getChannel($channel_id) {
-    return $this->publisher->get('/channels/{channel_id}', ['channel_id' => $channel_id]);
+    $response = $this->publisher()->get('/channels/{channel_id}', ['channel_id' => $channel_id]);
+    return $this->handleResponse($response);
   }
 
   /**
@@ -61,7 +55,9 @@ class Publisher implements PublisherInterface {
   /**
    * {@inheritdoc}
    */
-  public function GetSections() {
+  public function GetSections($channel_id) {
+    $response = $this->publisher()->get('/channels/{channel_id}/sections', ['channel_id' => $channel_id]);
+    return $this->handleResponse($response);
 
   }
 
@@ -77,6 +73,27 @@ class Publisher implements PublisherInterface {
    */
   public function updateArticle() {
 
+  }
+
+  /**
+   * @param $response
+   *
+   * @return mixed
+   * @throws \Drupal\applenews\Exception\ApplenewsInvalidResponseException
+   */
+  protected function handleResponse($response) {
+    if (isset($response->errors) && is_array($response->errors)) {
+      $error = current($response->errors);
+      throw new ApplenewsInvalidResponseException($error->code, '500');
+    }
+    return $response;
+  }
+
+  /**
+   * @return \ChapterThree\AppleNewsAPI\PublisherAPI
+   */
+  protected function publisher() {
+    return new PublisherAPI($this->config->get('api_key'), $this->config->get('api_secret'), $this->config->get('endpoint'));
   }
 
 }

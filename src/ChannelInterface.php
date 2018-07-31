@@ -37,7 +37,7 @@ interface ChannelInterface extends ContentEntityInterface {
   /**
    * @return string
    */
-  public function getId();
+  public function getChannelId();
 
   /**
    * @return string

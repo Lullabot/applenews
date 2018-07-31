@@ -22,12 +22,14 @@ use Drupal\Core\StringTranslation\TranslatableMarkup;
  *     plural = "@count Applenews channels",
  *   ),
  *   handlers = {
- *     "storage" = "Drupal\Core\Entity\Sql\SqlContentEntityStorage",
- *     "storage_schema" = "Drupal\menu_link_content\SqlContentEntityStorageSchema",
  *     "list_builder" = "Drupal\applenews\ChannelListBuilder",
+ *     "route_provider" = {
+ *       "html" = "\Drupal\Core\Entity\Routing\AdminHtmlRouteProvider",
+ *     },
  *     "form" = {
  *       "default" = "Drupal\applenews\Form\ChannelForm",
- *       "delete" = "Drupal\applenews\Form\ChannelDeleteForm",
+ *       "add" = "Drupal\applenews\Form\ChannelForm",
+ *       "delete" = "Drupal\applenews\Form\ChannelDeleteForm"
  *     }
  *   },
  *   base_table = "applenews_channel",
@@ -38,71 +40,14 @@ use Drupal\Core\StringTranslation\TranslatableMarkup;
  *     "langcode" = "langcode"
  *   },
  *   links = {
- *     "canonical" = "/admin/config/services/applenews/settings/channel",
- *     "create" = "/admin/config/services/applenews/settings/channel/add",
- *     "edit-form" = "/admin/config/services/applenews/settings/channel/{applenews_channel}",
- *     "delete-form" = "/admin/config/services/applenews/settings/channel/{applenews_channel}/delete",
+ *     "collection" = "/admin/config/services/applenews/channel",
+ *     "add-form" = "/admin/config/services/applenews/channel/add",
+ *     "edit-form" = "/admin/config/services/applenews/channel/{applenews_channel}",
+ *     "delete-form" = "/admin/config/services/applenews/channel/{applenews_channel}/delete",
  *   }
  * )
  */
 class ApplenewsChannel extends ContentEntityBase implements ChannelInterface {
-
-  /**
-   * Data.
-   *
-   * @var string
-   */
-  protected $createdAt;
-
-  /**
-   * Data.
-   *
-   * @var string
-   */
-  protected $modifiedAt;
-
-  /**
-   * Data.
-   *
-   * @var string
-   */
-  protected $id;
-
-  /**
-   * Data.
-   *
-   * @var string
-   */
-  protected $shareUrl;
-
-  /**
-   * Data.
-   *
-   * @var string
-   */
-  protected $type;
-
-  /**
-   * Data.
-   *
-   * @var string[]
-   */
-  protected $links;
-
-  /**
-   * Data.
-   *
-   * @var string
-   */
-  protected $name;
-
-
-  /**
-   * Data.
-   *
-   * @var string
-   */
-  protected $website;
 
   /**
    * {@inheritdoc}
@@ -123,7 +68,7 @@ class ApplenewsChannel extends ContentEntityBase implements ChannelInterface {
   /**
    * {@inheritdoc}
    */
-  public function getId(){
+  public function getChannelId(){
     return $this->get('id')->value;
   }
 
@@ -155,6 +100,15 @@ class ApplenewsChannel extends ContentEntityBase implements ChannelInterface {
     return $this->get('name')->value;
   }
 
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getSections(){
+    return $this->get('sections')->value ? unserialize($this->get('sections')->value) : '';
+
+  }
+
   /**
    * {@inheritdoc}
    */
@@ -169,18 +123,39 @@ class ApplenewsChannel extends ContentEntityBase implements ChannelInterface {
    */
   public function updateFromResponse($response) {
     if (is_object($response) && isset($response->data)) {
-      $this->createdAt = $response->data->createdAt;
-      $this->modifiedAt = $response->data->modifiedAt;
-      $this->id = $response->data->id;
-      $this->type = $response->data->type;
-      $this->shareUrl = $response->data->shareUrl;
-      $this->links = [
-       'defaultSection' => $response->data->links->defaultSection,
-        'self' => $response->data->links->self,
-      ];
-      $this->name = $response->data->name;
-      $this->website = $response->data->website;
+      $channel = $response->data;
+      $this->createdAt = $channel->createdAt;
+      $this->modifiedAt = $channel->modifiedAt;
+      $this->id = $channel->id;
+      $this->type = $channel->type;
+      $this->shareUrl = $channel->shareUrl;
+      $this->links = serialize([
+       'defaultSection' => $channel->links->defaultSection,
+        'self' => $channel->links->self,
+      ]);
+      $this->name = $channel->name;
+      $this->website = $channel->website;
     }
+    return $this;
+  }
+
+  /**
+   * @param $response
+   *
+   * @return $this
+   */
+  public function updateSections($response) {
+    $sections = [];
+    foreach ($response->data as $section) {
+      $sections[$section->id] = $section->name;
+      if ($section->isDefault) {
+        $sections[$section->id] .= ' ' . '(Default)';
+      }
+    }
+    if ($sections) {
+      $this->sections = serialize($sections);
+    }
+
     return $this;
   }
 
@@ -196,6 +171,8 @@ class ApplenewsChannel extends ContentEntityBase implements ChannelInterface {
     $fields['id'] = BaseFieldDefinition::create('string')
       ->setLabel(new TranslatableMarkup('Channel ID'))
       ->setRequired(TRUE)
+      ->addConstraint('UniqueField')
+      ->addPropertyConstraints('value', ['Regex' => ['pattern' => '/^[a-z0-9\-]+$/']])
       ->setDisplayOptions('view', [
         'label' => 'hidden',
         'type' => 'string',
@@ -209,111 +186,51 @@ class ApplenewsChannel extends ContentEntityBase implements ChannelInterface {
 
     $fields['name'] = BaseFieldDefinition::create('string')
       ->setLabel(new TranslatableMarkup('Name'))
+      ->setDescription(new TranslatableMarkup('Channel name.'))
       ->setSetting('max_length', 255)
       ->setDisplayOptions('view', [
         'label' => 'hidden',
         'type' => 'string',
         'weight' => -5,
-      ])
-      ->setDisplayOptions('form', [
-        'type' => 'string_textfield',
-        'weight' => -5,
-      ])
-      ->setDisplayConfigurable('form', TRUE);
+      ]);
 
     $fields['createdAt'] = BaseFieldDefinition::create('string')
       ->setLabel(new TranslatableMarkup("The channel created"))
       ->setSetting('max_length', 25)
       ->setReadOnly(TRUE)
-      ->setDescription(new TranslatableMarkup('The created time of the channel. e.g. 2018-07-27T20:15:34Z'))
-      ->setDisplayOptions('view', [
-        'label' => 'hidden',
-        'type' => 'string',
-        'weight' => -5,
-      ])
-      ->setDisplayOptions('form', [
-        'type' => 'string_textfield',
-        'weight' => -5,
-      ])
-      ->setDisplayConfigurable('form', TRUE);
-    
+      ->setDescription(new TranslatableMarkup('The created time of the channel. e.g. 2018-07-27T20:15:34Z'));
+
     $fields['modifiedAt'] = BaseFieldDefinition::create('string')
       ->setReadOnly(TRUE)
       ->setLabel(new TranslatableMarkup("The channel modified"))
       ->setSetting('max_length', 25)
-      ->setDescription(new TranslatableMarkup('The modified time of the channel. e.g. 2018-07-27T20:15:34Z'))
-      ->setDisplayOptions('view', [
-        'label' => 'hidden',
-        'type' => 'string',
-        'weight' => -5,
-      ])
-      ->setDisplayOptions('form', [
-        'type' => 'string_textfield',
-        'weight' => -5,
-      ])
-      ->setDisplayConfigurable('form', TRUE);
+      ->setDescription(new TranslatableMarkup('The modified time of the channel. e.g. 2018-07-27T20:15:34Z'));
 
     $fields['type'] = BaseFieldDefinition::create('string')
       ->setLabel(new TranslatableMarkup("The channel type"))
       ->setReadOnly(TRUE)
       ->setSetting('max_length', 10)
-      ->setDescription(new TranslatableMarkup('The type of the channel.'))
-      ->setDisplayOptions('view', [
-        'label' => 'hidden',
-        'type' => 'string',
-        'weight' => -5,
-      ])
-      ->setDisplayOptions('form', [
-        'type' => 'string_textfield',
-        'weight' => -5,
-      ])
-      ->setDisplayConfigurable('form', TRUE);
+      ->setDescription(new TranslatableMarkup('The type of the channel.'));
 
     $fields['shareUrl'] = BaseFieldDefinition::create('string')
       ->setLabel(new TranslatableMarkup("The channel share URL"))
       ->setReadOnly(TRUE)
-      ->setDescription(new TranslatableMarkup('The share URL of the channel. e.g. https://apple.news/DedSkwdsQrdSWbNitx0w'))
-      ->setDisplayOptions('view', [
-        'label' => 'hidden',
-        'type' => 'string',
-        'weight' => -5,
-      ])
-      ->setDisplayOptions('form', [
-        'type' => 'string_textfield',
-        'weight' => -5,
-        'attribute' => ['disabled' => TRUE, 'readonly' => TRUE],
-      ])
-      ->setDisplayConfigurable('form', TRUE);
+      ->setDescription(new TranslatableMarkup('The share URL of the channel. e.g. https://apple.news/DedSkwdsQrdSWbNitx0w'));
 
     $fields['links'] = BaseFieldDefinition::create('string_long')
       ->setReadOnly(TRUE)
       ->setLabel(new TranslatableMarkup("The channel links"))
-      ->setDescription(new TranslatableMarkup('An array of links. Allowed index are self, defaultSection'))
-      ->setDisplayOptions('view', [
-        'label' => 'hidden',
-        'type' => 'string',
-        'weight' => -5,
-      ])
-      ->setDisplayOptions('form', [
-        'type' => 'string_textfield',
-        'weight' => -5,
-      ])
-      ->setDisplayConfigurable('form', TRUE);
+      ->setDescription(new TranslatableMarkup('An array of links. Allowed index are self, defaultSection'));
+
+    $fields['sections'] = BaseFieldDefinition::create('string_long')
+      ->setReadOnly(TRUE)
+      ->setLabel(new TranslatableMarkup("The channel sections"))
+      ->setDescription(new TranslatableMarkup('An array of section details'));
 
     $fields['website'] = BaseFieldDefinition::create('string')
       ->setLabel(new TranslatableMarkup("Website"))
       ->setReadOnly(TRUE)
-      ->setDescription(new TranslatableMarkup('The share URL of the channel. e.g. https://apple.news/DedSkwdsQrdSWbNitx0w'))
-      ->setDisplayOptions('view', [
-        'label' => 'hidden',
-        'type' => 'string',
-        'weight' => -5,
-      ])
-      ->setDisplayOptions('form', [
-        'type' => 'string_textfield',
-        'weight' => -5,
-      ])
-      ->setDisplayConfigurable('form', TRUE);
+      ->setDescription(new TranslatableMarkup('The share URL of the channel. e.g. https://apple.news/DedSkwdsQrdSWbNitx0w'));
 
     return $fields;
   }

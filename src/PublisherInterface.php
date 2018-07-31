@@ -13,7 +13,7 @@ interface PublisherInterface {
 
   public function GetSection();
 
-  public function GetSections();
+  public function GetSections($channel_id);
 
   public function postArticle();
 
