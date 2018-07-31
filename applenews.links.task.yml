@@ -4,3 +4,20 @@ applenews.export:
   base_route: entity.node.canonical
   weight: 100
 
+entity.applenews_template.collection:
+  title: 'Templates'
+  route_name: entity.applenews_template.collection
+  base_route: entity.applenews_template.collection
+  weight: 10
+
+applenews.settings:
+  title: 'Settings'
+  route_name: applenews.settings
+  base_route: entity.applenews_template.collection
+  weight: 11
+
+entity.applenews_channel.collection:
+  title: 'Channels'
+  route_name: entity.applenews_channel.collection
+  base_route: entity.applenews_template.collection
+  weight: 12

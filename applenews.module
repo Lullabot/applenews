@@ -20,7 +20,7 @@ function applenews_entity_insert(EntityInterface $entity) {
  * Implements hook_entity_update().
  */
 function applenews_entity_update(EntityInterface $entity) {
-  $fields = \Drupal::service('applenews.manager')->getFields($entity->getEntityTypeId());
-  print_r($fields);
-  exit;
+//  $fields = \Drupal::service('applenews.manager')->getFields($entity->getEntityTypeId());
+//  print_r($fields);
+//  exit;
 }

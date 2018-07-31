@@ -4,3 +4,9 @@ entity.applenews_template_add_form:
   appears_on:
     - entity.applenews_template.collection
 
+entity.applenews_channel.add_form:
+  title: 'Add Apple News Channel'
+  route_name: entity.applenews_channel.add_form
+  appears_on:
+    - entity.applenews_channel.collection
+

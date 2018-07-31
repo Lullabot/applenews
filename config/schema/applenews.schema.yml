@@ -126,6 +126,19 @@ applenews.settings:
     api_secret:
       type: string
       label: 'API Secret'
+    curl_options:
+      type: mapping
+      label: 'API Secret'
+      mapping:
+        ssl:
+          type: boolean
+          label: 'SSL verification'
+        proxy:
+          type: string
+          label: 'Proxy address'
+        proxy_port:
+          type: int
+          label: 'Proxy port'
 
 applenews.channel.*:
   type: mapping

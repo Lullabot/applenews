@@ -54,7 +54,7 @@ class ApplenewsManager {
   protected $currentUser;
 
   /**
-   * Construct the CommentManager object.
+   * Construct the ApplenewstManager object.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The entity manager service.
@@ -89,7 +89,7 @@ class ApplenewsManager {
       return [];
     }
 
-    $map = $this->entityTypeManager->getFieldMapByFieldType('applenews_template_default');
+    $map = $this->entityFieldManager->getFieldMapByFieldType('applenews_template_default');
     return isset($map[$entity_type_id]) ? $map[$entity_type_id] : [];
   }
 

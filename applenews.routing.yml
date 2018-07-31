@@ -30,6 +30,39 @@ entity.applenews_template.delete_form:
   requirements:
     _permission: 'administer applenews templates'
 
+# Channel
+entity.applenews_channel.collection:
+  path: '/admin/config/services/applenews/channel'
+  defaults:
+    _entity_list: 'applenews_channel'
+    _title: 'Apple News Channels'
+  requirements:
+    _permission: 'administer applenews channels'
+
+entity.applenews_channel.add_form:
+  path: '/admin/config/services/applenews/channel/add'
+  defaults:
+    _entity_form: 'applenews_channel.default'
+    _title: 'Add Apple News channel'
+  requirements:
+    _permission: 'administer applenews channels'
+
+entity.applenews_channel.edit_form:
+  path: '/admin/config/services/applenews/channel/{applenews_channel}'
+  defaults:
+    _entity_form: 'applenews_channel.default'
+    _title: 'Edit Apple News channel'
+  requirements:
+    _permission: 'administer applenews channels'
+
+entity.applenews_channel.delete_form:
+  path: '/admin/config/services/applenews/{applenews_channel}/delete'
+  defaults:
+    _entity_form: 'applenews_channel.delete'
+    _title: 'Delete Apple News channel'
+  requirements:
+    _permission: 'administer applenews channels'
+
 applenews.preview:
   path: '/node/{node}/applenews-preview'
   defaults:
@@ -49,3 +82,11 @@ applenews.preview_download:
     _title: 'Download Apple News Preview'
   requirements:
     _permission: 'preview applenews content'
+
+applenews.settings:
+  path: '/admin/config/services/applenews/settings'
+  defaults:
+    _form: 'Drupal\applenews\Form\SettingsForm'
+    _title: 'Apple News Settings'
+  requirements:
+    _permission: 'administer applenews configuration'
