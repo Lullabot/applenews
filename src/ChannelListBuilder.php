@@ -13,8 +13,8 @@ class ChannelListBuilder extends EntityListBuilder {
    * {@inheritdoc}
    */
   public function buildHeader() {
-    $header['name'] = $this->t('Applenews Channel');
-    $header['id'] = $this->t('Machine name');
+    $header['name'] = $this->t('Name');
+    $header['id'] = $this->t('Channel ID');
     return $header + parent::buildHeader();
   }
 

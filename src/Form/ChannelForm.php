@@ -102,17 +102,17 @@ class ChannelForm extends ContentEntityForm {
   public function validateForm(array &$form, FormStateInterface $form_state) {
     parent::validateForm($form, $form_state);
     try {
-      $response = $this->publisher->getChannel($form_state->getValue('name')[0]['value']);
+      $response = $this->publisher->getChannel($form_state->getValue('id')[0]['value']);
     }
     catch (\Exception $e) {
       // Throw validation error.
+      echo 'error';exit;
       return;
     }
 
     if ($response) {
-      $this->entity
-        ->updateFromResponse($response)
-        ->save();
+      $this->entity->updateFromResponse($response);
+      $this->entity->save();
     }
   }
 

@@ -22,6 +22,8 @@ use Drupal\Core\StringTranslation\TranslatableMarkup;
  *     plural = "@count Applenews channels",
  *   ),
  *   handlers = {
+ *     "storage" = "Drupal\Core\Entity\Sql\SqlContentEntityStorage",
+ *     "storage_schema" = "Drupal\menu_link_content\SqlContentEntityStorageSchema",
  *     "list_builder" = "Drupal\applenews\ChannelListBuilder",
  *     "form" = {
  *       "default" = "Drupal\applenews\Form\ChannelForm",
@@ -160,11 +162,6 @@ class ApplenewsChannel extends ContentEntityBase implements ChannelInterface {
     return $this->get('website')->value;
   }
 
-  public function save() {
-    $storage = $this->entityTypeManager()->getStorage($this->entityTypeId);
-    return $storage->save($this);
-  }
-
   /**
    * @param $response
    *
@@ -197,13 +194,21 @@ class ApplenewsChannel extends ContentEntityBase implements ChannelInterface {
     $fields['uuid']->setDescription(new TranslatableMarkup('The channel UUID.'));
 
     $fields['id'] = BaseFieldDefinition::create('string')
-      ->setLabel(new TranslatableMarkup('ID'))
-      ->setReadOnly(TRUE);
-    
+      ->setLabel(new TranslatableMarkup('Channel ID'))
+      ->setRequired(TRUE)
+      ->setDisplayOptions('view', [
+        'label' => 'hidden',
+        'type' => 'string',
+        'weight' => -5,
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'string_textfield',
+        'weight' => -5,
+      ])
+      ->setDisplayConfigurable('form', TRUE);
+
     $fields['name'] = BaseFieldDefinition::create('string')
       ->setLabel(new TranslatableMarkup('Name'))
-      ->setTranslatable(TRUE)
-      ->setRequired(TRUE)
       ->setSetting('max_length', 255)
       ->setDisplayOptions('view', [
         'label' => 'hidden',
@@ -218,30 +223,97 @@ class ApplenewsChannel extends ContentEntityBase implements ChannelInterface {
 
     $fields['createdAt'] = BaseFieldDefinition::create('string')
       ->setLabel(new TranslatableMarkup("The channel created"))
-      ->setSetting('max_length', 20)
-      ->setDescription(new TranslatableMarkup('The created time of the channel. e.g. 2018-07-27T20:15:34Z'));
+      ->setSetting('max_length', 25)
+      ->setReadOnly(TRUE)
+      ->setDescription(new TranslatableMarkup('The created time of the channel. e.g. 2018-07-27T20:15:34Z'))
+      ->setDisplayOptions('view', [
+        'label' => 'hidden',
+        'type' => 'string',
+        'weight' => -5,
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'string_textfield',
+        'weight' => -5,
+      ])
+      ->setDisplayConfigurable('form', TRUE);
     
     $fields['modifiedAt'] = BaseFieldDefinition::create('string')
+      ->setReadOnly(TRUE)
       ->setLabel(new TranslatableMarkup("The channel modified"))
-      ->setSetting('max_length', 20)
-      ->setDescription(new TranslatableMarkup('The modified time of the channel. e.g. 2018-07-27T20:15:34Z'));
+      ->setSetting('max_length', 25)
+      ->setDescription(new TranslatableMarkup('The modified time of the channel. e.g. 2018-07-27T20:15:34Z'))
+      ->setDisplayOptions('view', [
+        'label' => 'hidden',
+        'type' => 'string',
+        'weight' => -5,
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'string_textfield',
+        'weight' => -5,
+      ])
+      ->setDisplayConfigurable('form', TRUE);
 
     $fields['type'] = BaseFieldDefinition::create('string')
       ->setLabel(new TranslatableMarkup("The channel type"))
+      ->setReadOnly(TRUE)
       ->setSetting('max_length', 10)
-      ->setDescription(new TranslatableMarkup('The type of the channel.'));
+      ->setDescription(new TranslatableMarkup('The type of the channel.'))
+      ->setDisplayOptions('view', [
+        'label' => 'hidden',
+        'type' => 'string',
+        'weight' => -5,
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'string_textfield',
+        'weight' => -5,
+      ])
+      ->setDisplayConfigurable('form', TRUE);
 
     $fields['shareUrl'] = BaseFieldDefinition::create('string')
       ->setLabel(new TranslatableMarkup("The channel share URL"))
-      ->setDescription(new TranslatableMarkup('The share URL of the channel. e.g. https://apple.news/DedSkwdsQrdSWbNitx0w'));
+      ->setReadOnly(TRUE)
+      ->setDescription(new TranslatableMarkup('The share URL of the channel. e.g. https://apple.news/DedSkwdsQrdSWbNitx0w'))
+      ->setDisplayOptions('view', [
+        'label' => 'hidden',
+        'type' => 'string',
+        'weight' => -5,
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'string_textfield',
+        'weight' => -5,
+        'attribute' => ['disabled' => TRUE, 'readonly' => TRUE],
+      ])
+      ->setDisplayConfigurable('form', TRUE);
 
     $fields['links'] = BaseFieldDefinition::create('string_long')
+      ->setReadOnly(TRUE)
       ->setLabel(new TranslatableMarkup("The channel links"))
-      ->setDescription(new TranslatableMarkup('An array of links. Allowed index are self, defaultSection'));
+      ->setDescription(new TranslatableMarkup('An array of links. Allowed index are self, defaultSection'))
+      ->setDisplayOptions('view', [
+        'label' => 'hidden',
+        'type' => 'string',
+        'weight' => -5,
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'string_textfield',
+        'weight' => -5,
+      ])
+      ->setDisplayConfigurable('form', TRUE);
 
     $fields['website'] = BaseFieldDefinition::create('string')
-      ->setLabel(new TranslatableMarkup("The channel share URL"))
-      ->setDescription(new TranslatableMarkup('The share URL of the channel. e.g. https://apple.news/DedSkwdsQrdSWbNitx0w'));
+      ->setLabel(new TranslatableMarkup("Website"))
+      ->setReadOnly(TRUE)
+      ->setDescription(new TranslatableMarkup('The share URL of the channel. e.g. https://apple.news/DedSkwdsQrdSWbNitx0w'))
+      ->setDisplayOptions('view', [
+        'label' => 'hidden',
+        'type' => 'string',
+        'weight' => -5,
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'string_textfield',
+        'weight' => -5,
+      ])
+      ->setDisplayConfigurable('form', TRUE);
 
     return $fields;
   }
