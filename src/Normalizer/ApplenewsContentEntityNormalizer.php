@@ -42,6 +42,9 @@ class ApplenewsContentEntityNormalizer extends ApplenewsNormalizerBase {
     // @todo check cache
     $template = $this->entityTypeManager->getStorage('applenews_template')->load($context['template_id']);
     $layout = new Document\Layouts\Layout($template->columns, $template->width);
+    $layout
+      ->setMargin($template->margin)
+      ->setGutter($template->gutter);
     $document = new Document($data->uuid(), $data->getTitle(), $data->language()->getId(), $layout);
 
     $context['entity'] = $data;

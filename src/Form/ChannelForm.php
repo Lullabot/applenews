@@ -121,8 +121,17 @@ class ChannelForm extends ContentEntityForm {
     if ($response) {
       $this->entity->updateFromResponse($response);
     }
+    else {
+      $form_state->setErrorByName('id', $this->t('Error while trying to reach applenews.'));
+    }
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  protected function getRedirectUrl() {
+    return $this->getCancelUrl();
+  }
 
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $channel_id = $form_state->getValue('id')[0]['value'];
@@ -133,6 +142,7 @@ class ChannelForm extends ContentEntityForm {
       $this->entity->updateSections($response);
     }
     $this->entity->save();
+    $form_state->setRedirectUrl($this->entity->toUrl('collection'));
   }
 
 }

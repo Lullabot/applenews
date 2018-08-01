@@ -12,7 +12,7 @@ use Drupal\Core\Form\FormStateInterface;
  *
  * @FieldWidget(
  *   id = "applenews_default",
- *   label = @Translation("Applenews"),
+ *   label = @Translation("Apple News"),
  *   field_types = {
  *     "applenews_default"
  *   }
@@ -23,24 +23,14 @@ class Applenews extends WidgetBase {
   /**
    * {@inheritdoc}
    */
-  public static function defaultSettings() {
-    return [
-        'status' => FALSE,
-        'template' => '',
-        'channels' => '',
-      ] + parent::defaultSettings();
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
+    $default_channels = unserialize($items[$delta]->channels);
     $entity = $items->getEntity();
     $element['#attached']['library'][] = 'applenews/drupal.applenews.admin';
 
     $element['status'] = [
       '#type' => 'checkbox',
-      '#title' => t('Enabled'),
+      '#title' => t('Publish to Apple News'),
       '#default_value' => $items->status,
       '#attributes' => [
         'class' => ['applenews-publish-flag']
@@ -59,27 +49,30 @@ class Applenews extends WidgetBase {
         ],
       ],
     ];
-    $element['channel'] = [
+    $element['channels'] = [
       '#type' => 'container',
-      '#prefix' => '<strong>' . t('Default channels and sections') . '</strong>',
+      '#title' => $this->t('Default channels and sections'),
+      '#group' => 'fieldset',
     ];
-    foreach ($this->getChannels() as $channel_id => $channel ) {
-      $channel_key = 'channel-' . $channel_id;
+
+    // $default_channels = $items->get('channels')[0]->getValue();
+    foreach ($this->getChannels() as $channel ) {
       /** @var \Drupal\applenews\Entity\ApplenewsChannel $channel */
-      $element['channel'][$channel_key] = [
+      $channel_key = $channel->getChannelId();
+      $element['channels'][$channel_key] = [
         '#type' => 'checkbox',
         '#title' => $channel->getName(),
-        '#default_value' => $items->{$channel_key},
+        '#default_value' => isset($default_channels[$channel_key]),
         '#attributes' => [
           'data-channel-id' => $channel_key
         ],
       ];
       foreach ($channel->getSections() as $section_id => $section_label) {
-        $section_key = 'section-' . $section_id;
-        $element['channel'][$section_key] = [
+        $section_key = $channel_key . '-section-' . $section_id;
+        $element['sections'][$section_key] = [
           '#type' => 'checkbox',
           '#title' => $section_label,
-          '#default_value' => $items->{$section_key},
+          '#default_value' => isset($default_channels[$channel_key][$section_id]),
           '#attributes' => [
             'data-section-of' => $channel_key,
             'class' => ['applenews-sections'],
@@ -88,6 +81,19 @@ class Applenews extends WidgetBase {
       }
 
     }
+    $element['is_preview'] = [
+      '#title' => t('Exported articles will be visible to members of my channel only.'),
+      '#type' => 'checkbox',
+      '#default_value' => $items->is_preview,
+      '#description' => $this->t('Indicates whether this article should be public (live) or should be a preview that is only visible to members of your channel. Uncheck this to publish the article right away and make it visible to all News users. <br/><strong>Note:</strong>  If your channel has not yet been approved to publish articles in Apple News Format, unchecking this option will result in an error.'),
+      '#prefix' => '<strong>' . $this->t('Content visibility') . '</strong>',
+      '#weight' => 1,
+      '#states' => [
+        'visible' => [
+          ':input[name="' . $items->getName() . '[' . $delta . '][status]"]' => ['checked' => TRUE],
+        ],
+      ],
+    ];
 
     // If the advanced settings tabs-set is available (normally rendered in the
     // second column on wide-resolutions), place the field as a details element
@@ -172,6 +178,35 @@ class Applenews extends WidgetBase {
 
 
     return $templates;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function massageFormValues(array $values, array $form, FormStateInterface $form_state) {
+    // Update channels and sections structure for storage and API call.
+    foreach ($values as &$value) {
+      $value += [
+        'status' => FALSE,
+        'template' => '',
+        'channels' => '',
+        'is_preview' => TRUE,
+      ];
+      $result = [];
+      $channels = array_keys(array_filter($value['channels']));
+      $sections = array_keys(array_filter($value['sections']));
+      foreach ($channels  as $channel_id) {
+        foreach ($sections as $section_id) {
+          if (strpos($section_id, $channel_id) === 0) {
+            $section_id_result = substr($section_id, strlen($channel_id .'-section-'));
+            $result[$channel_id][$section_id_result] = 1;
+          }
+        }
+      }
+      $value['channels'] = serialize($result);
+      unset($value['sections']);
+    }
+    return $values;
   }
 
   /**

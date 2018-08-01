@@ -2,15 +2,15 @@
 
 namespace Drupal\applenews;
 
+use Drupal\Component\Serialization\Json;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityFieldManagerInterface;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\FieldableEntityInterface;
-use Drupal\Core\Extension\ModuleHandlerInterface;
-use Drupal\Core\Routing\UrlGeneratorInterface;
-use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\StringTranslation\TranslationInterface;
+use Symfony\Component\Serializer\Serializer;
 
 /**
  * Applenews manager contains common functions to manage fields.
@@ -33,52 +33,51 @@ class ApplenewsManager {
   protected $entityFieldManager;
 
   /**
-   * The user settings config object.
+   * The applenews settings config object.
    *
    * @var \Drupal\Core\Config\Config
    */
-  protected $userConfig;
+  protected $config;
 
   /**
-   * The module handler service.
+   * The serializer.
    *
-   * @var \Drupal\Core\Extension\ModuleHandlerInterface
+   * @var \Symfony\Component\Serializer\SerializerInterface
    */
-  protected $moduleHandler;
+  protected $serializer;
 
   /**
-   * The current user.
+   * The date formatter service.
    *
-   * @var \Drupal\Core\Session\AccountInterface
+   * @var \Drupal\applenews\PublisherInterface
    */
-  protected $currentUser;
+  protected $publisher;
 
   /**
-   * Construct the ApplenewstManager object.
+   * ApplenewsManager constructor.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
-   *   The entity manager service.
+   *   The entity type manager service.
    * @param \Drupal\Core\Entity\EntityFieldManagerInterface $entity_field_manager
-   *   The entity manager service.
+   *   The entity field manager service.
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   The config factory.
    * @param \Drupal\Core\StringTranslation\TranslationInterface $string_translation
    *   The string translation service.
-   * @param \Drupal\Core\Routing\UrlGeneratorInterface $url_generator
-   *   The url generator service.
-   *  @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
-   *   The module handler service.
-   * @param \Drupal\Core\Session\AccountInterface $current_user
-   *   The current user.
+   * @param \Symfony\Component\Serializer\Serializer $serializer
+   *   Serializer.
+   * @param \Drupal\applenews\PublisherInterface $publisher
+   *   Apple news publisher.
    */
-  public function __construct(EntityTypeManagerInterface $entity_type_manager,EntityFieldManagerInterface $entity_field_manager, ConfigFactoryInterface $config_factory, TranslationInterface $string_translation, ModuleHandlerInterface $module_handler, AccountInterface $current_user) {
+  public function __construct(EntityTypeManagerInterface $entity_type_manager,EntityFieldManagerInterface $entity_field_manager, ConfigFactoryInterface $config_factory, TranslationInterface $string_translation, Serializer $serializer, PublisherInterface $publisher) {
     $this->entityTypeManager = $entity_type_manager;
     $this->entityFieldManager = $entity_field_manager;
-    $this->userConfig = $config_factory->get('user.settings');
+    $this->config = $config_factory->get('applenews.settings');
     $this->stringTranslation = $string_translation;
-    $this->moduleHandler = $module_handler;
-    $this->currentUser = $current_user;
+    $this->serializer = $serializer;
+    $this->publisher = $publisher;
   }
+
 
   /**
    * {@inheritdoc}
@@ -89,8 +88,76 @@ class ApplenewsManager {
       return [];
     }
 
-    $map = $this->entityFieldManager->getFieldMapByFieldType('applenews_template_default');
+    $map = $this->entityFieldManager->getFieldMapByFieldType('applenews_default');
     return isset($map[$entity_type_id]) ? $map[$entity_type_id] : [];
+  }
+
+  /**
+   * Post article to selected channels with given template.
+   *
+   * @param \Drupal\Core\Entity\EntityInterface $entity
+   */
+  public function post(EntityInterface $entity) {
+    $fields = $this->getFields($entity->getEntityTypeId());
+    if (!$fields){
+      return;
+    }
+
+    foreach ($fields as $field_name => $detail) {
+      $field = $entity->get($field_name);
+      if ($field->status) {
+        $template = $field->template;
+        $channels = unserialize($field->channels);
+        $document = $this->getDocumentDataFromEntity($entity, $template);
+        foreach ($channels as $channel_id => $sections) {
+          $data = [
+            'json' => $document,
+            // 'files' => ''
+            'metadata' => $this->getMetaData($sections),
+          ];
+          $this->doPost($channel_id, $data);
+        }
+      }
+    }
+  }
+
+  /**
+   * Fetches metadata.
+   *
+   * @param $sections
+   *
+   * @return string
+   */
+  protected function getMetadata($sections) {
+    foreach ($sections as $section_id => $flag) {
+      $section_urls[] =   $this->config->get('endpoint') . '/sections/' . $section_id;
+    }
+    return json_encode(['data' => ['links' => ['sections' => $section_urls]]], JSON_UNESCAPED_SLASHES);
+  }
+
+  /**
+   * Posts article.
+   *
+   * @param $channel_id
+   * @param $data
+   */
+  protected function doPost($channel_id, $data) {
+    $this->publisher->postArticle($channel_id, $data);
+  }
+
+  /**
+   * Generates document from entity.
+   *
+   * @param \Drupal\Core\Entity\EntityInterface $entity
+   * @param $template
+   *
+   * @return string
+   */
+  protected function getDocumentDataFromEntity(EntityInterface $entity, $template) {
+    $context['template_id'] = $template;
+    /** @var \ChapterThree\AppleNewsAPI\Document $document */
+    $document = $this->serializer->normalize($entity, 'applenews', $context);
+    return Json::encode($document);
   }
 
 }

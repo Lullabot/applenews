@@ -64,8 +64,8 @@ class Publisher implements PublisherInterface {
   /**
    * {@inheritdoc}
    */
-  public function postArticle() {
-
+  public function postArticle($channel_id, $data) {
+    return $this->publisher()->Post('/channels/{channel_id}/articles', ['channel_id' => $channel_id], $data);
   }
 
   /**

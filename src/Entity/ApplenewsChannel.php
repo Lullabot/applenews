@@ -68,14 +68,14 @@ class ApplenewsChannel extends ContentEntityBase implements ChannelInterface {
   /**
    * {@inheritdoc}
    */
-  public function getChannelId(){
+  public function getChannelId() {
     return $this->get('id')->value;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function getType(){
+  public function getType() {
     return $this->get('type')->value;
   }
 
@@ -89,30 +89,28 @@ class ApplenewsChannel extends ContentEntityBase implements ChannelInterface {
   /**
    * {@inheritdoc}
    */
-  public function getLinks(){
+  public function getLinks() {
     return $this->get('links')->value;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function getName(){
+  public function getName() {
     return $this->get('name')->value;
   }
 
-
   /**
    * {@inheritdoc}
    */
-  public function getSections(){
-    return $this->get('sections')->value ? unserialize($this->get('sections')->value) : '';
-
+  public function getSections() {
+    return $this->get('sections')->value ? unserialize($this->get('sections')->value) : [];
   }
 
   /**
    * {@inheritdoc}
    */
-  public function getWebsite(){
+  public function getWebsite() {
     return $this->get('website')->value;
   }
 

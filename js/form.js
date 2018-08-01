@@ -15,7 +15,7 @@
       $('input[data-channel-id]').each(function() {
         var _channel_id = $(this).data('channel-id');
         if (!$(this).attr('checked')) {
-          $('input[data-section-of="' + _channel_id + '"]').parent().hide();
+          // $('input[data-section-of="' + _channel_id + '"]').parent().hide();
         }
       });
 

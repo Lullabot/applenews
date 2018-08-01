@@ -12,7 +12,7 @@ use Drupal\Core\Field\FieldItemBase;
  *
  * @FieldType(
  *   id = "applenews_default",
- *   label = @Translation("Applenews"),
+ *   label = @Translation("Apple News"),
  *   description = @Translation("This field manages configuration and presentation of applenews."),
  *   default_widget = "applenews_default",
  *   cardinality = 1,
@@ -25,11 +25,13 @@ class Applenews extends FieldItemBase {
    */
   public static function propertyDefinitions(FieldStorageDefinitionInterface $field_definition) {
     $properties['status'] = DataDefinition::create('boolean')
-      ->setLabel(t('Boolean value'));
+      ->setLabel(t('Applenews value'));
     $properties['template'] = DataDefinition::create('string')
       ->setLabel(t('Template'));
     $properties['channels'] = DataDefinition::create('string')
       ->setLabel(t('channels'));
+    $properties['is_preview'] = DataDefinition::create('boolean')
+      ->setLabel(t('Preview'));
     return $properties;
   }
 
@@ -38,7 +40,11 @@ class Applenews extends FieldItemBase {
    */
   public static function defaultFieldSettings() {
     return [
-    ] + parent::defaultFieldSettings();
+        'status' => 0,
+        'template' => NULL,
+        'channels' => NULL,
+        'is_preview' => 1,
+      ] + parent::defaultFieldSettings();
   }
 
   /**
@@ -61,6 +67,11 @@ class Applenews extends FieldItemBase {
           'description' => 'Channels',
           'type' => 'text',
           'size' => 'big',
+        ],
+        'is_preview' => [
+          'description' => 'Content visibility',
+          'type' => 'int',
+          'default' => 1,
         ],
       ],
       'indexes' => [],
@@ -87,7 +98,9 @@ class Applenews extends FieldItemBase {
    */
   public static function generateSampleValue(FieldDefinitionInterface $field_definition) {
     return [
-      'status' => mt_rand(0, 1)
+      'status' => mt_rand(0, 1),
+      'template' => 'Blog',
+      'channels' => '',
     ];
   }
 
