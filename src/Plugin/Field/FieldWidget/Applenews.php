@@ -8,17 +8,17 @@ use Drupal\Core\Field\WidgetBase;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
- * Provides a default applenews template widget.
+ * Provides a default applenews widget.
  *
  * @FieldWidget(
- *   id = "applenews_template_default",
- *   label = @Translation("Applenews template"),
+ *   id = "applenews_default",
+ *   label = @Translation("Applenews"),
  *   field_types = {
- *     "applenews_template_default"
+ *     "applenews_default"
  *   }
  * )
  */
-class ApplenewsTemplate extends WidgetBase {
+class Applenews extends WidgetBase {
 
   /**
    * {@inheritdoc}
@@ -27,7 +27,7 @@ class ApplenewsTemplate extends WidgetBase {
     return [
         'status' => FALSE,
         'template' => '',
-        'channel' => '',
+        'channels' => '',
       ] + parent::defaultSettings();
   }
 

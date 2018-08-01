@@ -2,29 +2,23 @@
 
 namespace Drupal\applenews\Plugin\Field\FieldType;
 
-use Drupal\comment\CommentManagerInterface;
-use Drupal\comment\Entity\CommentType;
-use Drupal\comment\Plugin\Field\FieldType\CommentItemInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
-use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Routing\UrlGeneratorTrait;
 use Drupal\Core\TypedData\DataDefinition;
 use Drupal\Core\Field\FieldItemBase;
-use Drupal\Core\Session\AnonymousUserSession;
 
 /**
  * Plugin implementation of the 'comment' field type.
  *
  * @FieldType(
- *   id = "applenews_template_default",
- *   label = @Translation("Applenews template"),
- *   description = @Translation("This field manages configuration and presentation of applenews template."),
- *   default_widget = "applenews_template_default",
+ *   id = "applenews_default",
+ *   label = @Translation("Applenews"),
+ *   description = @Translation("This field manages configuration and presentation of applenews."),
+ *   default_widget = "applenews_default",
  *   cardinality = 1,
  * )
  */
-class ApplenewsTemplate extends FieldItemBase {
+class Applenews extends FieldItemBase {
 
   /**
    * {@inheritdoc}
@@ -34,8 +28,8 @@ class ApplenewsTemplate extends FieldItemBase {
       ->setLabel(t('Boolean value'));
     $properties['template'] = DataDefinition::create('string')
       ->setLabel(t('Template'));
-    $properties['channel'] = DataDefinition::create('string')
-      ->setLabel(t('channel '));
+    $properties['channels'] = DataDefinition::create('string')
+      ->setLabel(t('channels'));
     return $properties;
   }
 
@@ -63,10 +57,10 @@ class ApplenewsTemplate extends FieldItemBase {
           'type' => 'varchar',
           'length' => 128,
         ],
-        'channel' => [
-          'description' => 'channel name',
-          'type' => 'varchar',
-          'length' => 128,
+        'channels' => [
+          'description' => 'Channels',
+          'type' => 'text',
+          'size' => 'big',
         ],
       ],
       'indexes' => [],
