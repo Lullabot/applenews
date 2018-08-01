@@ -34,6 +34,8 @@ class ApplenewsTemplate extends FieldItemBase {
       ->setLabel(t('Boolean value'));
     $properties['template'] = DataDefinition::create('string')
       ->setLabel(t('Template'));
+    $properties['channel'] = DataDefinition::create('string')
+      ->setLabel(t('channel '));
     return $properties;
   }
 
@@ -62,7 +64,7 @@ class ApplenewsTemplate extends FieldItemBase {
           'length' => 128,
         ],
         'channel' => [
-          'description' => 'Template name',
+          'description' => 'channel name',
           'type' => 'varchar',
           'length' => 128,
         ],
