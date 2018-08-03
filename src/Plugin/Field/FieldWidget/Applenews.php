@@ -53,6 +53,11 @@ class Applenews extends WidgetBase {
       '#type' => 'container',
       '#title' => $this->t('Default channels and sections'),
       '#group' => 'fieldset',
+      '#states' => [
+        'visible' => [
+          ':input[name="' . $items->getName() . '[' . $delta . '][status]"]' => ['checked' => TRUE],
+        ],
+      ],
     ];
 
     // $default_channels = $items->get('channels')[0]->getValue();
@@ -66,6 +71,11 @@ class Applenews extends WidgetBase {
         '#attributes' => [
           'data-channel-id' => $channel_key
         ],
+        '#states' => [
+          'visible' => [
+            ':input[name="' . $items->getName() . '[' . $delta . '][status]"]' => ['checked' => TRUE],
+          ],
+        ],
       ];
       foreach ($channel->getSections() as $section_id => $section_label) {
         $section_key = $channel_key . '-section-' . $section_id;
@@ -77,16 +87,20 @@ class Applenews extends WidgetBase {
             'data-section-of' => $channel_key,
             'class' => ['applenews-sections'],
           ],
+          '#states' => [
+            'visible' => [
+              ':input[name="' . $items->getName() . '[' . $delta . '][status]"]' => ['checked' => TRUE],
+            ],
+          ],
         ];
       }
 
     }
     $element['is_preview'] = [
-      '#title' => t('Exported articles will be visible to members of my channel only.'),
+      '#title' => '<strong>' . $this->t('Content visibility') . '</strong>: ' . t('Exported articles will be visible to members of my channel only.'),
       '#type' => 'checkbox',
       '#default_value' => $items->is_preview,
       '#description' => $this->t('Indicates whether this article should be public (live) or should be a preview that is only visible to members of your channel. Uncheck this to publish the article right away and make it visible to all News users. <br/><strong>Note:</strong>  If your channel has not yet been approved to publish articles in Apple News Format, unchecking this option will result in an error.'),
-      '#prefix' => '<strong>' . $this->t('Content visibility') . '</strong>',
       '#weight' => 1,
       '#states' => [
         'visible' => [

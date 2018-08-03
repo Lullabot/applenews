@@ -41,21 +41,23 @@ class Publisher implements PublisherInterface {
   /**
    * {@inheritdoc}
    */
-  public function getArticle() {
-
+  public function getArticle($article_id) {
+    $response = $this->publisher()->get('/articles/{article_id}', ['article_id' => $article_id]);
+    return $this->handleResponse($response);
   }
 
   /**
    * {@inheritdoc}
    */
-  public function GetSection() {
-
+  public function getSection($section_id) {
+    $response = $this->publisher()->get('/sections/{section_id}', ['section_id' => $section_id]);
+    return $this->handleResponse($response);
   }
 
   /**
    * {@inheritdoc}
    */
-  public function GetSections($channel_id) {
+  public function getSections($channel_id) {
     $response = $this->publisher()->get('/channels/{channel_id}/sections', ['channel_id' => $channel_id]);
     return $this->handleResponse($response);
 
@@ -71,8 +73,9 @@ class Publisher implements PublisherInterface {
   /**
    * {@inheritdoc}
    */
-  public function updateArticle() {
-
+  public function updateArticle($article_id, $data) {
+    $response = $this->publisher()->get('/articles/{article_id}', ['article_id' => $article_id], $data);
+    return $this->handleResponse($response);
   }
 
   /**
