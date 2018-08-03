@@ -159,4 +159,5 @@ class ApplenewsTemplate extends ConfigEntityBase implements ApplenewsTemplateInt
   public function sortHelper($a, $b) {
     return $a['weight'] - $b['weight'];
   }
+
 }
