@@ -2,6 +2,7 @@
 
 namespace Drupal\applenews;
 
+use Drupal\applenews\Entity\ApplenewsArticle;
 use Drupal\Component\Serialization\Json;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityFieldManagerInterface;
@@ -94,61 +95,120 @@ class ApplenewsManager {
   /**
    * Post article to selected channels with given template.
    *
+   * Using single method here for create and update as it is possible from
+   * entity (e.g. node) UI to create an entity without publishing to Apple News
+   * and decide to publish on entity update.
+   *
    * @param \Drupal\Core\Entity\EntityInterface $entity
    *
-   * @return null|
+   * @return bool
+   * @throws \Drupal\Core\Entity\EntityStorageException
    */
   public function postArticle(EntityInterface $entity) {
-    $return = NULL;
     $fields = $this->getFields($entity->getEntityTypeId());
     if (!$fields){
-      return $return;
+      return FALSE;
     }
 
     foreach ($fields as $field_name => $detail) {
       $field = $entity->get($field_name);
       if ($field->status) {
+
         $template = $field->template;
         $channels = unserialize($field->channels);
         $document = $this->getDocumentDataFromEntity($entity, $template);
+        $data = [
+          'json' => $document,
+          // 'files' => ''
+        ];
         foreach ($channels as $channel_id => $sections) {
-          $data = [
-            'json' => $document,
-            // 'files' => ''
-            'metadata' => $this->getMetaData($sections),
-          ];
-          $response = $this->doPost($channel_id, $data);
-          $response_field = ApplenewsResponse::createFromResponse($response)->toString();
-          $field->response = $response_field;
+          // Publish for the first time.
+          if (!$field->article) {
+            $data['metadata'] = $this->getMetaData($sections);
+            $response = $this->doPost($channel_id, $data);
+            $article = ApplenewsArticle::create([
+              'entity_id' => $entity->id(),
+              'entity_type' => $entity->getEntityType()->id(),
+              'field_name' => $field_name,
+            ]);
+            $article->updateFromResponse($response)->save();
+
+          }
+          else {
+            /** @var ApplenewsArticle $article */
+            $article = $field->article;
+            // hook_entity_update get called on ->save(). Avoid multiple calls.
+            $data['metadata'] = $this->getMetaData($sections, $article->getRevision());
+            $response = $this->doUpdate($article->getArticleId(), $data);
+            $article->updateFromResponse($response)->save();
+          }
         }
       }
-      $return = $entity;
     }
 
-    return $return;
-  }
-
-  /**
-   * Update an existing article.
-   *
-   * @param \Drupal\Core\Entity\EntityInterface $entity
-   */
-  public function updateArticle(EntityInterface $entity) {
-
+    return TRUE;
   }
 
   /**
    * Fetches metadata.
    *
    * @param $sections
+   *   An array of section ids.
+   * @param null|string $revision_id
+   *  Revision ID for article update.
    *
    * @return string
    */
-  protected function getMetadata($sections) {
+  protected function getMetadata($sections, $revision_id = NULL) {
     foreach ($sections as $section_id => $flag) {
       $section_urls[] =   $this->config->get('endpoint') . '/sections/' . $section_id;
     }
-    return json_encode(['data' => ['links' => ['sections' => $section_urls]]], JSON_UNESCAPED_SLASHES);
+    $data = [
+      'links' => [
+        'sections' => $section_urls,
+      ]
+    ];
+    if ($revision_id) {
+      $data['revision'] = $revision_id;
+    }
+    return json_encode(['data' => $data], JSON_UNESCAPED_SLASHES);
+  }
+
+
+  /**
+   * @param \Drupal\Core\Entity\EntityInterface $entity
+   * @param $field_name
+   *
+   * @return \Drupal\applenews\Entity\ApplenewsArticle|null
+   */
+  public static function getArticle(EntityInterface $entity, $field_name) {
+    try {
+      $query = \Drupal::entityQuery('applenews_article');
+
+      $ids = $query
+        ->condition('entity_type', $entity->getEntityType()->id())
+        ->condition('entity_id', $entity->id())
+        ->condition('field_name', $field_name)
+        ->execute();
+      return \Drupal::entityTypeManager()->getStorage('applenews_article')->load(current($ids));
+    }
+    catch (\Exception $e) {
+      // Do not throw exception.
+    }
+
+    return NULL;
+  }
+
+  /**
+   * Update article.
+   *
+   * @param $article_id
+   * @param $data
+   *
+   * @return mixed
+   */
+  protected function doUpdate($article_id, $data) {
+    return $this->publisher->updateArticle($article_id, $data);
   }
 
   /**

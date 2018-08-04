@@ -9,7 +9,7 @@ use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
 
 /**
- * Defines the contact message entity.
+ * Defines the Apple News Channel entity.
  *
  * @ContentEntityType(
  *   id = "applenews_channel",

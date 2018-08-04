@@ -16,10 +16,24 @@ function applenews_entity_insert(EntityInterface $entity) {
     /** @var \Drupal\applenews\ApplenewsManager $manager */
     $manager = \Drupal::service('applenews.manager');
     // On successful post, save response details on entity.
-    if ($manager->postArticle($entity)) {
-      $entity->save();
-    }
+    $manager->postArticle($entity);
+  }
+  catch (\Exception $e) {
+    \Drupal::logger('applenews')->error(t('Error posting  to Apple News'));
+  }
 
+}
+
+/**
+ * Implements hook_entity_update().
+ */
+function applenews_entity_update(EntityInterface $entity) {
+
+  try {
+    /** @var \Drupal\applenews\ApplenewsManager $manager */
+    $manager = \Drupal::service('applenews.manager');
+    // On successful post, save response details on entity.
+    $manager->postArticle($entity);
   }
   catch (\Exception $e) {
     \Drupal::logger('applenews')->error(t('Error posting  to Apple News'));

@@ -6,6 +6,10 @@ administer applenews channels:
   title: 'Administer Apple News channels'
   description: 'Create, edit, and delete Apple News channels.'
   restrict access: true
+administer applenews article:
+  title: 'Administer Apple News article'
+  description: 'Create, edit, and delete Apple News article.'
+  restrict access: true
 preview applenews content:
   title: 'Preview exports to Apple News'
   description: 'Download Apple News exports for content.'

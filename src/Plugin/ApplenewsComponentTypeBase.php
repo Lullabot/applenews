@@ -72,6 +72,7 @@ abstract class ApplenewsComponentTypeBase extends PluginBase implements Applenew
       '#type' => 'number',
       '#title' => $this->t('Column Span'),
       '#description' => $this->t("Indicates how many columns the component spans, based on the number of columns in the document. By default, the component spans the entire width of the document or the width of its container component."),
+      '#default_value' => 7,
     ];
 
     $element['component_settings']['component_layout']['margin_top'] = [
@@ -116,6 +117,7 @@ abstract class ApplenewsComponentTypeBase extends PluginBase implements Applenew
       '#type' => 'number',
       '#title' => $this->t('Minimum Height'),
       '#description' => $this->t('Sets the minimum height of the component.'),
+      '#default_value' => 10,
     ];
 
     $element['component_settings']['component_layout']['minimum_height_unit'] = [

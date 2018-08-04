@@ -55,6 +55,13 @@ class ApplenewsTemplate extends ConfigEntityBase implements ApplenewsTemplateInt
    */
   protected $components = [];
 
+  /**
+   * The Applenews Template node type.
+   *
+   * @var string
+   */
+  public $node_type;
+
 
   /**
    * {@inheritdoc}

@@ -2,7 +2,7 @@
 
 namespace Drupal\applenews\Plugin\Field\FieldWidget;
 
-use Drupal\applenews\ApplenewsResponse;
+use Drupal\applenews\ApplenewsManager;
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\WidgetBase;
@@ -26,15 +26,12 @@ class Applenews extends WidgetBase {
    * {@inheritdoc}
    */
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
+    $field_name = $items->getName();
     $default_channels = unserialize($items[$delta]->channels);
     $entity = $items->getEntity();
     $element['#attached']['library'][] = 'applenews/drupal.applenews.admin';
     $templates = $this->getTemplates($entity);
-    $article = NULL;
-    if ($items->response) {
-      /** @var \Drupal\applenews\ApplenewsResponse $article */
-      $article = ApplenewsResponse::createFromArray(unserialize($items->response));
-    }
+    $article = ApplenewsManager::getArticle($entity, $field_name);
 
     if (!$templates) {
       $element['message'] = [
@@ -51,6 +48,10 @@ class Applenews extends WidgetBase {
         ],
       ];
       if ($article) {
+        $element['article'] = [
+          '#type' => 'value',
+          '#value' => $article,
+        ];
         $element['created'] = [
           '#type' => 'item',
           '#title' => $this->t('Apple News post date'),
@@ -61,7 +62,7 @@ class Applenews extends WidgetBase {
           '#title' => $this->t(  'Share URL'),
           '#markup' => $this->t('<a href=":url">:url</a>', [':url' => $article->getShareUrl()]),
         ];
-        $delete_url = Url::fromRoute('applenews.remote.article_delete', ['channel_id' => '121-12121-sdf-121', 'article_id' => $article->getId()]);
+        $delete_url = Url::fromRoute('applenews.remote.article_delete', ['channel_id' => '121-12121-sdf-121', 'article_id' => $article->getArticleId()]);
         $element['delete'] = [
           '#type' => 'item',
           '#title' => $this->t(  'Delete'),
@@ -138,11 +139,11 @@ class Applenews extends WidgetBase {
           ],
         ],
       ];
-      if ($items->response) {
+      if ($article) {
         $element['preview'] = [
           '#type' => 'item',
           '#title' => $this->t('Preview'),
-          '#markup' => '<a href="">Download</a> the Apple News generated document (use the News Preview app to preview the article).',
+          '#markup' => '<a href="#">Download</a> the Apple News generated document (use the News Preview app to preview the article).',
         ];
 
       }
@@ -260,6 +261,7 @@ class Applenews extends WidgetBase {
     }
     return $values;
   }
+
 
   /**
    * Logger.

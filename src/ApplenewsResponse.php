@@ -42,6 +42,11 @@ class ApplenewsResponse {
   protected $links;
 
   /**
+   * @var
+   */
+  protected $revision;
+
+  /**
    * ApplenewsResponse constructor.
    *
    * @param $id
@@ -85,7 +90,9 @@ class ApplenewsResponse {
       ->setType($data->type)
       ->setModified($data->modifiedAt)
       ->setShareUrl($data->shareUrl)
-      ->setLinks($data->links);
+      ->setLinks($data->links)
+      ->setRevision($data->revision);
+
     return $object;
   }
 
@@ -102,7 +109,9 @@ class ApplenewsResponse {
       ->setType($data['type'])
       ->setModified($data['modified'])
       ->setShareUrl($data['shareUrl'])
-      ->setLinks($data['links']);
+      ->setLinks($data['links'])
+      ->setRevision($data['revision']);
+
     return $object;
   }
 
@@ -113,44 +122,6 @@ class ApplenewsResponse {
     return $this->created;
   }
 
-  /**
-   * Returns create date in system formats.
-   *
-   * @param string $type
-   * @param null $format
-   *
-   * @return string
-   */
-  public function getCreatedFormatted($type = 'medium', $format = NULL) {
-    return $this->formatDate($this->created, $type, $format);
-  }
-
-  /**
-   * Returns modified date in system formats.
-   *
-   * @param string $type
-   * @param null $format
-   *
-   * @return string
-   */
-  public function getModifiedFormatted($type = 'medium', $format = NULL) {
-    return $this->formatDate($this->created, $type, $format);
-  }
-
-  /**
-   * Formats given datetime string.
-   *
-   * @param string $type
-   * @param null $format
-   *
-   * @return string
-   */
-  protected function formatDate($type = 'medium', $format = NULL) {
-    /** @var \Drupal\Core\Datetime\DateFormatter $date_formatter */
-    $date_formatter = \Drupal::service('date.formatter');
-    $created = DrupalDateTime::createFromFormat('Y-m-d\TH:i:s\Z', $this->created);
-    return $date_formatter->format($created->getTimestamp(), $type, $format);
-  }
 
   /**
    * @param mixed $created
@@ -238,6 +209,23 @@ class ApplenewsResponse {
   }
 
   /**
+   * @return mixed
+   */
+  public function getRevision() {
+    return $this->revision;
+  }
+
+  /**
+   * @param mixed $revision
+   *
+   * @return $this
+   */
+  public function setRevision($revision) {
+    $this->revision = $revision;
+    return $this;
+  }
+
+  /**
    * @return array
    */
   public function toArray() {
@@ -248,6 +236,7 @@ class ApplenewsResponse {
       'modified' => $this->modified,
       'links' => $this->links,
       'shareUrl' => $this->shareUrl,
+      'revision' => $this->revision,
     ];
   }
 
