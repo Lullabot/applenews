@@ -1,7 +1,6 @@
 endpoint: ''
 api_key: ''
 api_secret: ''
-channels: []
 curl_options:
   ssl: false
   proxy: ''

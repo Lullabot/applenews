@@ -114,9 +114,6 @@ applenews.field_mapping:
 applenews.settings:
   type: config_object
   mapping:
-    channels:
-      type: sequence
-      sequence: applenews.channel.[%key]
     endpoint:
       type: string
       label: 'API Endpoint'
@@ -128,7 +125,7 @@ applenews.settings:
       label: 'API Secret'
     curl_options:
       type: mapping
-      label: 'API Secret'
+      label: 'Curl options'
       mapping:
         ssl:
           type: boolean
@@ -137,15 +134,5 @@ applenews.settings:
           type: string
           label: 'Proxy address'
         proxy_port:
-          type: int
+          type: string
           label: 'Proxy port'
-
-applenews.channel.*:
-  type: mapping
-  mapping:
-    name:
-      type: string
-      label: 'Channel Name'
-    id:
-      type: string
-      label: 'Channel ID'
