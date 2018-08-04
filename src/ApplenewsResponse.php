@@ -40,11 +40,6 @@ class ApplenewsResponse {
   protected $links;
 
   /**
-   * @var
-   */
-  protected $sections;
-
-  /**
    * ApplenewsResponse constructor.
    *
    * @param $id
@@ -80,15 +75,15 @@ class ApplenewsResponse {
    * @return \Drupal\applenews\ApplenewsResponse
    */
   public static function createFromResponse($response) {
+    $data = $response->data;
     $object = new static(
-      $response->id
+      $data->id
     );
-    $object->setCreated($response->createAt)
-      ->setType($response->type)
-      ->setModified($response->updatedAt)
-      ->setShareUrl($response->shareUrl)
-      ->setSections($response->links)
-      ->setSections($response->sections);
+    $object->setCreated($data->createdAt)
+      ->setType($data->type)
+      ->setModified($data->modifiedAt)
+      ->setShareUrl($data->shareUrl)
+      ->setLinks($data->links);
     return $object;
   }
 
@@ -179,23 +174,6 @@ class ApplenewsResponse {
   }
 
   /**
-   * @return mixed
-   */
-  public function getSections() {
-    return $this->sections;
-  }
-
-  /**
-   * @param mixed $sections
-   *
-   * @return $this
-   */
-  public function setSections($sections) {
-    $this->sections = $sections;
-    return $this;
-  }
-
-  /**
    * @return string
    */
   public function getId() {
@@ -207,14 +185,19 @@ class ApplenewsResponse {
    */
   public function toArray() {
     return [
-
+      'id' => $this->id,
+      'type' => $this->type,
+      'create' => $this->created,
+      'modified' => $this->modified,
+      'links' => $this->links,
+      'shareUrl' => $this->shareUrl,
     ];
   }
 
   /**
    * @return string
    */
-  public function __toString() {
+  public function toString() {
     return serialize($this->toArray());
   }
 

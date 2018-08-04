@@ -141,7 +141,7 @@ class ChannelForm extends ContentEntityForm {
     if ($response) {
       $channel->updateSections($response);
     }
-    $status = $channel>save();
+    $status = $channel->save();
 
     if ($status) {
       $this->messenger()->addStatus($this->t('Saved the %label channel.', ['%label' => $channel->label()]));

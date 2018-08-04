@@ -12,7 +12,9 @@ use Drupal\Core\Entity\EntityInterface;
  */
 function applenews_entity_insert(EntityInterface $entity) {
   try{
-    $response = \Drupal::service('applenews.manager')->post($entity);
+    /** @var \Drupal\applenews\ApplenewsManager $manager */
+    $manager = \Drupal::service('applenews.manager');
+    $response = $manager->postArticle($entity);
 
   }
   catch (\Exception $e) {

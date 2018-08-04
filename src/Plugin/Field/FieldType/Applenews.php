@@ -32,6 +32,8 @@ class Applenews extends FieldItemBase {
       ->setLabel(t('channels'));
     $properties['is_preview'] = DataDefinition::create('boolean')
       ->setLabel(t('Preview'));
+    $properties['response'] = DataDefinition::create('string')
+      ->setLabel(t('Response'));
     return $properties;
   }
 
@@ -72,6 +74,11 @@ class Applenews extends FieldItemBase {
           'description' => 'Content visibility',
           'type' => 'int',
           'default' => 1,
+        ],
+        'response' => [
+          'description' => 'Response',
+          'type' => 'text',
+          'size' => 'big',
         ],
       ],
       'indexes' => [],

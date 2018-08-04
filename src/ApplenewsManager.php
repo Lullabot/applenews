@@ -98,7 +98,7 @@ class ApplenewsManager {
    *
    * @return null|
    */
-  public function post(EntityInterface $entity) {
+  public function postArticle(EntityInterface $entity) {
     $return = NULL;
     $fields = $this->getFields($entity->getEntityTypeId());
     if (!$fields){
@@ -118,11 +118,21 @@ class ApplenewsManager {
             'metadata' => $this->getMetaData($sections),
           ];
           $response = $this->doPost($channel_id, $data);
-          $field->response = ApplenewsResponse::createFromResponse($response)->toString();
+          $response_field = ApplenewsResponse::createFromResponse($response)->toString();
+          $field->response = $response_field;
         }
       }
     }
     return $return;
+  }
+
+  /**
+   * Update an existing article.
+   *
+   * @param \Drupal\Core\Entity\EntityInterface $entity
+   */
+  public function updateArticle(EntityInterface $entity) {
+
   }
 
   /**
