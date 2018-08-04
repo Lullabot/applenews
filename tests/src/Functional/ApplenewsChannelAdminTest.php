@@ -3,11 +3,11 @@
 namespace Drupal\Tests\applenews\Functional;
 
 /**
- * Tests node administration page functionality.
+ * Tests channel administration page functionality.
  *
  * @group applenews
  */
-class AppleNewsTemplateAdminTest extends AppleNewsTestBase {
+class ApplenewsChannelAdminTest extends ApplenewsTestBase {
 
   /**
    * Tests template pages.
@@ -17,11 +17,11 @@ class AppleNewsTemplateAdminTest extends AppleNewsTestBase {
     $this->drupalLogin($this->admin_user);
 
     // Verify overview page has empty message by default.
-    $this->drupalGet('admin/config/services/applenews');
+    $this->drupalGet('admin/config/services/applenews/channel');
     $assert_session->statusCodeEquals(200);
-    $assert_session->pageTextNotContains('There are no applenews template entities yet.');
+    $assert_session->pageTextNotContains('There are no applenews channel entities yet.');
 
-    $assert_session->linkExists('Add Apple News Template');
+    $assert_session->linkExists('Add Apple News Channel');
   }
 
 }

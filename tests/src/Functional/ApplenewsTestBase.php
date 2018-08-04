@@ -8,7 +8,7 @@ use Drupal\user\RoleInterface;
 /**
  * Setup users and configurations.
  */
-abstract class AppleNewsTestBase extends BrowserTestBase {
+abstract class ApplenewsTestBase extends BrowserTestBase {
   /**
    * A user with permission to bypass access content.
    *
@@ -28,7 +28,7 @@ abstract class AppleNewsTestBase extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['applenews', 'serialization'];
+  public static $modules = ['applenews', 'serialization', 'block'];
 
   /**
    * {@inheritdoc}
@@ -36,8 +36,16 @@ abstract class AppleNewsTestBase extends BrowserTestBase {
   protected function setUp() {
     parent::setUp();
 
-    $this->admin_user = $this->drupalCreateUser(['access administration pages', 'administer applenews templates']);
+    $this->admin_user = $this->drupalCreateUser([
+      'access administration pages',
+      'administer applenews configuration',
+      'administer applenews templates',
+      'administer applenews channels',
+    ]);
     $this->base_user = $this->drupalCreateUser([]);
+
+    $this->drupalPlaceBlock('local_actions_block');
+    $this->drupalPlaceBlock('local_tasks_block');
   }
 
 }

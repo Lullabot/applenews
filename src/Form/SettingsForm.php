@@ -143,7 +143,6 @@ class SettingsForm extends ConfigFormBase {
       ->set('endpoint', $form_state->getValue('endpoint'))
       ->set('api_key', $form_state->getValue('api_key'))
       ->set('api_secret', $form_state->getValue('api_secret'))
-      ->set('channels', $form_state->getValue('channels'))
       ->set('curl_options.ssl', $form_state->getValue('curl_options.ssl'))
       ->set('curl_options.proxy', $form_state->getValue('curl_options.proxy'))
       ->set('curl_options.proxy_port', $form_state->getValue('curl_options.proxy_port'))
