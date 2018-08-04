@@ -26,8 +26,10 @@ use Drupal\Core\Config\Entity\ConfigEntityBase;
  *    "label" = "label",
  *  },
  *  links = {
- *    "edit-form" = "/admin/config/services/applenews/{applenews_template}",
- *    "delete-form" = "/admin/config/services/applenews/{applenews_template}/delete"
+ *    "collection" = "/admin/config/services/applenews",
+ *    "add-form" = "/admin/config/services/applenews/template/add",
+ *    "edit-form" = "/admin/config/services/applenews/template/{applenews_template}",
+ *    "delete-form" = "/admin/config/services/applenews/template/{applenews_template}/delete"
  *  }
  * )
  */

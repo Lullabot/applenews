@@ -46,7 +46,7 @@ class ApplenewsTemplateAdminTest extends ApplenewsTestBase {
     $assert_session = $this->assertSession();
     $this->drupalLogin($this->admin_user);
 
-    $this->drupalGet('admin/config/services/applenews/add');
+    $this->drupalGet('admin/config/services/applenews/template/add');
     $assert_session->statusCodeEquals(200);
 
     $assert_session->pageTextContains('Label');

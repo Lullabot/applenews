@@ -2,12 +2,12 @@ entity.applenews_template.collection:
   path: '/admin/config/services/applenews'
   defaults:
     _entity_list: 'applenews_template'
-    _title: 'Apple News Templates'
+    _title: 'Apple News'
   requirements:
     _permission: 'administer applenews templates'
 
 entity.applenews_template.add_form:
-  path: '/admin/config/services/applenews/add'
+  path: '/admin/config/services/applenews/template/add'
   defaults:
     _entity_form: 'applenews_template.add'
     _title: 'Add Apple News template'
@@ -15,7 +15,7 @@ entity.applenews_template.add_form:
     _permission: 'administer applenews templates'
 
 entity.applenews_template.edit_form:
-  path: '/admin/config/services/applenews/{applenews_template}'
+  path: '/admin/config/services/applenews/template/{applenews_template}'
   defaults:
     _entity_form: 'applenews_template.edit'
     _title: 'Edit Apple News template'
@@ -23,7 +23,7 @@ entity.applenews_template.edit_form:
     _permission: 'administer applenews templates'
 
 entity.applenews_template.delete_form:
-  path: '/admin/config/services/applenews/{applenews_template}/delete'
+  path: '/admin/config/services/applenews/template/{applenews_template}/delete'
   defaults:
     _entity_form: 'applenews_template.delete'
     _title: 'Delete Apple News template'
