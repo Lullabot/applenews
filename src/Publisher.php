@@ -67,14 +67,16 @@ class Publisher implements PublisherInterface {
    * {@inheritdoc}
    */
   public function postArticle($channel_id, $data) {
-    return $this->publisher()->Post('/channels/{channel_id}/articles', ['channel_id' => $channel_id], $data);
+    $response = $this->publisher()->post('/channels/{channel_id}/articles', ['channel_id' => $channel_id], $data);
+    return $this->handleResponse($response);
+
   }
 
   /**
    * {@inheritdoc}
    */
   public function updateArticle($article_id, $data) {
-    $response = $this->publisher()->get('/articles/{article_id}', ['article_id' => $article_id], $data);
+    $response = $this->publisher()->post('/articles/{article_id}', ['article_id' => $article_id], $data);
     return $this->handleResponse($response);
   }
 
@@ -87,6 +89,7 @@ class Publisher implements PublisherInterface {
   protected function handleResponse($response) {
     if (isset($response->errors) && is_array($response->errors)) {
       $error = current($response->errors);
+      // Update to handle different error cases.
       throw new ApplenewsInvalidResponseException($error->code, '500');
     }
     return $response;

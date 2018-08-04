@@ -6,6 +6,7 @@ use Drupal\Component\Utility\Html;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\WidgetBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Url;
 
 /**
  * Provides a default applenews widget.
@@ -27,65 +28,54 @@ class Applenews extends WidgetBase {
     $default_channels = unserialize($items[$delta]->channels);
     $entity = $items->getEntity();
     $element['#attached']['library'][] = 'applenews/drupal.applenews.admin';
-
-    $element['status'] = [
-      '#type' => 'checkbox',
-      '#title' => t('Publish to Apple News'),
-      '#default_value' => $items->status,
-      '#attributes' => [
-        'class' => ['applenews-publish-flag']
-      ],
-    ];
-
-    $element['template'] = [
-      '#type' => 'select',
-      '#title' => t('Template'),
-      '#default_value' => $items->template,
-      '#options' => $this->getTemplates($entity),
-      '#description' => $this->t('Select template to use for Applenews'),
-      '#states' => [
-        'visible' => [
-          ':input[name="' . $items->getName() . '[' . $delta . '][status]"]' => ['checked' => TRUE],
-        ],
-      ],
-    ];
-    $element['channels'] = [
-      '#type' => 'container',
-      '#title' => $this->t('Default channels and sections'),
-      '#group' => 'fieldset',
-      '#states' => [
-        'visible' => [
-          ':input[name="' . $items->getName() . '[' . $delta . '][status]"]' => ['checked' => TRUE],
-        ],
-      ],
-    ];
-
-    // $default_channels = $items->get('channels')[0]->getValue();
-    foreach ($this->getChannels() as $channel ) {
-      /** @var \Drupal\applenews\Entity\ApplenewsChannel $channel */
-      $channel_key = $channel->getChannelId();
-      $element['channels'][$channel_key] = [
+    $templates = $this->getTemplates($entity);
+    if (!$templates) {
+      $element['message'] = [
+        '#markup' => $this->t('Add a template to %type type. Check Apple news Template <a href=":url">configuration</a> page.', ['%type' => $entity->bundle(), ':url' => Url::fromRoute('entity.applenews_template.collection')->toString()]),
+      ];
+    }
+    else {
+      $element['status'] = [
         '#type' => 'checkbox',
-        '#title' => $channel->getName(),
-        '#default_value' => isset($default_channels[$channel_key]),
+        '#title' => t('Publish to Apple News'),
+        '#default_value' => $items->status,
         '#attributes' => [
-          'data-channel-id' => $channel_key
+          'class' => ['applenews-publish-flag']
         ],
+      ];
+      $element['template'] = [
+        '#type' => 'select',
+        '#title' => t('Template'),
+        '#default_value' => $items->template,
+        '#options' => $templates,
+        '#description' => $this->t('Select template to use for Applenews'),
         '#states' => [
           'visible' => [
             ':input[name="' . $items->getName() . '[' . $delta . '][status]"]' => ['checked' => TRUE],
           ],
         ],
       ];
-      foreach ($channel->getSections() as $section_id => $section_label) {
-        $section_key = $channel_key . '-section-' . $section_id;
-        $element['sections'][$section_key] = [
+      $element['channels'] = [
+        '#type' => 'container',
+        '#title' => $this->t('Default channels and sections'),
+        '#group' => 'fieldset',
+        '#states' => [
+          'visible' => [
+            ':input[name="' . $items->getName() . '[' . $delta . '][status]"]' => ['checked' => TRUE],
+          ],
+        ],
+      ];
+
+      // $default_channels = $items->get('channels')[0]->getValue();
+      foreach ($this->getChannels() as $channel ) {
+        /** @var \Drupal\applenews\Entity\ApplenewsChannel $channel */
+        $channel_key = $channel->getChannelId();
+        $element['channels'][$channel_key] = [
           '#type' => 'checkbox',
-          '#title' => $section_label,
-          '#default_value' => isset($default_channels[$channel_key][$section_id]),
+          '#title' => $channel->getName(),
+          '#default_value' => isset($default_channels[$channel_key]),
           '#attributes' => [
-            'data-section-of' => $channel_key,
-            'class' => ['applenews-sections'],
+            'data-channel-id' => $channel_key
           ],
           '#states' => [
             'visible' => [
@@ -93,22 +83,38 @@ class Applenews extends WidgetBase {
             ],
           ],
         ];
+        foreach ($channel->getSections() as $section_id => $section_label) {
+          $section_key = $channel_key . '-section-' . $section_id;
+          $element['sections'][$section_key] = [
+            '#type' => 'checkbox',
+            '#title' => $section_label,
+            '#default_value' => isset($default_channels[$channel_key][$section_id]),
+            '#attributes' => [
+              'data-section-of' => $channel_key,
+              'class' => ['applenews-sections'],
+            ],
+            '#states' => [
+              'visible' => [
+                ':input[name="' . $items->getName() . '[' . $delta . '][status]"]' => ['checked' => TRUE],
+              ],
+            ],
+          ];
+        }
+
       }
-
-    }
-    $element['is_preview'] = [
-      '#title' => '<strong>' . $this->t('Content visibility') . '</strong>: ' . t('Exported articles will be visible to members of my channel only.'),
-      '#type' => 'checkbox',
-      '#default_value' => $items->is_preview,
-      '#description' => $this->t('Indicates whether this article should be public (live) or should be a preview that is only visible to members of your channel. Uncheck this to publish the article right away and make it visible to all News users. <br/><strong>Note:</strong>  If your channel has not yet been approved to publish articles in Apple News Format, unchecking this option will result in an error.'),
-      '#weight' => 1,
-      '#states' => [
-        'visible' => [
-          ':input[name="' . $items->getName() . '[' . $delta . '][status]"]' => ['checked' => TRUE],
+      $element['is_preview'] = [
+        '#title' => '<strong>' . $this->t('Content visibility') . '</strong>: ' . t('Exported articles will be visible to members of my channel only.'),
+        '#type' => 'checkbox',
+        '#default_value' => $items->is_preview,
+        '#description' => $this->t('Indicates whether this article should be public (live) or should be a preview that is only visible to members of your channel. Uncheck this to publish the article right away and make it visible to all News users. <br/><strong>Note:</strong>  If your channel has not yet been approved to publish articles in Apple News Format, unchecking this option will result in an error.'),
+        '#weight' => 1,
+        '#states' => [
+          'visible' => [
+            ':input[name="' . $items->getName() . '[' . $delta . '][status]"]' => ['checked' => TRUE],
+          ],
         ],
-      ],
-    ];
-
+      ];
+    }
     // If the advanced settings tabs-set is available (normally rendered in the
     // second column on wide-resolutions), place the field as a details element
     // in this tab-set.

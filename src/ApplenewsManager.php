@@ -78,7 +78,6 @@ class ApplenewsManager {
     $this->publisher = $publisher;
   }
 
-
   /**
    * {@inheritdoc}
    */
@@ -96,11 +95,14 @@ class ApplenewsManager {
    * Post article to selected channels with given template.
    *
    * @param \Drupal\Core\Entity\EntityInterface $entity
+   *
+   * @return null|
    */
   public function post(EntityInterface $entity) {
+    $return = NULL;
     $fields = $this->getFields($entity->getEntityTypeId());
     if (!$fields){
-      return;
+      return $return;
     }
 
     foreach ($fields as $field_name => $detail) {
@@ -115,10 +117,12 @@ class ApplenewsManager {
             // 'files' => ''
             'metadata' => $this->getMetaData($sections),
           ];
-          $this->doPost($channel_id, $data);
+          $response = $this->doPost($channel_id, $data);
+          $field->response = ApplenewsResponse::createFromResponse($response)->toString();
         }
       }
     }
+    return $return;
   }
 
   /**
@@ -140,9 +144,11 @@ class ApplenewsManager {
    *
    * @param $channel_id
    * @param $data
+   *
+   * @return mixed
    */
   protected function doPost($channel_id, $data) {
-    $this->publisher->postArticle($channel_id, $data);
+    return $this->publisher->postArticle($channel_id, $data);
   }
 
   /**
