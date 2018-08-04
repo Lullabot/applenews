@@ -55,10 +55,6 @@ class ApplenewsTemplate extends ConfigEntityBase implements ApplenewsTemplateInt
    */
   protected $components = [];
 
-  /**
-   * @var string
-   */
-  protected $nodeType;
 
   /**
    * {@inheritdoc}
@@ -73,7 +69,7 @@ class ApplenewsTemplate extends ConfigEntityBase implements ApplenewsTemplateInt
   }
 
   public function getNodeType() {
-    return $this->nodeType;
+    return $this->node_type;
   }
 
   /**

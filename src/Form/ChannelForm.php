@@ -133,15 +133,23 @@ class ChannelForm extends ContentEntityForm {
     return $this->getCancelUrl();
   }
 
-  public function submitForm(array &$form, FormStateInterface $form_state) {
+  public function save(array $form, FormStateInterface $form_state) {
     $channel_id = $form_state->getValue('id')[0]['value'];
-    parent::submitForm($form, $form_state);
+    $channel = $this->entity;
     // Fetch sections.
     $response = $this->publisher->GetSections($channel_id);
     if ($response) {
-      $this->entity->updateSections($response);
+      $channel->updateSections($response);
     }
-    $this->entity->save();
+    $status = $channel>save();
+
+    if ($status) {
+      $this->messenger()->addStatus($this->t('Saved the %label channel.', ['%label' => $channel->label()]));
+    }
+    else {
+      $this->messenger()->addError($this->t('The %label channel was not saved.', ['%label' => $channel->label()]));
+    }
+
     $form_state->setRedirectUrl($this->entity->toUrl('collection'));
   }
 
