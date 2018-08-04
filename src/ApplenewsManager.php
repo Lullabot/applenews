@@ -122,7 +122,9 @@ class ApplenewsManager {
           $field->response = $response_field;
         }
       }
+      $return = $entity;
     }
+
     return $return;
   }
 

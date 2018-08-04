@@ -11,10 +11,14 @@ use Drupal\Core\Entity\EntityInterface;
  * Implements hook_entity_insert().
  */
 function applenews_entity_insert(EntityInterface $entity) {
-  try{
+
+  try {
     /** @var \Drupal\applenews\ApplenewsManager $manager */
     $manager = \Drupal::service('applenews.manager');
-    $response = $manager->postArticle($entity);
+    // On successful post, save response details on entity.
+    if ($manager->postArticle($entity)) {
+      $entity->save();
+    }
 
   }
   catch (\Exception $e) {

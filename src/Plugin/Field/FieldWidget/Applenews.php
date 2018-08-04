@@ -2,6 +2,7 @@
 
 namespace Drupal\applenews\Plugin\Field\FieldWidget;
 
+use Drupal\applenews\ApplenewsResponse;
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\WidgetBase;
@@ -29,6 +30,12 @@ class Applenews extends WidgetBase {
     $entity = $items->getEntity();
     $element['#attached']['library'][] = 'applenews/drupal.applenews.admin';
     $templates = $this->getTemplates($entity);
+    $article = NULL;
+    if ($items->response) {
+      /** @var \Drupal\applenews\ApplenewsResponse $article */
+      $article = ApplenewsResponse::createFromArray(unserialize($items->response));
+    }
+
     if (!$templates) {
       $element['message'] = [
         '#markup' => $this->t('Add a template to %type type. Check Apple news Template <a href=":url">configuration</a> page.', ['%type' => $entity->bundle(), ':url' => Url::fromRoute('entity.applenews_template.collection')->toString()]),
@@ -43,6 +50,24 @@ class Applenews extends WidgetBase {
           'class' => ['applenews-publish-flag']
         ],
       ];
+      if ($article) {
+        $element['created'] = [
+          '#type' => 'item',
+          '#title' => $this->t('Apple News post date'),
+          '#markup' => $article->getCreatedFormatted(),
+        ];
+        $element['share_url'] = [
+          '#type' => 'item',
+          '#title' => $this->t(  'Share URL'),
+          '#markup' => $this->t('<a href=":url">:url</a>', [':url' => $article->getShareUrl()]),
+        ];
+        $delete_url = Url::fromRoute('applenews.remote.article_delete', ['channel_id' => '121-12121-sdf-121', 'article_id' => $article->getId()]);
+        $element['delete'] = [
+          '#type' => 'item',
+          '#title' => $this->t(  'Delete'),
+          '#markup' => $this->t('<a href=":url">Delete</a> this article from Apple News.', [':url' => $delete_url->toString()]),
+        ];
+      }
       $element['template'] = [
         '#type' => 'select',
         '#title' => t('Template'),
@@ -100,7 +125,6 @@ class Applenews extends WidgetBase {
             ],
           ];
         }
-
       }
       $element['is_preview'] = [
         '#title' => '<strong>' . $this->t('Content visibility') . '</strong>: ' . t('Exported articles will be visible to members of my channel only.'),
@@ -114,6 +138,14 @@ class Applenews extends WidgetBase {
           ],
         ],
       ];
+      if ($items->response) {
+        $element['preview'] = [
+          '#type' => 'item',
+          '#title' => $this->t('Preview'),
+          '#markup' => '<a href="">Download</a> the Apple News generated document (use the News Preview app to preview the article).',
+        ];
+
+      }
     }
     // If the advanced settings tabs-set is available (normally rendered in the
     // second column on wide-resolutions), place the field as a details element

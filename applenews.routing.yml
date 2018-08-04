@@ -83,6 +83,15 @@ applenews.preview_download:
   requirements:
     _permission: 'preview applenews content'
 
+# Remote
+applenews.remote.article_delete:
+  path: '/admin/config/services/applenews/remote/{channel_id}/{article_id}/delete'
+  defaults:
+    _form: 'Drupal\applenews\Form\SettingsForm'
+    _title: 'Delete article'
+  requirements:
+    _permission: 'administer applenews configuration'
+
 applenews.settings:
   path: '/admin/config/services/applenews/settings'
   defaults:

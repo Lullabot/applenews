@@ -2,6 +2,8 @@
 
 namespace Drupal\applenews;
 
+use Drupal\Core\Datetime\DrupalDateTime;
+
 /**
  * Class ApplenewsResponse
  *
@@ -87,12 +89,67 @@ class ApplenewsResponse {
     return $object;
   }
 
+  /**
+   * @param $data
+   *
+   * @return \Drupal\applenews\ApplenewsResponse
+   */
+  public static function createFromArray($data) {
+    $object = new static(
+      $data['id']
+    );
+    $object->setCreated($data['created'])
+      ->setType($data['type'])
+      ->setModified($data['modified'])
+      ->setShareUrl($data['shareUrl'])
+      ->setLinks($data['links']);
+    return $object;
+  }
 
   /**
    * @return mixed
    */
   public function getCreated() {
     return $this->created;
+  }
+
+  /**
+   * Returns create date in system formats.
+   *
+   * @param string $type
+   * @param null $format
+   *
+   * @return string
+   */
+  public function getCreatedFormatted($type = 'medium', $format = NULL) {
+    return $this->formatDate($this->created, $type, $format);
+  }
+
+  /**
+   * Returns modified date in system formats.
+   *
+   * @param string $type
+   * @param null $format
+   *
+   * @return string
+   */
+  public function getModifiedFormatted($type = 'medium', $format = NULL) {
+    return $this->formatDate($this->created, $type, $format);
+  }
+
+  /**
+   * Formats given datetime string.
+   *
+   * @param string $type
+   * @param null $format
+   *
+   * @return string
+   */
+  protected function formatDate($type = 'medium', $format = NULL) {
+    /** @var \Drupal\Core\Datetime\DateFormatter $date_formatter */
+    $date_formatter = \Drupal::service('date.formatter');
+    $created = DrupalDateTime::createFromFormat('Y-m-d\TH:i:s\Z', $this->created);
+    return $date_formatter->format($created->getTimestamp(), $type, $format);
   }
 
   /**
@@ -187,7 +244,7 @@ class ApplenewsResponse {
     return [
       'id' => $this->id,
       'type' => $this->type,
-      'create' => $this->created,
+      'created' => $this->created,
       'modified' => $this->modified,
       'links' => $this->links,
       'shareUrl' => $this->shareUrl,

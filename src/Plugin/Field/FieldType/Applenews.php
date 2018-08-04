@@ -46,6 +46,7 @@ class Applenews extends FieldItemBase {
         'template' => NULL,
         'channels' => NULL,
         'is_preview' => 1,
+        'response' => NULL,
       ] + parent::defaultFieldSettings();
   }
 
