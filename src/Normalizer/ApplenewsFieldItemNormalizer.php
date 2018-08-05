@@ -15,13 +15,11 @@ class ApplenewsFieldItemNormalizer extends ApplenewsNormalizerBase {
   /**
    * {@inheritdoc}
    */
-  public function normalize($field_item, $format = NULL, array $context = []) {
-    $property = $context['field_property'];
-    if ($property == 'base') {
-      $value = $field_item->value;
-    }
-    else {
-        $value = $this->serializer->normalize($field_item->{$property});
+  public function normalize($field, $format = NULL, array $context = []) {
+    $value = '';
+
+    foreach ($field as $field_item) {
+      $value .= $this->serializer->normalize($field_item, $format, $context);
     }
 
     return $value;

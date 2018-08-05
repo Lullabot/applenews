@@ -18,8 +18,8 @@ class ApplenewsImageComponentNormalizer extends ApplenewsComponentNormalizerBase
 
     $field_name = $data['component_data']['URL']['field_name'];
     $context['field_property'] = $data['component_data']['URL']['field_property'];
-    $text = $this->serializer->normalize($entity->get($field_name), $format, $context);
-    $component = new $component_class($text);
+    $field_value = $this->serializer->normalize($entity->get($field_name), $format, $context);
+    $component = new $component_class($this->getUrl($field_value));
 
     $field_name = $data['component_data']['caption']['field_name'];
     $context['field_property'] = $data['component_data']['caption']['field_property'];
@@ -29,4 +29,19 @@ class ApplenewsImageComponentNormalizer extends ApplenewsComponentNormalizerBase
 
     return $component;
   }
+
+  /**
+   * Gets image URL.
+   *
+   * @param $file
+   *
+   * @return null|string
+   */
+  protected function getUrl($file) {
+    if (isset($file['uri'][0]['value'])) {
+      return file_create_url($file['uri'][0]['value']);
+    }
+    return NULL;
+  }
+
 }

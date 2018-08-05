@@ -22,8 +22,8 @@ services:
     arguments: ['@plugin.manager.applenews_component_type']
     tags:
       - { name: normalizer, priority: 10 }
-  serializer.applenews.field:
-    class: Drupal\applenews\Normalizer\ApplenewsFieldNormalizer
+  serializer.applenews.field_list:
+    class: Drupal\applenews\Normalizer\ApplenewsFieldItemListNormalizer
     tags:
       - { name: normalizer, priority: 10 }
   serializer.applenews.field_item:
