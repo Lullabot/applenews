@@ -1,9 +1,3 @@
-applenews.export:
-  title: 'Apple News Preview'
-  route_name: applenews.preview
-  base_route: entity.node.canonical
-  weight: 100
-
 entity.applenews_template.collection:
   title: 'Templates'
   route_name: entity.applenews_template.collection
@@ -21,3 +15,9 @@ entity.applenews_channel.collection:
   route_name: entity.applenews_channel.collection
   base_route: entity.applenews_template.collection
   weight: 12
+
+entity.applenews_text_style.collection:
+  title: 'Text styles'
+  route_name: entity.applenews_text_style.collection
+  base_route: entity.applenews_template.collection
+  weight: 13

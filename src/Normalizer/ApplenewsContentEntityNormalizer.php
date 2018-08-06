@@ -51,6 +51,11 @@ class ApplenewsContentEntityNormalizer extends ApplenewsNormalizerBase {
     foreach ($template->getComponents() as $component) {
       $document->addComponent($this->serializer->normalize($component, $format, $context));
     }
+    /** @var \Drupal\applenews\Entity\ApplenewsTextStyle $text_style */
+    $text_style = $this->entityTypeManager->getStorage('applenews_text_style')->load('default');
+    $document->addTextStyle($text_style->id(), $text_style->toObject());
+    $document->addTextStyle('MyNewStyle', $text_style->toObject());
+
     return $document->jsonSerialize();
   }
 }

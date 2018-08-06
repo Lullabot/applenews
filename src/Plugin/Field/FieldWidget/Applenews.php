@@ -140,10 +140,13 @@ class Applenews extends WidgetBase {
         ],
       ];
       if ($article) {
+        $url_preview = Url::fromRoute('applenews.preview', ['node' => $entity->id()])->toString();
         $element['preview'] = [
           '#type' => 'item',
           '#title' => $this->t('Preview'),
-          '#markup' => '<a href="#">Download</a> the Apple News generated document (use the News Preview app to preview the article).',
+
+          // @todo: Fix route, to support other than node.
+          '#markup' => $this->t('<a href=":url">Download</a> the Apple News generated document (use the News Preview app to preview the article).', [':url' => $url_preview]),
         ];
 
       }

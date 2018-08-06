@@ -7,9 +7,9 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 
 /**
- * Confirmation form to delete an ApplenewsTemplate.
+ * Confirmation form to delete an text style.
  */
-class ApplenewsTemplateDeleteForm extends EntityConfirmFormBase {
+class TextStyleDeleteForm extends EntityConfirmFormBase {
   /**
    * {@inheritdoc}
    */
@@ -21,7 +21,7 @@ class ApplenewsTemplateDeleteForm extends EntityConfirmFormBase {
    * {@inheritdoc}
    */
   public function getCancelUrl() {
-    return new Url('entity.applenews_template.collection');
+    return new Url('entity.applenews_text_style.collection');
   }
 
   /**

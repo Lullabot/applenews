@@ -1,3 +1,4 @@
+# Template.
 entity.applenews_template.collection:
   path: '/admin/config/services/applenews'
   defaults:
@@ -30,7 +31,7 @@ entity.applenews_template.delete_form:
   requirements:
     _permission: 'administer applenews templates'
 
-# Channel
+# Channel.
 entity.applenews_channel.collection:
   path: '/admin/config/services/applenews/channel'
   defaults:
@@ -63,6 +64,40 @@ entity.applenews_channel.delete_form:
   requirements:
     _permission: 'administer applenews channels'
 
+# Text style.
+entity.applenews_text_style.collection:
+  path: '/admin/config/services/applenews/text-style'
+  defaults:
+    _entity_list: 'applenews_text_style'
+    _title: 'Text styles'
+  requirements:
+    _permission: 'administer applenews text styles'
+
+entity.applenews_text_style.add_form:
+  path: '/admin/config/services/applenews/text-style/add'
+  defaults:
+    _entity_form: 'applenews_text_style.add'
+    _title: 'Add Apple News text styles'
+  requirements:
+    _permission: 'administer applenews text styles'
+
+entity.applenews_text_style.edit_form:
+  path: '/admin/config/services/applenews/text-style/{applenews_text_style}'
+  defaults:
+    _entity_form: 'applenews_text_style.edit'
+    _title: 'Edit Apple News text styles'
+  requirements:
+    _permission: 'administer applenews text styles'
+
+entity.applenews_text_style.delete_form:
+  path: '/admin/config/services/applenews/text-style/{applenews_text_style}/delete'
+  defaults:
+    _entity_form: 'applenews_text_style.delete'
+    _title: 'Delete Apple News text styles'
+  requirements:
+    _permission: 'administer applenews text styles'
+
+# Entity.
 applenews.preview:
   path: '/node/{node}/applenews-preview'
   defaults:
@@ -83,7 +118,6 @@ applenews.preview_download:
   requirements:
     _permission: 'preview applenews content'
 
-# Remote
 applenews.remote.article_delete:
   path: '/admin/config/services/applenews/remote/{channel_id}/{article_id}/delete'
   defaults:
@@ -92,6 +126,7 @@ applenews.remote.article_delete:
   requirements:
     _permission: 'administer applenews configuration'
 
+# Settings.
 applenews.settings:
   path: '/admin/config/services/applenews/settings'
   defaults:

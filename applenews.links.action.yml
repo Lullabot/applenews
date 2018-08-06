@@ -10,3 +10,8 @@ entity.applenews_channel.add_form:
   appears_on:
     - entity.applenews_channel.collection
 
+entity.applenews_text_style.add_form:
+  title: 'Add Apple News Text Style'
+  route_name: entity.applenews_text_style.add_form
+  appears_on:
+    - entity.applenews_text_style.collection
