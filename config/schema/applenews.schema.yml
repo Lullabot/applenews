@@ -1,3 +1,67 @@
+applenews.text_style.*:
+  type: config_entity
+  label: 'Apple News Text Style'
+  mapping:
+    name:
+      type: string
+      label: 'ID'
+    label:
+      type: label
+      label: 'Label'
+    fontName:
+      type: string
+      label: 'Font name'
+    fontSize:
+      type: integer
+      label: 'Font size'
+    textColor:
+      type: string
+      label: ''
+    textShadow:
+      type: mapping
+      label: 'Shadow'
+      mapping:
+        radius:
+          type: string
+          label: ''
+        opacity:
+          type: string
+          label: ''
+        color:
+          type: string
+          label: ''
+        offset:
+          type: mapping
+          label: 'Offset'
+          mapping:
+            x:
+              type: string
+              label: ''
+            y:
+              type: string
+              label: ''
+    textTransform:
+      type: string
+      label: ''
+    underline:
+      type: string
+      label: ''
+    strikethrough:
+      type: string
+      label: ''
+    stroke:
+      type: string
+      label: ''
+    backgroundColor:
+      type: string
+      label: ''
+    verticalAlignment:
+      type: string
+      label: ''
+    tracking:
+      type: string
+      label: ''
+
 applenews.applenews_template.*:
   type: config_entity
   label: 'Apple News Template'
@@ -114,9 +178,6 @@ applenews.field_mapping:
 applenews.settings:
   type: config_object
   mapping:
-    channels:
-      type: sequence
-      sequence: applenews.channel.[%key]
     endpoint:
       type: string
       label: 'API Endpoint'
@@ -126,13 +187,16 @@ applenews.settings:
     api_secret:
       type: string
       label: 'API Secret'
-
-applenews.channel.*:
-  type: mapping
-  mapping:
-    name:
-      type: string
-      label: 'Channel Name'
-    id:
-      type: string
-      label: 'Channel ID'
+    curl_options:
+      type: mapping
+      label: 'Curl options'
+      mapping:
+        ssl:
+          type: boolean
+          label: 'SSL verification'
+        proxy:
+          type: string
+          label: 'Proxy address'
+        proxy_port:
+          type: string
+          label: 'Proxy port'

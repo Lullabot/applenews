@@ -26,8 +26,10 @@ use Drupal\Core\Config\Entity\ConfigEntityBase;
  *    "label" = "label",
  *  },
  *  links = {
- *    "edit-form" = "/admin/config/services/applenews/{applenews_template}",
- *    "delete-form" = "/admin/config/services/applenews/{applenews_template}/delete"
+ *    "collection" = "/admin/config/services/applenews",
+ *    "add-form" = "/admin/config/services/applenews/template/add",
+ *    "edit-form" = "/admin/config/services/applenews/template/{applenews_template}",
+ *    "delete-form" = "/admin/config/services/applenews/template/{applenews_template}/delete"
  *  }
  * )
  */
@@ -51,7 +53,15 @@ class ApplenewsTemplate extends ConfigEntityBase implements ApplenewsTemplateInt
    *
    * @var array
    */
-  protected $components;
+  protected $components = [];
+
+  /**
+   * The Applenews Template node type.
+   *
+   * @var string
+   */
+  public $node_type;
+
 
   /**
    * {@inheritdoc}
@@ -63,6 +73,10 @@ class ApplenewsTemplate extends ConfigEntityBase implements ApplenewsTemplateInt
       'gutter' => $this->get('gutter'),
       'margin' => $this->get('margin'),
     ];
+  }
+
+  public function getNodeType() {
+    return $this->node_type;
   }
 
   /**
@@ -159,4 +173,5 @@ class ApplenewsTemplate extends ConfigEntityBase implements ApplenewsTemplateInt
   public function sortHelper($a, $b) {
     return $a['weight'] - $b['weight'];
   }
+
 }

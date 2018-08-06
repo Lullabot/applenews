@@ -55,6 +55,7 @@ class ApplenewsTemplateForm extends EntityForm {
   public function form(array $form, FormStateInterface $form_state) {
     $form = parent::form($form, $form_state);
 
+    /** @var \Drupal\applenews\Entity\ApplenewsTemplate $template */
     $template = $this->entity;
     $node_types = $this->entityTypeManager->getStorage('node_type')->loadMultiple();
 
@@ -88,7 +89,8 @@ class ApplenewsTemplateForm extends EntityForm {
       '#title' => $this->t('Node Type'),
       '#description' => $this->t('The node type to which this template should apply.'),
       '#options' => $node_type_options,
-      '#default_value' => $template->node_type,
+      '#default_value' => $template->getNodeType(),
+      '#required' => TRUE,
     ];
 
     $form['layout'] = [
@@ -257,17 +259,13 @@ class ApplenewsTemplateForm extends EntityForm {
     $status = $template->save();
 
     if ($status) {
-      drupal_set_message($this->t('Saved the %label Template.', [
-        '%label' => $template->label(),
-      ]));
+      $this->messenger()->addStatus($this->t('Saved the %label template.', ['%label' => $template->label()]));
     }
     else {
-      drupal_set_message($this->t('The %label Template was not saved.', [
-        '%label' => $template->label(),
-      ]));
+      $this->messenger()->addError($this->t('The %label template was not saved.', ['%label' => $template->label()]));
     }
 
-    $form_state->setRedirect('entity.applenews_template.collection');
+    $form_state->setRedirectUrl($this->entity->toUrl('collection'));
   }
 
   /**

@@ -42,12 +42,20 @@ class ApplenewsContentEntityNormalizer extends ApplenewsNormalizerBase {
     // @todo check cache
     $template = $this->entityTypeManager->getStorage('applenews_template')->load($context['template_id']);
     $layout = new Document\Layouts\Layout($template->columns, $template->width);
+    $layout
+      ->setMargin($template->margin)
+      ->setGutter($template->gutter);
     $document = new Document($data->uuid(), $data->getTitle(), $data->language()->getId(), $layout);
 
     $context['entity'] = $data;
     foreach ($template->getComponents() as $component) {
       $document->addComponent($this->serializer->normalize($component, $format, $context));
     }
+    /** @var \Drupal\applenews\Entity\ApplenewsTextStyle $text_style */
+    $text_style = $this->entityTypeManager->getStorage('applenews_text_style')->load('default');
+    $document->addTextStyle($text_style->id(), $text_style->toObject());
+    $document->addTextStyle('MyNewStyle', $text_style->toObject());
+
     return $document->jsonSerialize();
   }
 }
