@@ -17,6 +17,7 @@ use Drupal\Core\Form\FormStateInterface;
  * )
  */
 class ApplenewsDefaultNestedComponentType extends ApplenewsComponentTypeBase {
+
   /**
    * {@inheritdoc}
    */
@@ -30,4 +31,5 @@ class ApplenewsDefaultNestedComponentType extends ApplenewsComponentTypeBase {
 
     return $element;
   }
+
 }

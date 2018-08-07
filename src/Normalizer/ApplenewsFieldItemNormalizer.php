@@ -4,7 +4,11 @@ namespace Drupal\applenews\Normalizer;
 
 use Drupal\Core\Field\FieldItemInterface;
 
+/**
+ *
+ */
 class ApplenewsFieldItemNormalizer extends ApplenewsNormalizerBase {
+
   /**
    * {@inheritdoc}
    */
@@ -24,4 +28,5 @@ class ApplenewsFieldItemNormalizer extends ApplenewsNormalizerBase {
 
     return $value;
   }
+
 }

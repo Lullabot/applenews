@@ -6,6 +6,9 @@ use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Plugin\DefaultPluginManager;
 
+/**
+ *
+ */
 class ApplenewsComponentTypeManager extends DefaultPluginManager {
 
   /**
@@ -28,4 +31,5 @@ class ApplenewsComponentTypeManager extends DefaultPluginManager {
     $this->alterInfo('applenews_component_type_plugin_info');
     $this->setCacheBackend($cache_backend, 'applenews_component_type_plugins');
   }
+
 }

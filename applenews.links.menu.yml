@@ -3,4 +3,3 @@ entity.applenews_template_collection:
   description: 'Manage Apple News templates and settings.'
   parent: system.admin_config_services
   route_name: entity.applenews_template.collection
-

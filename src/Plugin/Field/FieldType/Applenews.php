@@ -40,11 +40,11 @@ class Applenews extends FieldItemBase {
    */
   public static function defaultFieldSettings() {
     return [
-        'status' => 0,
-        'template' => NULL,
-        'channels' => NULL,
-        'is_preview' => 1,
-      ] + parent::defaultFieldSettings();
+      'status' => 0,
+      'template' => NULL,
+      'channels' => NULL,
+      'is_preview' => 1,
+    ] + parent::defaultFieldSettings();
   }
 
   /**

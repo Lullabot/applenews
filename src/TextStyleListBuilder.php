@@ -9,6 +9,7 @@ use Drupal\Core\Entity\EntityInterface;
  * Provides a listing of Apple News text style.
  */
 class TextStyleListBuilder extends ConfigEntityListBuilder {
+
   /**
    * {@inheritdoc}
    */
@@ -27,4 +28,5 @@ class TextStyleListBuilder extends ConfigEntityListBuilder {
 
     return $row + parent::buildRow($entity);
   }
+
 }

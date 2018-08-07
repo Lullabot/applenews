@@ -8,7 +8,7 @@ use Drupal\Core\Entity\ContentEntityInterface;
  * Provides an interface defining a channel entity.
  *
  * @code
-*  [createdAt] => 2018-07-27T20:15:08Z
+ *  [createdAt] => 2018-07-27T20:15:08Z
  * [modifiedAt] => 2018-07-27T20:15:34Z
  * [id] => aefc44a9-0c3a-4ca8-82ad-159b362b71d3
  * [type] => channel
@@ -20,7 +20,6 @@ use Drupal\Core\Entity\ContentEntityInterface;
  * [name] => Playground
  * [website] =>
  * @endcode
- * 
  */
 interface ChannelInterface extends ContentEntityInterface {
 

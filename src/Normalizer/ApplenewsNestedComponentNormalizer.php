@@ -24,4 +24,5 @@ class ApplenewsNestedComponentNormalizer extends ApplenewsComponentNormalizerBas
 
     return $component;
   }
+
 }

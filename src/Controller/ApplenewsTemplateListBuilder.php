@@ -9,6 +9,7 @@ use Drupal\Core\Entity\EntityInterface;
  * Provides a listing of Applenews Templates.
  */
 class ApplenewsTemplateListBuilder extends ConfigEntityListBuilder {
+
   /**
    * {@inheritdoc}
    */
@@ -26,7 +27,7 @@ class ApplenewsTemplateListBuilder extends ConfigEntityListBuilder {
     $row['id'] = $entity->id();
 
     // You probably want a few more properties here...
-
     return $row + parent::buildRow($entity);
   }
+
 }

@@ -133,6 +133,9 @@ class ChannelForm extends ContentEntityForm {
     return $this->getCancelUrl();
   }
 
+  /**
+   *
+   */
   public function save(array $form, FormStateInterface $form_state) {
     $channel_id = $form_state->getValue('id')[0]['value'];
     $channel = $this->entity;

@@ -62,7 +62,6 @@ class ApplenewsTemplate extends ConfigEntityBase implements ApplenewsTemplateInt
    */
   public $node_type;
 
-
   /**
    * {@inheritdoc}
    */
@@ -75,6 +74,9 @@ class ApplenewsTemplate extends ConfigEntityBase implements ApplenewsTemplateInt
     ];
   }
 
+  /**
+   *
+   */
   public function getNodeType() {
     return $this->node_type;
   }
@@ -102,6 +104,9 @@ class ApplenewsTemplate extends ConfigEntityBase implements ApplenewsTemplateInt
     return NULL;
   }
 
+  /**
+   *
+   */
   protected function getNestedComponent($components, $id) {
     foreach ($components as $component_id => $component) {
       if ($id == $component_id) {
@@ -139,6 +144,9 @@ class ApplenewsTemplate extends ConfigEntityBase implements ApplenewsTemplateInt
     uasort($components, [$this, 'sortHelper']);
   }
 
+  /**
+   *
+   */
   protected function deleteNestedComponent(&$components, $id) {
     foreach ($components as $component_id => $component) {
       if ($id == $component_id) {

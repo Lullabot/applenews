@@ -4,13 +4,16 @@ namespace Drupal\applenews;
 
 use Drupal\Core\Config\Entity\ConfigEntityInterface;
 
+/**
+ *
+ */
 interface ApplenewsTemplateInterface extends ConfigEntityInterface {
 
   /**
    * Get the layout values for this template.
    *
    * @return array
-   *  An associative array of the Apple News layout values.
+   *   An associative array of the Apple News layout values.
    *
    * @see https://developer.apple.com/library/content/documentation/General/Conceptual/Apple_News_Format_Ref/Layout.html#//apple_ref/doc/uid/TP40015408-CH65-SW1
    */
@@ -20,13 +23,13 @@ interface ApplenewsTemplateInterface extends ConfigEntityInterface {
    * Get the list of components in this template.
    *
    * @return array
-   *  An array of Component
+   *   An array of Component
    */
   public function getComponents();
 
   /**
    * @param array $component
-   *  An array representing a component config object. @see applenews.schema.yml
+   *   An array representing a component config object. @see applenews.schema.yml.
    */
   public function addComponent(array $component);
 
@@ -34,7 +37,7 @@ interface ApplenewsTemplateInterface extends ConfigEntityInterface {
    * Delete a component from the template.
    *
    * @param string $id
-   *  The id corresponding to the correct component in the components array.
+   *   The id corresponding to the correct component in the components array.
    */
   public function deleteComponent($id);
 
@@ -42,7 +45,7 @@ interface ApplenewsTemplateInterface extends ConfigEntityInterface {
    * Set the templates components.
    *
    * @param array $components
-   *  An array of component arrays, each matching the schema. @see applenews.schema.yml
+   *   An array of component arrays, each matching the schema. @see applenews.schema.yml.
    */
   public function setComponents(array $components);
 
@@ -50,8 +53,10 @@ interface ApplenewsTemplateInterface extends ConfigEntityInterface {
    * Get a specific component from the template.
    *
    * @param string $id
-   * @return array|NULL
-   *  The array representation of the component, as defined by the schema.
+   *
+   * @return array|null
+   *   The array representation of the component, as defined by the schema.
    */
   public function getComponent($id);
+
 }

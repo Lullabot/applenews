@@ -17,6 +17,7 @@ use Drupal\Core\Form\FormStateInterface;
  * )
  */
 class ApplenewsDefaultTextComponentType extends ApplenewsComponentTypeBase {
+
   /**
    * {@inheritdoc}
    */
@@ -38,4 +39,5 @@ class ApplenewsDefaultTextComponentType extends ApplenewsComponentTypeBase {
 
     return $element;
   }
+
 }

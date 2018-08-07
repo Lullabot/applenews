@@ -9,6 +9,7 @@ use Drupal\Core\Entity\EntityListBuilder;
  * Provides a listing of Applenews article.
  */
 class ArticleListBuilder extends EntityListBuilder {
+
   /**
    * {@inheritdoc}
    */

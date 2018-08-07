@@ -5,18 +5,21 @@ namespace Drupal\applenews;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 
+/**
+ *
+ */
 class ApplenewsTemplateSelection {
   use StringTranslationTrait;
 
   /**
-   * @var EntityTypeManagerInterface
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
   protected $entityTypeManager;
 
   /**
    * Constructs an ApplenewsTemplateSelection object.
    *
-   * @param EntityTypeManagerInterface $entity_type_manager
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    */
   public function __construct(EntityTypeManagerInterface $entity_type_manager) {
     $this->entityTypeManager = $entity_type_manager;
@@ -27,8 +30,9 @@ class ApplenewsTemplateSelection {
    * node type.
    *
    * @param string $node_type
+   *
    * @return array
-   *  An array indexed by entity id of all templates available for the node type.
+   *   An array indexed by entity id of all templates available for the node type.
    */
   public function getTemplatesForNodeType($node_type) {
     $templates = \Drupal::entityTypeManager()->getStorage('applenews_template')->loadMultiple();
@@ -48,13 +52,14 @@ class ApplenewsTemplateSelection {
    * node type.
    *
    * @param string $node_type
+   *
    * @return array
-   *  A form element for selecting an applenews_template.
+   *   A form element for selecting an applenews_template.
    */
   public function getTemplateSelectionElement($node_type) {
     $templates = $this->getTemplatesForNodeType($node_type);
     $options = [];
-    foreach($templates as $id => $template) {
+    foreach ($templates as $id => $template) {
       $options[$id] = $template->label;
     }
 
@@ -64,4 +69,5 @@ class ApplenewsTemplateSelection {
       '#options' => $options,
     ];
   }
+
 }

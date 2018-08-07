@@ -8,6 +8,7 @@ use Drupal\Component\Plugin\Derivative\DeriverBase;
  * Creates all the default Apple News plugins that contain an image.
  */
 class ApplenewsDefaultComponentImageTypeDeriver extends DeriverBase implements ApplenewsDefaultDeriverInterface {
+
   /**
    * {@inheritdoc}
    */
@@ -24,7 +25,7 @@ class ApplenewsDefaultComponentImageTypeDeriver extends DeriverBase implements A
    * {@inheritdoc}
    */
   public function getComponentClasses() {
-    return array(
+    return [
       'figure' => [
         'component_class' => 'ChapterThree\AppleNewsAPI\Document\Components\Figure',
         'label' => 'Figure',
@@ -45,6 +46,7 @@ class ApplenewsDefaultComponentImageTypeDeriver extends DeriverBase implements A
         'label' => 'Portrait',
         'description' => 'A photograph of a person.',
       ],
-    );
+    ];
   }
+
 }

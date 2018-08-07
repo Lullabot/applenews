@@ -53,7 +53,7 @@ class ApplenewsChannel extends ContentEntityBase implements ChannelInterface {
    * {@inheritdoc}
    */
   public function getCreatedAt() {
-    // Sample data: 2018-07-27T20:15:08Z
+    // Sample data: 2018-07-27T20:15:08Z.
     return $this->get('createdAt')->value;
   }
 
@@ -61,7 +61,7 @@ class ApplenewsChannel extends ContentEntityBase implements ChannelInterface {
    * {@inheritdoc}
    */
   public function getModifiedAt() {
-    // Sample data: 2018-07-27T20:15:34Z
+    // Sample data: 2018-07-27T20:15:34Z.
     return $this->get('modifiedAt')->value;
   }
 
@@ -128,7 +128,7 @@ class ApplenewsChannel extends ContentEntityBase implements ChannelInterface {
       $this->type = $channel->type;
       $this->shareUrl = $channel->shareUrl;
       $this->links = serialize([
-       'defaultSection' => $channel->links->defaultSection,
+        'defaultSection' => $channel->links->defaultSection,
         'self' => $channel->links->self,
       ]);
       $this->name = $channel->name;

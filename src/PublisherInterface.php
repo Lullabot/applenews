@@ -11,7 +11,7 @@ interface PublisherInterface {
 
   /**
    * @param string $channel_id
-   *   Channel ID
+   *   Channel ID.
    *
    * @see vendor/chapter-three/apple-news-api/examples/PublisherAPI/GetChannel.php
    *
@@ -45,7 +45,7 @@ interface PublisherInterface {
 
   /**
    *
-   *  @see vendor/chapter-three/apple-news-api/examples/PublisherAPI/GetSections.php
+   * @see vendor/chapter-three/apple-news-api/examples/PublisherAPI/GetSections.php
    *
    * @param $channel_id
    *   Unique channel UUID.
@@ -71,7 +71,7 @@ interface PublisherInterface {
   /**
    * Update an existing article.
    *
-   *  @see vendor/chapter-three/apple-news-api/examples/PublisherAPI/UpdateArticle.php
+   * @see vendor/chapter-three/apple-news-api/examples/PublisherAPI/UpdateArticle.php
    *
    * @param $article_id
    *   Unique article UUID.
