@@ -75,7 +75,9 @@ class ApplenewsTemplate extends ConfigEntityBase implements ApplenewsTemplateInt
   }
 
   /**
+   * Gets the node type.
    *
+   * @return string
    */
   public function getNodeType() {
     return $this->node_type;
@@ -105,7 +107,15 @@ class ApplenewsTemplate extends ConfigEntityBase implements ApplenewsTemplateInt
   }
 
   /**
+   * Finds nested component by given id.
    *
+   * @param $components
+   *   Component to search.
+   * @param $id
+   *   ID of the child component.
+   *
+   * @return object|null
+   *   Component if found, NULL otherwise.
    */
   protected function getNestedComponent($components, $id) {
     foreach ($components as $component_id => $component) {
@@ -144,8 +154,17 @@ class ApplenewsTemplate extends ConfigEntityBase implements ApplenewsTemplateInt
     uasort($components, [$this, 'sortHelper']);
   }
 
+
   /**
+   * Deletes nested component.
    *
+   * @param $components
+   *   Component object.
+   * @param $id
+   *   Component id.
+   *
+   * @return bool
+   *   TRUE if deleted successfully, FALSE otherwise.
    */
   protected function deleteNestedComponent(&$components, $id) {
     foreach ($components as $component_id => $component) {

@@ -36,7 +36,7 @@ class ApplenewsPreviewForm extends FormBase {
   }
 
   /**
-   *
+   * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
     return new static(

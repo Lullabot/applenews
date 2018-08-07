@@ -169,7 +169,7 @@ abstract class ApplenewsComponentTypeBase extends PluginBase implements Applenew
   }
 
   /**
-   *
+   * {@inheritdoc}
    */
   public function __construct(array $configuration, $plugin_id, $plugin_definition, EntityFieldManagerInterface $field_manager) {
     $this->fieldManager = $field_manager;
@@ -177,7 +177,7 @@ abstract class ApplenewsComponentTypeBase extends PluginBase implements Applenew
   }
 
   /**
-   *
+   * {@inheritdoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     return new static(
