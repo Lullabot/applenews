@@ -59,7 +59,7 @@ class TextStyleForm extends EntityForm {
       '#title' => $this->t('Text style name'),
       '#default_value' => $entity->label(),
       '#required' => TRUE,
-      '#description' => $this->t('')
+      '#description' => $this->t(''),
     ];
     $form['name'] = [
       '#type' => 'machine_name',
@@ -68,14 +68,14 @@ class TextStyleForm extends EntityForm {
       ],
       '#default_value' => $entity->id(),
       '#required' => TRUE,
-      '#description' => $this->t('')
+      '#description' => $this->t(''),
     ];
     $form['fontName'] = [
       '#type' => 'select',
       '#title' => $this->t('Font name'),
       '#options' => $this->getFontNames(),
       '#default_value' => $entity->get('fontName'),
-      '#description' => $this->t('The font family to use for text rendering, for example Gill Sans. Using a combination of fontFamily, fontWeight, and fontStyle you can define the appearance of the text. News automatically selects the appropriate font variant from the available variants in that family.')
+      '#description' => $this->t('The font family to use for text rendering, for example Gill Sans. Using a combination of fontFamily, fontWeight, and fontStyle you can define the appearance of the text. News automatically selects the appropriate font variant from the available variants in that family.'),
     ];
     $form['fontSize'] = [
       '#type' => 'number',
@@ -143,19 +143,19 @@ class TextStyleForm extends EntityForm {
     $form['textShadow']['opacity'] = [
       '#type' => 'number',
       '#title' => $this->t('Opacity'),
-      '#description' => $this->t('Opacity of the shadow as a value between 0 and 1.')
+      '#description' => $this->t('Opacity of the shadow as a value between 0 and 1.'),
     ];
     $form['textShadow']['color'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Color'),
       '#size' => 8,
       '#maxlength' => 8,
-      '#description' => $this->t('The stroke color, defined as a 3- to 8-character RGBA hexadecimal string; e.g., #000 for black or #FF00007F for red with an alpha (opacity) of 50%.')
+      '#description' => $this->t('The stroke color, defined as a 3- to 8-character RGBA hexadecimal string; e.g., #000 for black or #FF00007F for red with an alpha (opacity) of 50%.'),
     ];
     $form['textShadow']['offset'] = [
       '#type' => 'details',
       '#title' => $this->t('Offset'),
-      '#description' => $this->t('The shadow\'s offset as a value between -50 and 50 in points.')
+      '#description' => $this->t('The shadow\'s offset as a value between -50 and 50 in points.'),
     ];
     $form['textShadow']['offset']['x'] = [
       '#type' => 'number',
@@ -165,7 +165,7 @@ class TextStyleForm extends EntityForm {
     $form['textShadow']['offset']['y'] = [
       '#type' => 'number',
       '#title' => $this->t('Y'),
-      '#description' => $this->t('')
+      '#description' => $this->t(''),
     ];
 
     $form['textTransform'] = [
@@ -178,7 +178,7 @@ class TextStyleForm extends EntityForm {
         'capitalize' => $this->t('Capitalize'),
       ],
       '#default_value' => '',
-      '#description' => $this->t('')
+      '#description' => $this->t(''),
     ];
     $form['underline'] = [
       '#type' => 'checkbox',
@@ -190,7 +190,7 @@ class TextStyleForm extends EntityForm {
       '#type' => 'checkbox',
       '#title' => $this->t('Strikethrough'),
       '#default_value' => '',
-      '#description' => $this->t('The text strikethrough. Set strikethrough to true to use the text color inherited from the textColor property as the strikethrough color, or provide a text decoration definition with a different color.')
+      '#description' => $this->t('The text strikethrough. Set strikethrough to true to use the text color inherited from the textColor property as the strikethrough color, or provide a text decoration definition with a different color.'),
     ];
     $form['hasStroke'] = [
       '#type' => 'checkbox',
@@ -235,31 +235,31 @@ class TextStyleForm extends EntityForm {
         'justified' => 'Justified',
       ],
       '#default_value' => '',
-      '#description' => $this->t('')
+      '#description' => $this->t(''),
     ];
     $form['lineHeight'] = [
       '#type' => 'textfield',
-      '#title' => $this->t(''),
+      '#title' => $this->t('Line height'),
       '#default_value' => '',
-      '#description' => $this->t('')
+      '#description' => $this->t('The default line height, in points.'),
     ];
     $form['dropCapStyle'] = [
       '#type' => 'textfield',
-      '#title' => $this->t(''),
+      '#title' => $this->t('Drop cap style'),
       '#default_value' => '',
-      '#description' => $this->t('')
+      '#description' => $this->t('Defines the style of drop cap to apply to the first paragraph of the component.'),
     ];
     $form['linkStyle'] = [
       '#type' => 'textfield',
-      '#title' => $this->t(''),
+      '#title' => $this->t('Line style'),
       '#default_value' => '',
-      '#description' => $this->t('')
+      '#description' => $this->t('Text styling for all links within a text component.'),
     ];
     $form['hyphenation'] = [
       '#type' => 'textfield',
-      '#title' => $this->t(''),
+      '#title' => $this->t('Hyphenation'),
       '#default_value' => '',
-      '#description' => $this->t('')
+      '#description' => $this->t('Indicates whether text should be hyphenated when necessary.'),
     ];
 
     return parent::form($form, $form_state);
@@ -267,13 +267,11 @@ class TextStyleForm extends EntityForm {
 
   /**
    * Provides list supported font names.
-   *
    */
   protected function getFontNames() {
     $fonts = array_keys($this->getFontData());
     return array_combine($fonts, $fonts);
   }
-
 
   /**
    * {@inheritdoc}

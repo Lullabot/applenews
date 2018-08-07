@@ -17,6 +17,7 @@ use Drupal\Core\Form\FormStateInterface;
  * )
  */
 class ApplenewsDefaultImageComponentType extends ApplenewsComponentTypeBase {
+
   /**
    * {@inheritdoc}
    */
@@ -31,4 +32,5 @@ class ApplenewsDefaultImageComponentType extends ApplenewsComponentTypeBase {
 
     return $element;
   }
+
 }

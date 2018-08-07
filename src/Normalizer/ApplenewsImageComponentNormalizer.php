@@ -3,7 +3,7 @@
 namespace Drupal\applenews\Normalizer;
 
 /**
- * Normalizer for "image" type com
+ * Normalizer for "image" type com.
  */
 class ApplenewsImageComponentNormalizer extends ApplenewsComponentNormalizerBase {
 

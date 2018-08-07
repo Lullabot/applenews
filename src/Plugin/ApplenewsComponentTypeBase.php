@@ -2,13 +2,10 @@
 
 namespace Drupal\applenews\Plugin;
 
-use Drupal\applenews\ApplenewsFieldSelectionHelper;
-use Drupal\Component\Utility\Html;
 use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\PluginBase;
 use Drupal\field\Entity\FieldConfig;
-use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\field\FieldStorageConfigInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -33,13 +30,13 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *  label = @Translation("Your component label"),
  *  description = @Translation("Your component description"),
  *  component_type = "image",
- *)
+ * )
  * @endcode
  */
 abstract class ApplenewsComponentTypeBase extends PluginBase implements ApplenewsComponentTypeInterface {
 
   /**
-   * @var EntityFieldManagerInterface
+   * @var \Drupal\Core\Entity\EntityFieldManagerInterface
    */
   protected $fieldManager;
 
@@ -98,7 +95,7 @@ abstract class ApplenewsComponentTypeBase extends PluginBase implements Applenew
         'left' => $this->t('Left'),
         'right' => $this->t('Right'),
         'both' => $this->t('Both'),
-      ]
+      ],
     ];
 
     $element['component_settings']['component_layout']['ignore_gutter'] = [
@@ -110,7 +107,7 @@ abstract class ApplenewsComponentTypeBase extends PluginBase implements Applenew
         'left' => $this->t('Left'),
         'right' => $this->t('Right'),
         'both' => $this->t('Both'),
-      ]
+      ],
     ];
 
     $element['component_settings']['component_layout']['minimum_height'] = [
@@ -171,11 +168,17 @@ abstract class ApplenewsComponentTypeBase extends PluginBase implements Applenew
     return $this->pluginDefinition['component_type'];
   }
 
+  /**
+   *
+   */
   public function __construct(array $configuration, $plugin_id, $plugin_definition, EntityFieldManagerInterface $field_manager) {
     $this->fieldManager = $field_manager;
     parent::__construct($configuration, $plugin_id, $plugin_definition);
   }
 
+  /**
+   *
+   */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     return new static(
       $configuration,
@@ -189,8 +192,9 @@ abstract class ApplenewsComponentTypeBase extends PluginBase implements Applenew
    * Get all of the fields of a node type as options for a form.
    *
    * @param $node_type
+   *
    * @return array
-   *  An array of options suitable for a Form API selection element.
+   *   An array of options suitable for a Form API selection element.
    */
   protected function getFieldOptions($node_type) {
     $fields = $this->fieldManager->getFieldDefinitions('node', $node_type);
@@ -225,11 +229,12 @@ abstract class ApplenewsComponentTypeBase extends PluginBase implements Applenew
    * Get a field selection element that will have all fields on the selected
    * content type as an option, and allow dynamic selection of their properties.
    *
-   * @param FormStateInterface $form_state
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
    * @param string $name
    * @param string $label
+   *
    * @return array
-   *  A Form API render array
+   *   A Form API render array
    */
   protected function getFieldSelectionElement(FormStateInterface $form_state, $name, $label) {
     $input = $form_state->getUserInput();
@@ -239,7 +244,7 @@ abstract class ApplenewsComponentTypeBase extends PluginBase implements Applenew
     $default_field = current(array_keys($field_options));
 
     $triggering_element = $form_state->getTriggeringElement();
-    $field_selection_name = 'component_settings[component_data]['. $name . '][field_name]';
+    $field_selection_name = 'component_settings[component_data][' . $name . '][field_name]';
     if (isset($triggering_element) && $triggering_element['#name'] == $field_selection_name) {
       $default_field = $triggering_element['#value'];
     }
@@ -265,7 +270,7 @@ abstract class ApplenewsComponentTypeBase extends PluginBase implements Applenew
       $element['field_property'] = $this->getFieldPropertySelectionElement($default_field_config->getFieldStorageDefinition());;
     }
     else {
-      // Base fields do not have properties, so set a value we can check for
+      // Base fields do not have properties, so set a value we can check for.
       $element['field_property'] = [
         '#type' => 'hidden',
         '#value' => 'base',
@@ -285,9 +290,10 @@ abstract class ApplenewsComponentTypeBase extends PluginBase implements Applenew
   /**
    * Get all the properties of a field as a selection element.
    *
-   * @param FieldStorageConfigInterface $config
+   * @param \Drupal\field\Entity\FieldStorageConfigInterface $config
+   *
    * @return array
-   *  A Form API render array
+   *   A Form API render array
    */
   protected function getFieldPropertySelectionElement(FieldStorageConfigInterface $config) {
     $field_name = $config->getName();
@@ -311,7 +317,7 @@ abstract class ApplenewsComponentTypeBase extends PluginBase implements Applenew
    * @see https://developer.apple.com/library/content/documentation/General/Conceptual/Apple_News_Format_Ref/SupportedUnits.html#//apple_ref/doc/uid/TP40015408-CH75-SW1
    *
    * @return array
-   *  An array of options suitable for a Form API selection element.
+   *   An array of options suitable for a Form API selection element.
    */
   protected function getUnitsOfMeasure() {
     return [
@@ -331,7 +337,7 @@ abstract class ApplenewsComponentTypeBase extends PluginBase implements Applenew
    * component. Only a few component types recognize this setting.
    *
    * @return array
-   *  A Form API render array
+   *   A Form API render array
    */
   protected function getMaximumContentWidthElement() {
     $element = [];
@@ -350,4 +356,5 @@ abstract class ApplenewsComponentTypeBase extends PluginBase implements Applenew
 
     return $element;
   }
+
 }

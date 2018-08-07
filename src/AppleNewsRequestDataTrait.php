@@ -13,17 +13,14 @@ trait AppleNewsRequestDataTrait {
    * @see https://developer.apple.com/documentation/apple_news/apple_news_format/text_styles_and_effects/choosing_fonts_for_your_article
    *
    * @return array
-   *
-   *
    */
   protected function getFontData() {
     return [
-      'Academy Engraved LET' => [
-      ],
+      'Academy Engraved LET' => [],
       'Al Nile' => [
         'fontWeight' => [
           'medium',
-          'extra-bold'
+          'extra-bold',
         ],
       ],
       'American Typewriter' => [
@@ -33,7 +30,7 @@ trait AppleNewsRequestDataTrait {
               'regular',
               'medium',
               'extra-bold',
-            ]
+            ],
           ],
           'normal' => [
             'fontWeight' => [
@@ -55,8 +52,8 @@ trait AppleNewsRequestDataTrait {
           'medium',
           'semi-bold',
           'bold',
-          'extra-bold'
-        ]
+          'extra-bold',
+        ],
       ],
 
       'Arial' => [
@@ -80,7 +77,7 @@ trait AppleNewsRequestDataTrait {
           'medium',
           'semi-bold',
           'extra-bold',
-          'heavy'
+          'heavy',
         ],
       ],
       'Avenir Next' => [
@@ -90,7 +87,7 @@ trait AppleNewsRequestDataTrait {
           'semi-bold',
           'bold',
           'extra-bold',
-          'heavy'
+          'heavy',
         ],
       ],
       'Avenir Next Condensed' => [
@@ -100,7 +97,7 @@ trait AppleNewsRequestDataTrait {
           'semi-bold',
           'bold',
           'extra-bold',
-          'heavy'
+          'heavy',
         ],
       ],
 
@@ -108,19 +105,19 @@ trait AppleNewsRequestDataTrait {
         'fontWeight' => [
           'medium',
           'bold',
-          'extra-bold'
+          'extra-bold',
         ],
       ],
       'Bodoni 72' => [
         'fontWeight' => [
           'medium',
-          'extra-bold'
+          'extra-bold',
         ],
       ],
       'Bodoni 72 Oldstyle' => [
         'fontWeight' => [
           'medium',
-          'extra-bold'
+          'extra-bold',
         ],
       ],
       'Bodoni 72 Smallcaps' => [],
@@ -130,13 +127,13 @@ trait AppleNewsRequestDataTrait {
       'Chalkboard SE' => [
         'fontWeight' => [
           'medium',
-          'extra-bold'
+          'extra-bold',
         ],
       ],
       'Cochin' => [
         'fontWeight' => [
           'semi-bold',
-          'extra-bold'
+          'extra-bold',
         ],
       ],
       'Copperplate' => [
@@ -165,13 +162,13 @@ trait AppleNewsRequestDataTrait {
       'Didot' => [
         'fontWeight' => [
           'medium',
-          'extra-bold'
+          'extra-bold',
         ],
       ],
       'Euphemia UCAS' => [
         'fontWeight' => [
           'medium',
-          'extra-bold'
+          'extra-bold',
         ],
       ],
       'Farah' => [],
@@ -186,7 +183,7 @@ trait AppleNewsRequestDataTrait {
           'normal' => [
             'fontWeight' => [
               'semi-bold',
-              'extra-bold'
+              'extra-bold',
             ],
           ],
         ],
@@ -230,7 +227,7 @@ trait AppleNewsRequestDataTrait {
           'condensed' => [
             'fontWeight' => [
               'extra-bold',
-              'heavy'
+              'heavy',
             ],
           ],
           'normal' => [
@@ -240,7 +237,7 @@ trait AppleNewsRequestDataTrait {
               'regular',
               'medium',
               'semi-bold',
-              'extra-bold'
+              'extra-bold',
             ],
           ],
         ],
@@ -250,19 +247,19 @@ trait AppleNewsRequestDataTrait {
       'Hiragino Mincho ProN' => [
         'fontWeight' => [
           'regular',
-          'bold'
+          'bold',
         ],
       ],
       'Hiragino Sans' => [
         'fontWeight' => [
           'regular',
-          'bold'
+          'bold',
         ],
       ],
       'Hoefler Text' => [
         'fontWeight' => [
           'medium',
-          'extra-bold'
+          'extra-bold',
         ],
       ],
       'ITC Franklin Gothic Std' => [],
@@ -270,44 +267,44 @@ trait AppleNewsRequestDataTrait {
       'Iowan Old Style' => [
         'fontWeight' => [
           'medium',
-          'extra-bold'
+          'extra-bold',
         ],
       ],
       'Marion' => [
         'fontWeight' => [
           'medium',
-          'extra-bold'
+          'extra-bold',
         ],
       ],
       'Marker Felt' => [
         'fontWeight' => [
           'medium',
-          'extra-bold'
+          'extra-bold',
         ],
       ],
       'Menlo' => [
         'fontWeight' => [
           'medium',
-          'extra-bold'
+          'extra-bold',
         ],
       ],
       'Noteworthy' => [
         'fontWeight' => [
           'regular',
-          'extra-bold'
+          'extra-bold',
         ],
       ],
       'Optima' => [
         'fontWeight' => [
           'medium',
           'extra-bold',
-          'heavy'
+          'heavy',
         ],
       ],
       'Palatino' => [
         'fontWeight' => [
           'medium',
-          'extra-bold'
+          'extra-bold',
         ],
       ],
       'Papyrus' => [
@@ -324,7 +321,7 @@ trait AppleNewsRequestDataTrait {
           'regular',
           'medium',
           'semi-bold',
-          'bold'
+          'bold',
         ],
       ],
       'PingFang SC' => [
@@ -334,7 +331,7 @@ trait AppleNewsRequestDataTrait {
           'regular',
           'medium',
           'semi-bold',
-          'bold'
+          'bold',
         ],
       ],
       'PingFang TC' => [
@@ -344,7 +341,7 @@ trait AppleNewsRequestDataTrait {
           'regular',
           'medium',
           'semi-bold',
-          'bold'
+          'bold',
         ],
       ],
       'Savoye LET' => [],
@@ -353,36 +350,40 @@ trait AppleNewsRequestDataTrait {
         'fontWeight' => [
           'semi-bold',
           'extra-bold',
-          'heavy' ],
+          'heavy',
+        ],
       ],
       'Superclarendon' => [
         'fontWeight' => [
           'regular',
           'medium',
           'extra-bold',
-          'heavy' ],
+          'heavy',
+        ],
       ],
       'Thonburi' => [],
 
       'Times New Roman' => [
         'fontWeight' => [
           'medium',
-          'extra-bold' ],
+          'extra-bold',
+        ],
       ],
       'Trebuchet MS' => [
         'fontWeight' => [
           'medium',
-          'extra-bold'
+          'extra-bold',
         ],
       ],
       'Verdana' => [
         'fontWeight' => [
           'medium',
-          'extra-bold'
+          'extra-bold',
         ],
       ],
       'Zapf Dingbats' => [],
       'Zapfino' => [],
     ];
   }
+
 }

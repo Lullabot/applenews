@@ -2,6 +2,7 @@
 
 namespace Drupal\applenews\Normalizer;
 
+use Document\Layouts\Layout;
 use ChapterThree\AppleNewsAPI\Document;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
@@ -13,14 +14,14 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 class ApplenewsContentEntityNormalizer extends ApplenewsNormalizerBase {
 
   /**
-   * @var EntityTypeManagerInterface
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
   protected $entityTypeManager;
 
   /**
    * Constructs an ApplenewsTemplateSelection object.
    *
-   * @param EntityTypeManagerInterface $entity_type_manager
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    */
   public function __construct(EntityTypeManagerInterface $entity_type_manager) {
     $this->entityTypeManager = $entity_type_manager;
@@ -41,7 +42,7 @@ class ApplenewsContentEntityNormalizer extends ApplenewsNormalizerBase {
   public function normalize($data, $format = NULL, array $context = []) {
     // @todo check cache
     $template = $this->entityTypeManager->getStorage('applenews_template')->load($context['template_id']);
-    $layout = new Document\Layouts\Layout($template->columns, $template->width);
+    $layout = new Layout($template->columns, $template->width);
     $layout
       ->setMargin($template->margin)
       ->setGutter($template->gutter);
@@ -60,4 +61,5 @@ class ApplenewsContentEntityNormalizer extends ApplenewsNormalizerBase {
     }
     return $document->jsonSerialize();
   }
+
 }

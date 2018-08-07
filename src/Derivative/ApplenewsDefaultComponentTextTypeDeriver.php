@@ -7,8 +7,8 @@ use Drupal\Component\Plugin\Derivative\DeriverBase;
 /**
  * Creates all the default Apple News plugins that contain text.
  */
-
 class ApplenewsDefaultComponentTextTypeDeriver extends DeriverBase implements ApplenewsDefaultDeriverInterface {
+
   /**
    * {@inheritdoc}
    */
@@ -25,7 +25,7 @@ class ApplenewsDefaultComponentTextTypeDeriver extends DeriverBase implements Ap
    * {@inheritdoc}
    */
   public function getComponentClasses() {
-    return array(
+    return [
       'author' => [
         'component_class' => 'ChapterThree\AppleNewsAPI\Document\Components\Author',
         'label' => 'Author',
@@ -66,6 +66,7 @@ class ApplenewsDefaultComponentTextTypeDeriver extends DeriverBase implements Ap
         'label' => 'Title',
         'description' => 'The article\'s title or headline. ',
       ],
-    );
+    ];
   }
+
 }

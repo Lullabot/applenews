@@ -44,7 +44,7 @@ class Applenews extends WidgetBase {
         '#title' => t('Publish to Apple News'),
         '#default_value' => $items->status,
         '#attributes' => [
-          'class' => ['applenews-publish-flag']
+          'class' => ['applenews-publish-flag'],
         ],
       ];
       if ($article) {
@@ -59,13 +59,13 @@ class Applenews extends WidgetBase {
         ];
         $element['share_url'] = [
           '#type' => 'item',
-          '#title' => $this->t(  'Share URL'),
+          '#title' => $this->t('Share URL'),
           '#markup' => $this->t('<a href=":url">:url</a>', [':url' => $article->getShareUrl()]),
         ];
         $delete_url = Url::fromRoute('applenews.remote.article_delete', ['channel_id' => '121-12121-sdf-121', 'article_id' => $article->getArticleId()]);
         $element['delete'] = [
           '#type' => 'item',
-          '#title' => $this->t(  'Delete'),
+          '#title' => $this->t('Delete'),
           '#markup' => $this->t('<a href=":url">Delete</a> this article from Apple News.', [':url' => $delete_url->toString()]),
         ];
       }
@@ -93,7 +93,7 @@ class Applenews extends WidgetBase {
       ];
 
       // $default_channels = $items->get('channels')[0]->getValue();
-      foreach ($this->getChannels() as $channel ) {
+      foreach ($this->getChannels() as $channel) {
         /** @var \Drupal\applenews\Entity\ApplenewsChannel $channel */
         $channel_key = $channel->getChannelId();
         $element['channels'][$channel_key] = [
@@ -101,7 +101,7 @@ class Applenews extends WidgetBase {
           '#title' => $channel->getName(),
           '#default_value' => isset($default_channels[$channel_key]),
           '#attributes' => [
-            'data-channel-id' => $channel_key
+            'data-channel-id' => $channel_key,
           ],
           '#states' => [
             'visible' => [
@@ -184,10 +184,8 @@ class Applenews extends WidgetBase {
     return $summary;
   }
 
-
   /**
    * Generate channel options.
-   *
    *
    * @return array
    *   An array of channel indexed by id.
@@ -232,7 +230,6 @@ class Applenews extends WidgetBase {
       $this->logger()->error('Error loading templates: %code : %message', ['%code' => $e->getCode(), $e->getMessage()]);
     }
 
-
     return $templates;
   }
 
@@ -251,10 +248,10 @@ class Applenews extends WidgetBase {
       $result = [];
       $channels = array_keys(array_filter($value['channels']));
       $sections = array_keys(array_filter($value['sections']));
-      foreach ($channels  as $channel_id) {
+      foreach ($channels as $channel_id) {
         foreach ($sections as $section_id) {
           if (strpos($section_id, $channel_id) === 0) {
-            $section_id_result = substr($section_id, strlen($channel_id .'-section-'));
+            $section_id_result = substr($section_id, strlen($channel_id . '-section-'));
             $result[$channel_id][$section_id_result] = 1;
           }
         }
@@ -264,7 +261,6 @@ class Applenews extends WidgetBase {
     }
     return $values;
   }
-
 
   /**
    * Logger.

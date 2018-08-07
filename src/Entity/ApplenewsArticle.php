@@ -2,10 +2,8 @@
 
 namespace Drupal\applenews\Entity;
 
-use Drupal\applenews\ChannelInterface;
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Entity\ContentEntityBase;
-use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
@@ -51,7 +49,7 @@ class ApplenewsArticle extends ContentEntityBase {
    * {@inheritdoc}
    */
   public function getCreatedAt() {
-    // Sample data: 2018-07-27T20:15:08Z
+    // Sample data: 2018-07-27T20:15:08Z.
     return $this->get('createdAt')->value;
   }
 
@@ -59,7 +57,7 @@ class ApplenewsArticle extends ContentEntityBase {
    * {@inheritdoc}
    */
   public function getModifiedAt() {
-    // Sample data: 2018-07-27T20:15:34Z
+    // Sample data: 2018-07-27T20:15:34Z.
     return $this->get('modifiedAt')->value;
   }
 
@@ -224,7 +222,6 @@ class ApplenewsArticle extends ContentEntityBase {
       ->setReadOnly(TRUE)
       ->setLabel(new TranslatableMarkup("The article links"))
       ->setDescription(new TranslatableMarkup('An array of links. Allowed index are self, defaultSection'));
-
 
     return $fields;
   }

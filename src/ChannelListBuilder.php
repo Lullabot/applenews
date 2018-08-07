@@ -9,6 +9,7 @@ use Drupal\Core\Entity\EntityListBuilder;
  * Provides a listing of Applenews Channel.
  */
 class ChannelListBuilder extends EntityListBuilder {
+
   /**
    * {@inheritdoc}
    */

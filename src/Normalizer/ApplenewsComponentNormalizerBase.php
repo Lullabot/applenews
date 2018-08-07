@@ -5,7 +5,6 @@ namespace Drupal\applenews\Normalizer;
 use ChapterThree\AppleNewsAPI\Document\Layouts\ComponentLayout;
 use ChapterThree\AppleNewsAPI\Document\Margin;
 use Drupal\applenews\Plugin\ApplenewsComponentTypeManager;
-use Drupal\Core\Render\RendererInterface;
 
 /**
  * Class ApplenewsComponentNormalizerBase. Component normalizers should be
@@ -23,14 +22,14 @@ abstract class ApplenewsComponentNormalizerBase extends ApplenewsNormalizerBase 
   protected $componentType;
 
   /**
-   * @var ApplenewsComponentTypeManager
+   * @var \Drupal\applenews\Plugin\ApplenewsComponentTypeManager
    */
   protected $applenewsComponentTypeManager;
 
   /**
    * Constructs a normalizer object.
    *
-   * @param ApplenewsComponentTypeManager $component_type_manager
+   * @param \Drupal\applenews\Plugin\ApplenewsComponentTypeManager $component_type_manager
    */
   public function __construct(ApplenewsComponentTypeManager $component_type_manager) {
     $this->applenewsComponentTypeManager = $component_type_manager;
@@ -41,7 +40,7 @@ abstract class ApplenewsComponentNormalizerBase extends ApplenewsNormalizerBase 
    */
   public function supportsNormalization($data, $format = NULL) {
     // Only consider this normalizer if we are trying to normalize a content
-    // entity into the 'applenews' format and the component is of type "text"
+    // entity into the 'applenews' format and the component is of type "text".
     if ($format === $this->format && is_array($data) && isset($data['id'])) {
       $component = $this->applenewsComponentTypeManager->createInstance($data['id']);
       return $component->getComponentType() == $this->componentType;
@@ -54,8 +53,9 @@ abstract class ApplenewsComponentNormalizerBase extends ApplenewsNormalizerBase 
    * Get the class name needed to instantiate an Apple News component.
    *
    * @param string $plugin_id
+   *
    * @return string
-   *  The fully-qualified name of the underlying Component class to use.
+   *   The fully-qualified name of the underlying Component class to use.
    */
   protected function getComponentClass($plugin_id) {
     $component = $this->applenewsComponentTypeManager->createInstance($plugin_id);
@@ -66,7 +66,8 @@ abstract class ApplenewsComponentNormalizerBase extends ApplenewsNormalizerBase 
    * Get the Component layout values.
    *
    * @param array $component_layout
-   * @return ComponentLayout
+   *
+   * @return \ChapterThree\AppleNewsAPI\Document\Layouts\ComponentLayout
    */
   protected function getComponentLayout($component_layout) {
     $layout = new ComponentLayout();
@@ -83,4 +84,5 @@ abstract class ApplenewsComponentNormalizerBase extends ApplenewsNormalizerBase 
 
     return $layout;
   }
+
 }

@@ -10,27 +10,32 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\RendererInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+/**
+ * Class ApplenewsTemplateForm
+ *
+ * @package Drupal\applenews\Form
+ */
 class ApplenewsTemplateForm extends EntityForm {
 
   /**
-   * @var ApplenewsComponentTypeManager
+   * @var \Drupal\applenews\Plugin\ApplenewsComponentTypeManager
    */
   protected $applenewsComponentTypeManager;
 
   /**
-   * @var EntityTypeManager
+   * @var \Drupal\Core\Entity\EntityTypeManager
    */
   protected $entityTypeManager;
 
   /**
-   * @var RendererInterface
+   * @var \Drupal\Core\Render\RendererInterface
    */
   protected $renderer;
 
   /**
    * Constructs an ApplenewsTemplateForm object.
    *
-   * @param ApplenewsComponentTypeManager $component_type_manager
+   * @param \Drupal\applenews\Plugin\ApplenewsComponentTypeManager $component_type_manager
    */
   public function __construct(ApplenewsComponentTypeManager $component_type_manager, EntityTypeManager $entity_type_manager, RendererInterface $renderer) {
     $this->applenewsComponentTypeManager = $component_type_manager;
@@ -99,7 +104,6 @@ class ApplenewsTemplateForm extends EntityForm {
       '#description' => $this->t('For more information: <a href="https://developer.apple.com/library/content/documentation/General/Conceptual/Apple_News_Format_Ref/Layout.html#//apple_ref/doc/uid/TP40015408-CH65-SW1">https://developer.apple.com/library/content/documentation/General/Conceptual/Apple_News_Format_Ref/Layout.html#//apple_ref/doc/uid/TP40015408-CH65-SW1</a>'),
     ];
 
-
     $layout = $template->getLayout();
 
     $form['layout']['columns'] = [
@@ -148,7 +152,7 @@ class ApplenewsTemplateForm extends EntityForm {
         $this->t('Data Mapping'),
         $this->t('Operations'),
         $this->t('Weight'),
-        $this->t('Parent')
+        $this->t('Parent'),
       ],
       '#empty' => $this->t('This template has no components yet.'),
       '#prefix' => '<div id="components-fieldset-wrapper">',
@@ -164,12 +168,12 @@ class ApplenewsTemplateForm extends EntityForm {
           'action' => 'order',
           'relationship' => 'sibling',
           'group' => 'component-weight',
-        ]
+        ],
       ],
     ];
 
     $rows = [];
-    foreach($components as $id => $component) {
+    foreach ($components as $id => $component) {
       $rows[$id] = $this->getComponentRow($component, $form_state);
       $component_plugin = $this->applenewsComponentTypeManager->createInstance($component['id']);
       // If not a nested component, it cannot be a parent of other components.
@@ -282,7 +286,7 @@ class ApplenewsTemplateForm extends EntityForm {
    * Get all the available Applenews component plugins to use in a select element.
    *
    * @return array
-   *  An array of component options suitable for a select element.
+   *   An array of component options suitable for a select element.
    */
   protected function getComponentOptions() {
     $component_options = [];
@@ -394,9 +398,10 @@ class ApplenewsTemplateForm extends EntityForm {
    *
    * @todo Replace with a value object
    *
-   * @param FormStateInterface $form_state
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *
    * @return array
-   *  An array in the proper format to pass to AppleTemplate::addComponent()
+   *   An array in the proper format to pass to AppleTemplate::addComponent()
    */
   protected function getNewComponentValues(FormStateInterface $form_state) {
     $values = $form_state->getValues();
@@ -420,6 +425,7 @@ class ApplenewsTemplateForm extends EntityForm {
    * component deletion and confirmation forms.
    *
    * @param array $triggering_element
+   *
    * @return string
    */
   protected function getTriggeringRowIndex(array $triggering_element) {
@@ -431,7 +437,7 @@ class ApplenewsTemplateForm extends EntityForm {
    * in the components list table.
    *
    * @return array
-   *  The form array containing a Yes and Cancel button.
+   *   The form array containing a Yes and Cancel button.
    */
   protected function getComponentRowDeleteConfirmation() {
     $operations = [];
@@ -464,7 +470,7 @@ class ApplenewsTemplateForm extends EntityForm {
   /**
    * Sorts the components based on their new weights from the draggable table.
    *
-   * @param FormStateInterface $form_state
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
    */
   protected function saveComponentOrder(FormStateInterface $form_state) {
     $component_table = $form_state->getValue('components_table');
@@ -472,7 +478,7 @@ class ApplenewsTemplateForm extends EntityForm {
     if ($components) {
       foreach ($component_table as $id => $new_component_values) {
 
-        // If something was moved out of a parent relationship
+        // If something was moved out of a parent relationship.
         if (!isset($components[$id]) && !$new_component_values['parent_id']) {
           if ($former_child = $this->entity->getComponent($id)) {
             $components[$id] = $former_child;
@@ -482,7 +488,7 @@ class ApplenewsTemplateForm extends EntityForm {
 
         if ($new_component_values['parent_id']) {
           if ($child_component = $this->entity->getComponent($id)) {
-            // In case it was a child of another parent, go ahead and delete it
+            // In case it was a child of another parent, go ahead and delete it.
             $this->deleteChildComponent($components, $id);
             $this->addChildComponent($components, $new_component_values['parent_id'], $child_component);
           }
@@ -499,9 +505,8 @@ class ApplenewsTemplateForm extends EntityForm {
 
       }
 
-
       // Find all nested components and sort their children.
-      foreach($components as $id => $component) {
+      foreach ($components as $id => $component) {
         if (isset($component['component_data']['components'])) {
           uasort($component['component_data']['components'], [$this->entity, 'sortHelper']);
         }
@@ -512,6 +517,9 @@ class ApplenewsTemplateForm extends EntityForm {
     }
   }
 
+  /**
+   *
+   */
   protected function deleteChildComponent(&$components, $child_id) {
     foreach ($components as &$component) {
       foreach ($component['component_data']['components'] as $id => $child_component) {
@@ -529,6 +537,9 @@ class ApplenewsTemplateForm extends EntityForm {
     }
   }
 
+  /**
+   *
+   */
   protected function addChildComponent(&$components, $parent_id, $child_component) {
     // Go through top level components.
     foreach ($components as $id => &$component) {
@@ -538,7 +549,7 @@ class ApplenewsTemplateForm extends EntityForm {
       }
     }
 
-    // Go through any children they might have if we haven't found the parent id
+    // Go through any children they might have if we haven't found the parent id.
     foreach ($components as $id => &$component) {
       return $this->addChildComponent($component['component_data']['components'], $parent_id, $child_component);
     }
@@ -551,6 +562,7 @@ class ApplenewsTemplateForm extends EntityForm {
    * table.
    *
    * @param array $component
+   *
    * @return string
    */
   protected function displayComponentData($component) {
@@ -564,6 +576,9 @@ class ApplenewsTemplateForm extends EntityForm {
     return $return;
   }
 
+  /**
+   *
+   */
   protected function getComponentRow($component, $form_state, $parent_id = NULL) {
     $row = [];
     $row['#attributes']['class'][] = 'draggable';
@@ -599,7 +614,7 @@ class ApplenewsTemplateForm extends EntityForm {
       '#title' => $this->t('Weight'),
       '#title_display' => 'invisible',
       '#default_value' => $component['weight'],
-      '#attributes' => array('class' => array('component-weight')),
+      '#attributes' => ['class' => ['component-weight']],
     ];
 
     $row['parent_id'] = [
@@ -627,6 +642,9 @@ class ApplenewsTemplateForm extends EntityForm {
     return $row;
   }
 
+  /**
+   *
+   */
   protected function getChildComponentRows($component, $form_state, $depth = 1) {
     $rows = [];
     foreach ($component['component_data']['components'] as $id => $child_component) {
@@ -649,4 +667,5 @@ class ApplenewsTemplateForm extends EntityForm {
 
     return $rows;
   }
+
 }

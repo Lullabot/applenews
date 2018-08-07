@@ -43,4 +43,3 @@ services:
   applenews.publisher:
     class: Drupal\applenews\Publisher
     arguments: ['@config.factory']
-

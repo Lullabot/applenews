@@ -3,7 +3,6 @@
 namespace Drupal\Tests\applenews\Functional;
 
 use Drupal\Tests\BrowserTestBase;
-use Drupal\user\RoleInterface;
 
 /**
  * Setup users and configurations.

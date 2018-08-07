@@ -16,6 +16,7 @@ use Drupal\Core\Form\FormStateInterface;
  * )
  */
 class ApplenewsDefaultDividerComponentType extends ApplenewsComponentTypeBase {
+
   /**
    * {@inheritdoc}
    */
@@ -35,7 +36,7 @@ class ApplenewsDefaultDividerComponentType extends ApplenewsComponentTypeBase {
       '#type' => 'textfield',
       '#title' => $this->t('Stroke color'),
       '#description' => $this->t('The hexadecimal value for the color. ex: #000000'),
-      '#default_value' => '#000000'
+      '#default_value' => '#000000',
     ];
 
     $element['component_settings']['component_data']['stroke_style'] = [
@@ -51,4 +52,5 @@ class ApplenewsDefaultDividerComponentType extends ApplenewsComponentTypeBase {
 
     return $element;
   }
+
 }

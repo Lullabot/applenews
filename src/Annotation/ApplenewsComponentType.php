@@ -18,7 +18,7 @@ use Drupal\Component\Annotation\Plugin;
 class ApplenewsComponentType extends Plugin {
 
   /**
-   * The fully qualified class name of thec hapter-three/AppleNewsAPI Component class
+   * The fully qualified class name of thec hapter-three/AppleNewsAPI Component class.
    *
    * @var string
    */

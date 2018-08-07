@@ -6,33 +6,38 @@ use Drupal\applenews\ApplenewsTemplateSelection;
 use Drupal\Component\Serialization\Json;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\node\NodeInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Serializer\Serializer;
 
+/**
+ * Class ApplenewsPreviewForm
+ *
+ * @package Drupal\applenews\Form
+ */
 class ApplenewsPreviewForm extends FormBase {
 
   /**
-   * @var ApplenewsTemplateSelection
+   * @var \Drupal\applenews\ApplenewsTemplateSelection
    */
   protected $applenewsTemplateSelection;
 
   /**
-   * @var Serializer
+   * @var \Symfony\Component\Serializer\Serializer
    */
   protected $serializer;
 
   /**
-   * @param ApplenewsTemplateSelection $template_selection
-   * @param Serializer $serializer
+   * @param \Drupal\applenews\ApplenewsTemplateSelection $template_selection
+   * @param \Symfony\Component\Serializer\Serializer $serializer
    */
   public function __construct(ApplenewsTemplateSelection $template_selection, Serializer $serializer) {
     $this->applenewsTemplateSelection = $template_selection;
     $this->serializer = $serializer;
   }
 
+  /**
+   *
+   */
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('applenews.template_selection'),
@@ -56,7 +61,7 @@ class ApplenewsPreviewForm extends FormBase {
     $form['applenews_template'] = $this->applenewsTemplateSelection->getTemplateSelectionElement($node->bundle());
 
     $form['actions'] = [
-      '#type' => 'actions'
+      '#type' => 'actions',
     ];
 
     $form['actions']['download'] = [

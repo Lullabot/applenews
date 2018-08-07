@@ -70,7 +70,7 @@ class ApplenewsManager {
    * @param \Drupal\applenews\PublisherInterface $publisher
    *   Apple news publisher.
    */
-  public function __construct(EntityTypeManagerInterface $entity_type_manager,EntityFieldManagerInterface $entity_field_manager, ConfigFactoryInterface $config_factory, TranslationInterface $string_translation, Serializer $serializer, PublisherInterface $publisher) {
+  public function __construct(EntityTypeManagerInterface $entity_type_manager, EntityFieldManagerInterface $entity_field_manager, ConfigFactoryInterface $config_factory, TranslationInterface $string_translation, Serializer $serializer, PublisherInterface $publisher) {
     $this->entityTypeManager = $entity_type_manager;
     $this->entityFieldManager = $entity_field_manager;
     $this->config = $config_factory->get('applenews.settings');
@@ -102,11 +102,12 @@ class ApplenewsManager {
    * @param \Drupal\Core\Entity\EntityInterface $entity
    *
    * @return bool
+   *
    * @throws \Drupal\Core\Entity\EntityStorageException
    */
   public function postArticle(EntityInterface $entity) {
     $fields = $this->getFields($entity->getEntityTypeId());
-    if (!$fields){
+    if (!$fields) {
       return FALSE;
     }
 
@@ -119,7 +120,7 @@ class ApplenewsManager {
         $document = $this->getDocumentDataFromEntity($entity, $template);
         $data = [
           'json' => $document,
-          // 'files' => ''
+          // 'files' => ''.
         ];
         foreach ($channels as $channel_id => $sections) {
           // Publish for the first time.
@@ -135,7 +136,7 @@ class ApplenewsManager {
 
           }
           else {
-            /** @var ApplenewsArticle $article */
+            /** @var \Drupal\applenews\Entity\ApplenewsArticle $article */
             $article = $field->article;
             // hook_entity_update get called on ->save(). Avoid multiple calls.
             $data['metadata'] = $this->getMetaData($sections, $article->getRevision());
@@ -155,18 +156,18 @@ class ApplenewsManager {
    * @param $sections
    *   An array of section ids.
    * @param null|string $revision_id
-   *  Revision ID for article update.
+   *   Revision ID for article update.
    *
    * @return string
    */
   protected function getMetadata($sections, $revision_id = NULL) {
     foreach ($sections as $section_id => $flag) {
-      $section_urls[] =   $this->config->get('endpoint') . '/sections/' . $section_id;
+      $section_urls[] = $this->config->get('endpoint') . '/sections/' . $section_id;
     }
     $data = [
       'links' => [
         'sections' => $section_urls,
-      ]
+      ],
     ];
     if ($revision_id) {
       $data['revision'] = $revision_id;
@@ -179,7 +180,7 @@ class ApplenewsManager {
    * @param $field_name
    *
    * @return \Drupal\Core\Entity\EntityInterface|null
-   *  Apple News Article entity if exist, NULL otherwise.
+   *   Apple News Article entity if exist, NULL otherwise.
    */
   public static function getArticle(EntityInterface $entity, $field_name) {
     try {
