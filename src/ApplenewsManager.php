@@ -175,13 +175,12 @@ class ApplenewsManager {
     return json_encode(['data' => $data], JSON_UNESCAPED_SLASHES);
   }
 
-
   /**
    * @param \Drupal\Core\Entity\EntityInterface $entity
    * @param $field_name
    *
    * @return \Drupal\Core\Entity\EntityInterface|null
-   *   Apple News Article entity if exist, NULL otherwise.
+   *  Apple News Article entity if exist, NULL otherwise.
    */
   public static function getArticle(EntityInterface $entity, $field_name) {
     try {
@@ -192,7 +191,13 @@ class ApplenewsManager {
         ->condition('entity_id', $entity->id())
         ->condition('field_name', $field_name)
         ->execute();
-      return \Drupal::entityTypeManager()->getStorage('applenews_article')->load(current($ids));
+      if (!empty($ids)) {
+        $articles = \Drupal::entityTypeManager()->getStorage('applenews_article')->loadMultiple($ids);
+        // We expect to have only one article.
+        foreach ($articles as $article) {
+          return $article;
+        }
+      }
     }
     catch (\Exception $e) {
       // Do not throw exception.
