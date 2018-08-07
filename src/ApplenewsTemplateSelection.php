@@ -6,7 +6,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 
 /**
- * Class ApplenewsTemplateSelection
+ * Class ApplenewsTemplateSelection.
  *
  * @package Drupal\applenews
  */

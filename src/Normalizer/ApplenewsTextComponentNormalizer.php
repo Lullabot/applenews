@@ -3,7 +3,7 @@
 namespace Drupal\applenews\Normalizer;
 
 /**
- * Class ApplenewsTextComponentNormalizer
+ * Class ApplenewsTextComponentNormalizer.
  *
  * @package Drupal\applenews\Normalizer
  */

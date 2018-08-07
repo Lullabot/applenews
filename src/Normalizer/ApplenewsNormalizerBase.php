@@ -7,7 +7,7 @@ use Symfony\Component\Serializer\SerializerAwareInterface;
 use Symfony\Component\Serializer\SerializerAwareTrait;
 
 /**
- * Class ApplenewsNormalizerBase
+ * Class ApplenewsNormalizerBase.
  *
  * @package Drupal\applenews\Normalizer
  */

@@ -3,7 +3,7 @@
 namespace Drupal\applenews\Derivative;
 
 /**
- * Interface ApplenewsDefaultDeriverInterface
+ * Interface ApplenewsDefaultDeriverInterface.
  *
  * @package Drupal\applenews\Derivative
  */

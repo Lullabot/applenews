@@ -7,7 +7,7 @@ use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Plugin\DefaultPluginManager;
 
 /**
- * Class ApplenewsComponentTypeManager
+ * Class ApplenewsComponentTypeManager.
  *
  * @package Drupal\applenews\Plugin
  */

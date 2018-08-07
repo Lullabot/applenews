@@ -8,7 +8,7 @@ use Drupal\Core\Url;
 use Drupal\node\NodeInterface;
 
 /**
- * Class ApplenewsPreviewController
+ * Class ApplenewsPreviewController.
  *
  * @package Drupal\applenews\Controller
  */

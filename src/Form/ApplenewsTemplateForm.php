@@ -11,7 +11,7 @@ use Drupal\Core\Render\RendererInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Class ApplenewsTemplateForm
+ * Class ApplenewsTemplateForm.
  *
  * @package Drupal\applenews\Form
  */
@@ -680,6 +680,7 @@ class ApplenewsTemplateForm extends EntityForm {
    *
    * @return array
    *   An array of row definition.
+   *
    * @throws \Drupal\Component\Plugin\Exception\PluginException
    */
   protected function getChildComponentRows($component, $form_state, $depth = 1) {

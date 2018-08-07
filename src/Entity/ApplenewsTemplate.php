@@ -154,7 +154,6 @@ class ApplenewsTemplate extends ConfigEntityBase implements ApplenewsTemplateInt
     uasort($components, [$this, 'sortHelper']);
   }
 
-
   /**
    * Deletes nested component.
    *
