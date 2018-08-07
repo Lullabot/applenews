@@ -239,27 +239,27 @@ class TextStyleForm extends EntityForm {
     ];
     $form['lineHeight'] = [
       '#type' => 'textfield',
-      '#title' => $this->t(''),
+      '#title' => $this->t('Line height'),
       '#default_value' => '',
-      '#description' => $this->t(''),
+      '#description' => $this->t('The default line height, in points.'),
     ];
     $form['dropCapStyle'] = [
       '#type' => 'textfield',
-      '#title' => $this->t(''),
+      '#title' => $this->t('Drop cap style'),
       '#default_value' => '',
-      '#description' => $this->t(''),
+      '#description' => $this->t('Defines the style of drop cap to apply to the first paragraph of the component.'),
     ];
     $form['linkStyle'] = [
       '#type' => 'textfield',
-      '#title' => $this->t(''),
+      '#title' => $this->t('Line style'),
       '#default_value' => '',
-      '#description' => $this->t(''),
+      '#description' => $this->t('Text styling for all links within a text component.'),
     ];
     $form['hyphenation'] = [
       '#type' => 'textfield',
-      '#title' => $this->t(''),
+      '#title' => $this->t('Hyphenation'),
       '#default_value' => '',
-      '#description' => $this->t(''),
+      '#description' => $this->t('Indicates whether text should be hyphenated when necessary.'),
     ];
 
     return parent::form($form, $form_state);

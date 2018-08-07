@@ -5,7 +5,9 @@ namespace Drupal\applenews\Derivative;
 use Drupal\Component\Plugin\Derivative\DeriverBase;
 
 /**
+ * Class ApplenewsDefaultComponentNestedDeriver
  *
+ * @package Drupal\applenews\Derivative
  */
 class ApplenewsDefaultComponentNestedDeriver extends DeriverBase implements ApplenewsDefaultDeriverInterface {
 

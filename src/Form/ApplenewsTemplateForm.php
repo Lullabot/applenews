@@ -11,7 +11,9 @@ use Drupal\Core\Render\RendererInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
+ * Class ApplenewsTemplateForm
  *
+ * @package Drupal\applenews\Form
  */
 class ApplenewsTemplateForm extends EntityForm {
 

@@ -10,7 +10,9 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Serializer\Serializer;
 
 /**
+ * Class ApplenewsPreviewForm
  *
+ * @package Drupal\applenews\Form
  */
 class ApplenewsPreviewForm extends FormBase {
 

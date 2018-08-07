@@ -3,10 +3,15 @@
 namespace Drupal\applenews\Normalizer;
 
 /**
+ * Class ApplenewsTextComponentNormalizer
  *
+ * @package Drupal\applenews\Normalizer
  */
 class ApplenewsTextComponentNormalizer extends ApplenewsComponentNormalizerBase {
 
+  /**
+   * @var string
+   */
   protected $componentType = 'text';
 
   /**

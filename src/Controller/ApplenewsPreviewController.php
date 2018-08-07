@@ -8,12 +8,19 @@ use Drupal\Core\Url;
 use Drupal\node\NodeInterface;
 
 /**
+ * Class ApplenewsPreviewController
  *
+ * @package Drupal\applenews\Controller
  */
 class ApplenewsPreviewController extends ControllerBase {
 
   /**
+   * Generates article.json and assets for preview.
    *
+   * @param \Drupal\node\NodeInterface $node
+   * @param $template_id
+   *
+   * @return array
    */
   public function preview(NodeInterface $node, $template_id) {
     $uri = 'public://applenews_preview/';

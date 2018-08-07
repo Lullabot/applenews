@@ -5,7 +5,9 @@ namespace Drupal\applenews;
 use Drupal\Core\Config\Entity\ConfigEntityInterface;
 
 /**
+ * Interface ApplenewsTemplateInterface
  *
+ * @package Drupal\applenews
  */
 interface ApplenewsTemplateInterface extends ConfigEntityInterface {
 
