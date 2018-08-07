@@ -180,7 +180,7 @@ class ApplenewsManager {
    * @param $field_name
    *
    * @return \Drupal\Core\Entity\EntityInterface|null
-   *   Apple News Article entity if exist, NULL otherwise.
+   *  Apple News Article entity if exist, NULL otherwise.
    */
   public static function getArticle(EntityInterface $entity, $field_name) {
     try {
