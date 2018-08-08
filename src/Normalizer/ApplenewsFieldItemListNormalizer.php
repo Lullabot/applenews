@@ -5,7 +5,7 @@ namespace Drupal\applenews\Normalizer;
 use Drupal\Core\Field\FieldItemListInterface;
 
 /**
- * Class ApplenewsFieldItemListNormalizer
+ * Class ApplenewsFieldItemListNormalizer.
  *
  * @package Drupal\applenews\Normalizer
  */

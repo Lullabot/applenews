@@ -44,6 +44,7 @@ interface PublisherInterface {
   public function getSection($section_id);
 
   /**
+   * Retrieves available sections.
    *
    * @see vendor/chapter-three/apple-news-api/examples/PublisherAPI/GetSections.php
    *

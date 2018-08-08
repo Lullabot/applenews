@@ -11,7 +11,7 @@ use Drupal\Core\Render\RendererInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Class ApplenewsTemplateForm
+ * Class ApplenewsTemplateForm.
  *
  * @package Drupal\applenews\Form
  */
@@ -518,7 +518,13 @@ class ApplenewsTemplateForm extends EntityForm {
   }
 
   /**
+   * Deletes child component.
    *
+   * @param $components
+   *   Component object.
+   *
+   * @param $child_id
+   *   Child id to delete.
    */
   protected function deleteChildComponent(&$components, $child_id) {
     foreach ($components as &$component) {
@@ -538,7 +544,17 @@ class ApplenewsTemplateForm extends EntityForm {
   }
 
   /**
+   * Adds a child component.
    *
+   * @param $components
+   *   Component object.
+   * @param $parent_id
+   *   Parent id.
+   * @param $child_component
+   *   Child component to add.
+   *
+   * @return bool
+   *   TRUE if added successfully, FALSE otherwise.
    */
   protected function addChildComponent(&$components, $parent_id, $child_component) {
     // Go through top level components.
@@ -577,7 +593,17 @@ class ApplenewsTemplateForm extends EntityForm {
   }
 
   /**
+   * Constructs a component row.
    *
+   * @param $component
+   *   Component object.
+   * @param $form_state
+   *   Form state.
+   * @param null $parent_id
+   *   Parent id, if available.
+   *
+   * @return array
+   *   An array of row definition.
    */
   protected function getComponentRow($component, $form_state, $parent_id = NULL) {
     $row = [];
@@ -643,7 +669,19 @@ class ApplenewsTemplateForm extends EntityForm {
   }
 
   /**
+   * Gets child component row definition to render.
    *
+   * @param $component
+   *   Component object.
+   * @param $form_state
+   *   Form state.
+   * @param int $depth
+   *   Depth.
+   *
+   * @return array
+   *   An array of row definition.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\PluginException
    */
   protected function getChildComponentRows($component, $form_state, $depth = 1) {
     $rows = [];

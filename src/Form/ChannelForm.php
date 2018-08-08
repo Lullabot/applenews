@@ -134,7 +134,7 @@ class ChannelForm extends ContentEntityForm {
   }
 
   /**
-   *
+   * {@inheritdoc}
    */
   public function save(array $form, FormStateInterface $form_state) {
     $channel_id = $form_state->getValue('id')[0]['value'];
